@@ -1,5 +1,3 @@
-import "@services/auth/google";
-import "@services/auth/discord";
 import passport from "passport";
 
 passport.serializeUser((user, done) => {

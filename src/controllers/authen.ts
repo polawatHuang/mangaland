@@ -17,50 +17,6 @@ interface CustomResponseOptions extends ResponseOptions {
 
 const router: Router = Router();
 
-// Google Authentication
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
-    try {
-        const user = req.user as { token: string, newrefreshToken: string };
-
-        res.status(200).json(Resp.success({ accessToken: user.token, refreshToken: user.newrefreshToken }, "Google Authentication Success", { status: 200, meta: { timestamp: new Date().toISOString() } }));
-    } catch (error: any) {
-        const errorOptions: CustomResponseOptions = {
-            status: 500,
-            meta: {
-                status: 500,
-                error: error.message,
-                stack: error.stack,
-                timestamp: new Date().toISOString()
-            }
-        };
-
-        res.status(500).json(Resp.error("Failed to authenticate google", errorOptions));
-    }
-});
-
-// Discord Authentication
-router.get('/discord', passport.authenticate('discord'));
-router.get('/discord/callback', passport.authenticate('discord', { session: false }), (req, res) => {
-    try {
-        const user = req.user as { token: string, newrefreshToken: string };
-
-        res.status(200).json(Resp.success({ accessToken: user.token, refreshToken: user.newrefreshToken }, "Discord Authentication Success", { status: 200, meta: { timestamp: new Date().toISOString() } }));
-    } catch (error: any) {
-        const errorOptions: CustomResponseOptions = {
-            status: 500,
-            meta: {
-                status: 500,
-                error: error.message,
-                stack: error.stack,
-                timestamp: new Date().toISOString()
-            }
-        };
-
-        res.status(500).json(Resp.error("Failed to authenticate discord", errorOptions));
-    }
-});
-
 router.get('/@me', authenticateToken, (req: Request, res: Response) => {
     try {
         res.status(200).json(Resp.success(req.user, "User Profile", { status: 200, meta: { timestamp: new Date().toISOString() } }));
