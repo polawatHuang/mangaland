@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { MagnifyingGlassIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import { Twirl as Hamburger } from "hamburger-react";
+import "./Navbar.css";
 
 function Navbars() {
     const Nav = [
@@ -26,7 +27,7 @@ function Navbars() {
     ];
     const [navOpen, setNavOpen] = useState(false);
     return (
-        <nav className="flex relative justify-between items-center px-5 h-16 bg-gray text-white">
+        <nav className="flex relative justify-between items-center px-10 md:px-20 h-16 bg-gray text-white">
             <div className=" flex gap-2 cursor-default font-normal text-2xl">
                 <span className="text-pink">MANGA</span>
                 <span>LAND</span>
@@ -45,8 +46,8 @@ function Navbars() {
                     } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
                 >
                     <ul className=" divide-y divide-[#6e6e6eaf] w-full flex flex-col">
-                        {Nav.map((items) => (
-                            <li className=" w-full flex">
+                        {Nav.map((items, index) => (
+                            <li key={index} className=" w-full flex">
                                 <Link
                                     className="bg-pink w-full py-4 flex justify-center items-center"
                                     href={items.link}
@@ -56,12 +57,13 @@ function Navbars() {
                             </li>
                         ))}
                         <li>
-                            <div className="flex bg-pink py-4  justify-center gap-1 h-full">
+                            <div className="h-full flex">
                                 <input
                                     type="text"
-                                    className=" w-2/4 outline-none text-black px-2 rounded-l-md"
+                                    className=" w-full h-16 outline-none text-black px-2"
+                                    placeholder="ค้นหาชื่อมังงะ"
                                 />
-                                <button className="w-8 bg-blue hover:bg-[#2b61a8] flex justify-center items-center rounded-r-md">
+                                <button className="w-20 h-16 bg-blue hover:bg-[#2b61a8] flex justify-center items-center">
                                     <MagnifyingGlassIcon className=" size-5 h-full" />
                                 </button>
                             </div>
@@ -69,9 +71,10 @@ function Navbars() {
                     </ul>
                 </div>
             </div>
-            <ul className="md:flex gap-5 hidden">
-                {Nav.map((items) => (
+            <ul className="md:flex Blurhover gap-5 hidden">
+                {Nav.map((items, index) => (
                     <motion.li
+                        key={index}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         className="Underline"
@@ -80,12 +83,13 @@ function Navbars() {
                     </motion.li>
                 ))}
             </ul>
-            <div className="md:flex hidden justify-center gap-1 h-2/5">
+            <div className="md:flex hidden justify-center gap-1">
                 <input
                     type="text"
-                    className=" w-36 outline-none text-black px-2 rounded-l-md"
+                    className=" w-36 outline-none h-8 text-black px-2 rounded-l-md"
+                    placeholder="ค้นหาชื่อมังงะ"
                 />
-                <button className="w-8 bg-blue hover:bg-[#2b61a8] flex justify-center items-center rounded-r-md">
+                <button className="w-8 h-8 bg-blue hover:bg-[#2b61a8] flex justify-center items-center rounded-r-md">
                     <MagnifyingGlassIcon className=" size-5 h-full" />
                 </button>
             </div>

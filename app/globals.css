@@ -19,20 +19,3 @@ body {
     background: var(--background);
     font-family: Arial, Helvetica, sans-serif;
 }
-
-.Underline {
-    position: relative;
-}
-.Underline::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 2px;
-    background-color: white;
-    transition: all 0.3s ease;
-}
-.Underline:hover::before {
-    width: 100%;
-}
