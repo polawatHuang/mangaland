@@ -12,6 +12,7 @@ import passport from "@services/auth/authen";
 import statusControllers from "@controllers/status";
 import authenController from "@controllers/authen";
 import projectController from "@controllers/project";
+import settingController from "@controllers/setting";
 
 dotenv.config();
 
@@ -61,6 +62,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use('/api', statusControllers);
 app.use('/api/auth', authenController);
 app.use('/api/project', projectController);
+app.use('/api/setting', settingController);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
