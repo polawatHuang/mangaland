@@ -31,11 +31,10 @@ const Footer: React.FC = () => {
 
         // fetchMenuItems();
         const data = [
-            { id: "1", name: "หน้าแรก", href: "/" },
-            { id: "2", name: "หมวดหมู่", href: "/categories" },
-            { id: "3", name: "เรื่องยอดนิยม", href: "/popular" },
-            { id: "4", name: "สุ่มเลือกอ่านมังงะ", href: "#" },
-            { id: "5", name: "เกี่ยวกับ", href: "/about" },
+            { id: "1", name: "สุ่มมังงะ", href: "/" },
+            { id: "2", name: "แท็กทั้งหมด", href: "/categories" },
+            { id: "3", name: "มังฮวาเกาหลี", href: "/popular" },
+            { id: "4", name: "มังงะที่ถูกใจ", href: "/" },
         ];
         const socials = [
             { id: "1", name: "Facebook", href: "https://facebook.com" },
@@ -47,8 +46,8 @@ const Footer: React.FC = () => {
     }, []);
 
     return (
-        <footer className="bg-gray-800 text-white py-8">
-            <div className="container px-4 mx-auto flex gap-4 flex-wrap justify-start">
+        <footer className="bg-gray text-white py-8">
+            <div className="container px-4 mx-auto flex md:gap-4 gap-10 flex-wrap justify-start">
                 <div className="flex-1 sm:w-1/3 mb-6 sm:mb-0">
                     <h4 className="text-lg font-semibold mb-2">เกี่ยวกับเรา</h4>
                     <p>

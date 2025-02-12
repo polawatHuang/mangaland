@@ -8,22 +8,10 @@ import "./Navbar.css";
 
 function Navbars() {
     const Nav = [
-        {
-            title: "สุ่มมังงะ",
-            link: "/",
-        },
-        {
-            title: "แท็กทั้งหมด",
-            link: "/",
-        },
-        {
-            title: "มังฮวาเกาหลี",
-            link: "/",
-        },
-        {
-            title: "มังงะที่ถูกใจ",
-            link: "/",
-        },
+        { id: "1", name: "สุ่มมังงะ", href: "/" },
+        { id: "2", name: "แท็กทั้งหมด", href: "/categories" },
+        { id: "3", name: "มังฮวาเกาหลี", href: "/popular" },
+        { id: "4", name: "มังงะที่ถูกใจ", href: "/" },
     ];
     const [navOpen, setNavOpen] = useState(false);
     return (
@@ -50,10 +38,10 @@ function Navbars() {
                             <li key={index} className=" w-full flex">
                                 <Link
                                     className=" bg-[#3b3b3b] w-full opacity-100 py-4 flex justify-center items-center"
-                                    href={items.link}
+                                    href={items.href}
                                     onClick={(e) => setNavOpen(!navOpen)}
                                 >
-                                    {items.title}
+                                    {items.name}
                                 </Link>
                             </li>
                         ))}
@@ -80,7 +68,7 @@ function Navbars() {
                         whileTap={{ scale: 0.9 }}
                         className="Underline"
                     >
-                        <Link href={items.link}>{items.title}</Link>
+                        <Link href={items.href}>{items.name}</Link>
                     </motion.li>
                 ))}
             </ul>
