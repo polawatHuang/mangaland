@@ -37,7 +37,8 @@ passport.use(
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return done(null, false, Resp.error("Incorrect password", { status: 401, meta: { timestamp: new Date().toISOString() } }));
-
+        
+        prisma.user.update({ where: { id: user.id }, data: { latestLogin: new Date() } });
         return done(null, user);
       } catch (error) {
         return done(error, false);

@@ -13,7 +13,7 @@ class AppLogger {
     private constructor() {
         const isProduction = process.env.NODE_ENV === "production";
 
-        this.discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL || null;
+        this.discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL as string;
 
         const currentDate = dayjs().format("YYYY-MM-DD");
         const logDirectory = "logs";

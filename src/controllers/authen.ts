@@ -76,6 +76,34 @@
  *       bearerFormat: JWT
  */
 
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   get:
+ *     summary: Refresh user access token
+ *     description: Use a valid refresh token to generate a new access token and refresh token.
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully refreshed access token and refresh token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: New access token
+ *                 refreshToken:
+ *                   type: string
+ *                   description: New refresh token
+ *       401:
+ *         description: Unauthorized, invalid or missing refresh token.
+ *       500:
+ *         description: Internal server error
+ */
+
 import { Request, Response, Router } from "express";
 import { Resp, ResponseOptions } from "@utils/Response";
 import passport from "@services/auth/authen";
@@ -141,11 +169,12 @@ router.get('/@me', authenticateToken, (req: Request, res: Response) => {
 
 router.get('/refresh', authenticateRefreshToken, (req: Request, res: Response) => {
     try {
-        // const user = req.user as { id: string, username: string, email: string, avatar: string, provider: string };
-        // const accessToken  = generateRefreshToken(user);
-        // const newRefreshToken  = generateRefreshToken(user);
+        const user = req.user as { id: string, username: string, email: string, role: string, latestLogin: string };
 
-        res.status(200).json(Resp.success(req.user, "Refresh Token Success", { status: 200, meta: { timestamp: new Date().toISOString() } }));
+        const accessToken = generateAccessToken(user);
+        const newRefreshToken = generateRefreshToken(user);
+
+        res.status(200).json(Resp.success({ accessToken, refreshToken: newRefreshToken }, "Refresh Token Success",{ status: 200, meta: { timestamp: new Date().toISOString() } }));
     } catch (error: any) {
         const errorOptions: CustomResponseOptions = {
             status: 500,
