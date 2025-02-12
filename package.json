@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,6 +16,7 @@
     "dayjs": "^1.11.13",
     "framer-motion": "^12.4.2",
     "hamburger-react": "^2.5.2",
+    "manga-land": "file:",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
