@@ -3,13 +3,13 @@ interface AdItem {
     id: number;
     img: string;
     name: string;
-  }
-  
-  interface AdsCardProps {
-    adItems?: AdItem[];
-  }
+}
 
-const Advertise:React.FC<AdsCardProps> = () => {
+interface AdsCardProps {
+    adItems?: AdItem[];
+}
+
+const Advertise: React.FC<AdsCardProps> = () => {
     const adItems: AdItem[] = [
         { id: 1, img: "/ads/ads-1.gif", name: "ads 1" },
         { id: 2, img: "/ads/ads-2.webp", name: "ads 2" },
