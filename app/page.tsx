@@ -36,7 +36,7 @@ export default function Home() {
                 onClick={scrollToTop}
                 className={`${
                     isVisible ? `opacity-100` : `opacity-0`
-                } fixed right-10 bottom-10 md:right-20 md:bottom-20 bg-pink w-10 h-10 rounded-full Arrow`}
+                } fixed right-10 z-50 bottom-10 md:right-20 md:bottom-20 bg-pink w-10 h-10 rounded-full Arrow`}
             >
                 <ChevronUpIcon className="size-10" />
             </button>

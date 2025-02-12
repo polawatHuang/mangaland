@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Wave from "react-wavify";
 
 interface MenuItem {
     id: string;
@@ -46,7 +47,33 @@ const Footer: React.FC = () => {
     }, []);
 
     return (
-        <footer className="bg-gray text-white py-8">
+        <footer className="relative text-white py-8">
+            <div className=" absolute z-[-1] top-[-20px] left-0 w-full h-full">
+                <Wave
+                    fill="#1f2936"
+                    paused={false}
+                    className="flex h-[110%] w-full"
+                    options={{
+                        height: 10,
+                        amplitude: 30,
+                        speed: 0.15,
+                        points: 3,
+                    }}
+                />
+            </div>
+            <div className=" absolute z-[-2] top-[-30px] left-0 w-full h-full">
+                <Wave
+                    fill="#eb4897"
+                    paused={false}
+                    className="flex h-[110%] w-full"
+                    options={{
+                        height: 10,
+                        amplitude: 40,
+                        speed: 0.15,
+                        points: 3,
+                    }}
+                />
+            </div>
             <div className="container max-w-6xl px-4 mx-auto flex md:gap-4 gap-10 flex-wrap justify-start">
                 <div className="flex-1 sm:w-1/3 mb-6 sm:mb-0">
                     <h4 className="text-lg font-semibold mb-2">เกี่ยวกับเรา</h4>
