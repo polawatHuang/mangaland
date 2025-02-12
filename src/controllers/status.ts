@@ -1,3 +1,117 @@
+/**
+ * @swagger
+ * /api/status:
+ *   get:
+ *     summary: Get server status and system information
+ *     description: Fetch detailed system stats, including CPU, memory, disk, network, and server connectivity status.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved server status.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 systemStats:
+ *                   type: object
+ *                   properties:
+ *                     server:
+ *                       type: string
+ *                       description: The server status (e.g., "online")
+ *                     cpu:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *                         model:
+ *                           type: string
+ *                         usage:
+ *                           type: number
+ *                           format: float
+ *                         cores:
+ *                           type: integer
+ *                         load:
+ *                           type: array
+ *                           items:
+ *                             type: number
+ *                             format: float
+ *                     memory:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: integer
+ *                         used:
+ *                           type: integer
+ *                         free:
+ *                           type: integer
+ *                         usagePercent:
+ *                           type: number
+ *                           format: float
+ *                         totalReadable:
+ *                           type: string
+ *                         usedReadable:
+ *                           type: string
+ *                         freeReadable:
+ *                           type: string
+ *                     disk:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: integer
+ *                         used:
+ *                           type: integer
+ *                         free:
+ *                           type: integer
+ *                         usagePercent:
+ *                           type: number
+ *                           format: float
+ *                         totalReadable:
+ *                           type: string
+ *                         usedReadable:
+ *                           type: string
+ *                         freeReadable:
+ *                           type: string
+ *                     network:
+ *                       type: object
+ *                       properties:
+ *                         incoming:
+ *                           type: integer
+ *                         outgoing:
+ *                           type: integer
+ *                         interfaces:
+ *                           type: object
+ *                           additionalProperties:
+ *                             type: object
+ *                             properties:
+ *                               rx_bytes:
+ *                                 type: integer
+ *                               tx_bytes:
+ *                                 type: integer
+ *                     uptime:
+ *                       type: object
+ *                       properties:
+ *                         days:
+ *                           type: integer
+ *                         hours:
+ *                           type: integer
+ *                         minutes:
+ *                           type: integer
+ *                 connectivity:
+ *                   type: object
+ *                   properties:
+ *                     isReachable:
+ *                       type: boolean
+ *                       description: Whether the server is reachable
+ *                     pingDetails:
+ *                       type: string
+ *                       description: Ping test result
+ *                     lastChecked:
+ *                       type: string
+ *                       format: date-time
+ *       500:
+ *         description: Failed to fetch server status.
+ */
+
 import { Request, Response, Router } from "express";
 import { ServerMonitor } from "@services/status";
 import { Resp, ResponseOptions } from "@utils/Response";
