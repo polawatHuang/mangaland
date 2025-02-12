@@ -27,7 +27,7 @@ interface CustomResponseOptions extends ResponseOptions {
 
 /**
  * @swagger
- * /api/projects:
+ * /api/project:
  *   get:
  *     summary: Get all projects
  *     description: Fetch all projects associated with the authenticated user.
@@ -65,7 +65,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/projects/{id}:
+ * /api/project/{id}:
  *   get:
  *     summary: Get a single project by ID
  *     description: Fetch a project by its unique ID.
@@ -122,7 +122,7 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
 
 /**
  * @swagger
- * /api/projects:
+ * /api/project:
  *   post:
  *     summary: Create a new project
  *     description: Create a new project with the given details.
@@ -187,7 +187,7 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/projects/{id}:
+ * /api/project/{id}:
  *   put:
  *     summary: Update an existing project
  *     description: Update a project by its unique ID.
@@ -249,7 +249,7 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/projects/{id}:
+ * /api/project/{id}:
  *   delete:
  *     summary: Delete a project
  *     description: Delete a project by its unique ID.
