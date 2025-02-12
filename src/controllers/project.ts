@@ -29,33 +29,233 @@ interface CustomResponseOptions extends ResponseOptions {
  * @swagger
  * /api/project:
  *   get:
- *     summary: Get all projects
+ *     summary: Get all projects with pagination
  *     tags: [Projects]
- *     description: Fetch all projects associated with the authenticated user.
+ *     description: Fetch a paginated list of projects with related user, episodes, and tags.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page.
  *     responses:
  *       200:
  *         description: Successfully retrieved projects.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Get Project data Successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     projects:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 1
+ *                           title:
+ *                             type: string
+ *                             example: "Awesome Manga Project"
+ *                           description:
+ *                             type: string
+ *                             example: "A cool manga project with great content."
+ *                           projectType:
+ *                             type: string
+ *                             example: "Manga"
+ *                           status:
+ *                             type: string
+ *                             example: "Ongoing"
+ *                           coverImage:
+ *                             type: string
+ *                             format: uri
+ *                             example: "https://example.com/cover.jpg"
+ *                           viewsCount:
+ *                             type: integer
+ *                             example: 1500
+ *                           episodeTotal:
+ *                             type: integer
+ *                             example: 25
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           user:
+ *                             type: object
+ *                             properties:
+ *                               username:
+ *                                 type: string
+ *                                 example: "variz"
+ *                           episodes:
+ *                             type: array
+ *                             items:
+ *                               type: object
+ *                               properties:
+ *                                 id:
+ *                                   type: integer
+ *                                   example: 101
+ *                                 episodeNumber:
+ *                                   type: integer
+ *                                   example: 1
+ *                                 title:
+ *                                   type: string
+ *                                   example: "Episode 1"
+ *                                 description:
+ *                                   type: string
+ *                                   example: "The beginning of an epic journey."
+ *                                 viewsCount:
+ *                                   type: integer
+ *                                   example: 500
+ *                                 createdAt:
+ *                                   type: string
+ *                                   format: date-time
+ *                           projectTags:
+ *                             type: array
+ *                             items:
+ *                               type: object
+ *                               properties:
+ *                                 tagId:
+ *                                   type: integer
+ *                                   example: 5
+ *                                 projectId:
+ *                                   type: integer
+ *                                   example: 1
+ *                           _count:
+ *                             type: object
+ *                             properties:
+ *                               views:
+ *                                 type: integer
+ *                                 example: 1500
+ *                               favourites:
+ *                                 type: integer
+ *                                 example: 200
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         currentPage:
+ *                           type: integer
+ *                           example: 1
+ *                         totalPages:
+ *                           type: integer
+ *                           example: 5
+ *                         totalProjects:
+ *                           type: integer
+ *                           example: 50
+ *                         perPage:
+ *                           type: integer
+ *                           example: 10
+ *       404:
+ *         description: No projects found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "No projects found"
  *       500:
  *         description: Failed to retrieve projects.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to get project data"
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     status:
+ *                       type: integer
+ *                       example: 500
+ *                     error:
+ *                       type: string
+ *                       example: "Internal Server Error"
+ *                     timestamp:
+ *                       type: string
+ *                       format: date-time
  */
 
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const { page = "1", limit = "10" } = req.query;
+    const pageNum = parseInt(page as string, 10) || 1;
+    const limitNum = parseInt(limit as string, 10) || 10;
+    const skip = (pageNum - 1) * limitNum;
+
+    // ดึงข้อมูลโปรเจคแบบแบ่งหน้า
     const projects = await prisma.project.findMany({
-      include: {
-        user: true,
-        episodes: true,
-        projectTags: true,
-        views: true,
-        favourites: true,
+      take: limitNum,
+      skip: skip,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        projectType: true,
+        status: true,
+        coverImage: true,
+        viewsCount: true,
+        episodeTotal: true,
+        createdAt: true,
+        user: {
+          select: {
+            username: true,
+          },
+        },
+        episodes: {
+          select: {
+            id: true,
+            episodeNumber: true,
+            title: true,
+            description: true,
+            viewsCount: true,
+            createdAt: true,
+          },
+        },
+        projectTags: {
+          select: {
+            tagId: true,
+            projectId: true,
+          },
+        },
+        _count: {
+          select: {
+            views: true,
+            favourites: true,
+          },
+        },
       },
     });
+
+    // ดึงจำนวนโปรเจคทั้งหมด
+    const totalProjects = await prisma.project.count();
+    const totalPages = Math.ceil(totalProjects / limitNum);
 
     if (projects.length === 0) {
       res.status(404).json(
@@ -68,23 +268,30 @@ router.get("/", async (req: Request, res: Response) => {
     }
 
     res.status(200).json(
-      Resp.success(projects, "Get Project data Successfully", {
-        status: 200,
-        meta: { timestamp: new Date().toISOString() },
-      })
+      Resp.success(
+        {
+          projects,
+          pagination: {
+            currentPage: pageNum,
+            totalPages,
+            totalProjects,
+            perPage: limitNum,
+          },
+        },
+        "Get Project data Successfully",
+        { status: 200, meta: { timestamp: new Date().toISOString() } }
+      )
     );
   } catch (error: any) {
-    const errorOptions: CustomResponseOptions = {
-      status: 500,
-      meta: {
-        status: 500,
-        error: error.message,
-        stack: error.stack,
-        timestamp: new Date().toISOString(),
-      },
-    };
     res.status(500).json(
-      Resp.error("Failed to get project data", errorOptions)
+      Resp.error("Failed to get project data", {
+        status: 500,
+        meta: {
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString(),
+        },
+      })
     );
   }
 });
