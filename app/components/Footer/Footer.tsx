@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
 
     return (
         <footer className="bg-gray text-white py-8">
-            <div className="container px-4 mx-auto flex md:gap-4 gap-10 flex-wrap justify-start">
+            <div className="container max-w-6xl px-4 mx-auto flex md:gap-4 gap-10 flex-wrap justify-start">
                 <div className="flex-1 sm:w-1/3 mb-6 sm:mb-0">
                     <h4 className="text-lg font-semibold mb-2">เกี่ยวกับเรา</h4>
                     <p>

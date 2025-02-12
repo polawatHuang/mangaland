@@ -15,72 +15,74 @@ function Navbars() {
     ];
     const [navOpen, setNavOpen] = useState(false);
     return (
-        <nav className="flex relative justify-between items-center px-10 md:px-20 h-16 bg-gray text-white">
-            <div className=" flex gap-2 cursor-default font-normal text-2xl">
-                <span className="text-pink">MANGA</span>
-                <span>LAND</span>
-            </div>
-            <div className=" md:hidden flex justify-center items-center">
-                <button>
-                    <Hamburger
-                        size={30}
-                        toggled={navOpen}
-                        toggle={setNavOpen}
-                    />
-                </button>
-                <div
-                    className={`${
-                        navOpen ? `h-80` : `h-0`
-                    } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
-                >
-                    <ul className=" divide-y divide-[#ffffffaf] w-full flex flex-col">
-                        {Nav.map((items, index) => (
-                            <li key={index} className=" w-full flex">
-                                <Link
-                                    className=" bg-[#3b3b3b] w-full opacity-100 py-4 flex justify-center items-center"
-                                    href={items.href}
-                                    onClick={(e) => setNavOpen(!navOpen)}
-                                >
-                                    {items.name}
-                                </Link>
-                            </li>
-                        ))}
-                        <li>
-                            <div className="h-full flex">
-                                <input
-                                    type="text"
-                                    className=" w-full h-16 bg-[#333333] outline-none text-white px-2"
-                                    placeholder="ค้นหาชื่อมังงะ"
-                                />
-                                <button className="w-20 h-16 bg-blue hover:bg-[#2b61a8] flex justify-center items-center">
-                                    <MagnifyingGlassIcon className=" size-5 h-full" />
-                                </button>
-                            </div>
-                        </li>
-                    </ul>
+        <nav className="flex relative justify-between items-center px-10 lg:px-20 h-16 bg-gray text-white">
+            <div className=" 2xl:max-w-6xl w-full mx-auto overflow-hidden flex justify-between items-center">
+                <div className=" flex gap-2 cursor-default font-normal text-2xl">
+                    <span className="text-pink">MANGA</span>
+                    <span>LAND</span>
                 </div>
-            </div>
-            <ul className="md:flex Blurhover gap-5 hidden">
-                {Nav.map((items, index) => (
-                    <motion.li
-                        key={index}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="Underline"
+                <div className=" lg:hidden flex justify-center items-center">
+                    <button>
+                        <Hamburger
+                            size={30}
+                            toggled={navOpen}
+                            toggle={setNavOpen}
+                        />
+                    </button>
+                    <div
+                        className={`${
+                            navOpen ? `h-80` : `h-0`
+                        } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
                     >
-                        <Link href={items.href}>{items.name}</Link>
-                    </motion.li>
-                ))}
-            </ul>
-            <div className="md:flex hidden justify-center">
-                <input
-                    type="text"
-                    className=" w-36 outline-none h-8 text-black px-2 rounded-l-md"
-                    placeholder="ค้นหาชื่อมังงะ"
-                />
-                <button className="w-8 h-8 bg-blue hover:bg-[#2b61a8] flex justify-center items-center rounded-r-md">
-                    <MagnifyingGlassIcon className=" size-5 h-full" />
-                </button>
+                        <ul className=" divide-y divide-[#ffffffaf] w-full flex flex-col">
+                            {Nav.map((items, index) => (
+                                <li key={index} className=" w-full flex">
+                                    <Link
+                                        className=" bg-[#3b3b3b] w-full opacity-100 py-4 flex justify-center items-center"
+                                        href={items.href}
+                                        onClick={(e) => setNavOpen(!navOpen)}
+                                    >
+                                        {items.name}
+                                    </Link>
+                                </li>
+                            ))}
+                            <li>
+                                <div className="h-full flex">
+                                    <input
+                                        type="text"
+                                        className=" w-full h-16 bg-[#333333] outline-none text-white px-2"
+                                        placeholder="ค้นหาชื่อมังงะ"
+                                    />
+                                    <button className="w-20 h-16 bg-blue hover:bg-[#2b61a8] flex justify-center items-center">
+                                        <MagnifyingGlassIcon className=" size-5 h-full" />
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <ul className="lg:flex Blurhover gap-5 hidden">
+                    {Nav.map((items, index) => (
+                        <motion.li
+                            key={index}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="Underline"
+                        >
+                            <Link href={items.href}>{items.name}</Link>
+                        </motion.li>
+                    ))}
+                </ul>
+                <div className="lg:flex hidden justify-center">
+                    <input
+                        type="text"
+                        className=" w-36 outline-none h-8 text-black px-2 rounded-l-lg"
+                        placeholder="ค้นหาชื่อมังงะ"
+                    />
+                    <button className="w-8 h-8 bg-blue hover:bg-[#2b61a8] flex justify-center items-center rounded-r-lg">
+                        <MagnifyingGlassIcon className=" size-5 h-full" />
+                    </button>
+                </div>
             </div>
         </nav>
     );
