@@ -39,7 +39,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use('/api', statusControllers);
-app.use('/api/auth' ,authenController);
+app.use('/api/auth', authenController);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
