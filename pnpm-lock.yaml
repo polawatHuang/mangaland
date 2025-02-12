@@ -61,7 +61,7 @@ importers:
         version: 1.11.1(react@19.0.0)
       swiper:
         specifier: ^11.2.2
-        version: 11.2.2
+        version: 11.2.3
     devDependencies:
       '@types/node':
         specifier: ^20
@@ -866,12 +866,12 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
+  'manga-land@file:':
+    resolution: {directory: '', type: directory}
+
   memoize-one@6.0.0:
     resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
 
-  'manga-land@file:':
-    resolution: {directory: '', type: directory}
-    
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
@@ -1421,8 +1421,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  swiper@11.2.2:
-    resolution: {integrity: sha512-FmAN6zACpVUbd/1prO9xQ9gKo9cc6RE2UKU/z4oXtS8fNyX4sdOW/HHT/e444WucLJs0jeMId6WjdWM2Lrs8zA==}
+  swiper@11.2.3:
+    resolution: {integrity: sha512-24m5tqHCd1Wmp9+86aKDoIGMsZGEjIL++3nuB1UjhAhIlvwj4k0Jikxu9PGQ/VswLpoje6JtMDWo12uu4aS2FA==}
     engines: {node: '>= 4.7.0'}
 
   tabbable@6.2.0:
@@ -2329,14 +2329,15 @@ snapshots:
       js-tokens: 4.0.0
 
   lru-cache@10.4.3: {}
-  memoize-one@6.0.0: {}
 
   manga-land@file:(@types/react@19.0.8):
     dependencies:
       '@ant-design/colors': 7.2.0
       '@emotion/react': 11.14.0(@types/react@19.0.8)(react@19.0.0)
+      '@headlessui/react': 2.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@heroicons/react': 2.2.0(react@19.0.0)
       antd: 5.24.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      clsx: 2.1.1
       dayjs: 1.11.13
       framer-motion: 12.4.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       hamburger-react: 2.5.2(react@19.0.0)
@@ -2344,9 +2345,10 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
       react-loading-indicators: 1.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react-select: 5.10.0(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react-spinners: 0.15.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react-wavify: 1.11.1(react@19.0.0)
-      swiper: 11.2.2
+      swiper: 11.2.3
     transitivePeerDependencies:
       - '@babel/core'
       - '@emotion/is-prop-valid'
@@ -2360,6 +2362,8 @@ snapshots:
       - moment
       - sass
       - supports-color
+
+  memoize-one@6.0.0: {}
 
   merge2@1.4.1: {}
 
@@ -2998,7 +3002,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swiper@11.2.2: {}
+  swiper@11.2.3: {}
 
   tabbable@6.2.0: {}
 
