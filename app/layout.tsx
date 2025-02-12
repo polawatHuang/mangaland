@@ -20,13 +20,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${kanit.className} antialiased`}>
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body className={`${kanit.className} antialiased`}>
+                <Navbar />
+                {children}
+                <Footer />
+            </body>
+        </html>
+    );
 }
