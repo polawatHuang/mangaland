@@ -25,7 +25,6 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
 };
 
 export const authenticateRefreshToken = (req: Request, res: Response, next: NextFunction): void => {
-  // const { refreshToken } = req.query as { refreshToken: string };
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
