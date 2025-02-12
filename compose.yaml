@@ -1,0 +1,18 @@
+services:
+  web:
+    ports:
+      - "3000:3000"
+    restart: always
+    image: manggaland
+    build:
+      context: .
+      dockerfile: DockerFile
+    volumes:
+      - .:/app
+    networks:
+      - mangaland_network
+    container_name: manggaland_web
+
+networks:
+  mangaland_network:
+    driver: bridge
