@@ -1,8 +1,9 @@
-import Image from "next/image";
+import Advertise from "./components/Advertise/Advertise";
 
 export default function Home() {
     return (
-        <div className="">
+        <div>
+            <Advertise />
             <h1>Manga Land</h1>
         </div>
     );
