@@ -5,17 +5,7 @@ import { PrismaClient, User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
-import { Resp, ResponseOptions } from "@utils/Response";
-
-interface CustomResponseOptions extends ResponseOptions {
-  timestamp?: string;
-  error?: string;
-  meta?: {
-      status: number;
-      stack?: string;
-      [key: string]: any;
-  };
-}
+import { Resp } from "@utils/Response";
 
 dotenv.config();
 
