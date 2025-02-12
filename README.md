@@ -37,6 +37,18 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Docker CI/CD
+
+To create an image for web using this command
+```bash
+docker build --no-cache -t mangaland -f .\DockerFile .
+```
+
+Then try to run on localhost like
+```bash
+docker compose up -d --remove-orphans
+```
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://mangaland.vercel.app/) from the creators of Next.js.
