@@ -15,10 +15,10 @@
     "dayjs": "^1.11.13",
     "framer-motion": "^12.4.2",
     "hamburger-react": "^2.5.2",
+    "manga-land": "file:",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "swiper": "^11.2.2",
     "react-loading-indicators": "^1.0.0",
     "react-spinners": "^0.15.0",
     "swiper": "^11.2.2"
