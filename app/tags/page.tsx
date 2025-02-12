@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react"
 import { TagLink } from "../components/Tag/TagLink"
+import { SortButton } from "../components/Tag/SortButton"
 
 enum SortTags {
     ByCharactor = "by_char",
@@ -56,13 +57,17 @@ export default function Tags() {
         <h1 className="text-xl text-center">Tags</h1>
 
         <div className="flex w-full justify-center gap-4">
-            <div className={`flex items-center bg-gray rounded-md px-4 py-2`}>
-                <button onClick={() => onChangeSort(SortTags.ByCharactor)}>A - Z</button>
-            </div>
+            <SortButton
+                label="A-Z"
+                onClick={() => onChangeSort(SortTags.ByCharactor)}
+                isActive={sortBy === SortTags.ByCharactor}
+            />
 
-            <div className={`flex items-center bg-gray rounded-md px-4 py-2`}>
-                <button onClick={() => onChangeSort(SortTags.Poplular)}>Popular</button>
-            </div>
+            <SortButton
+                label="Popular"
+                onClick={() => onChangeSort(SortTags.Poplular)}
+                isActive={sortBy === SortTags.Poplular}
+            />
         </div>
 
         <div className="bg-gray py-2 px-4 rounded-lg">
