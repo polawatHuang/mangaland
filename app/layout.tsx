@@ -28,7 +28,7 @@ export default function RootLayout({
             >
                 {/* <Loading /> */}
                 <Navbar />
-                <div className="min-h-screen px-10 lg:px-20 2xl:px-0 mx-auto 2xl:max-w-6xl py-10">
+                <div className="min-h-screen relative px-10 lg:px-20 2xl:px-0 mx-auto 2xl:max-w-6xl py-10">
                     {children}
                 </div>
                 <Footer />
