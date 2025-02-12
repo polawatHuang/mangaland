@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Kanit } from "next/font/google";
 import "./globals.css";
-
+import Footer from "@/components/Footer";
 import Navbar from "./components/Navbar/Navbars";
 
 const kanit = Kanit({
@@ -19,12 +19,15 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return (
-        <html lang="en">
-            <body className={`${kanit.className} antialiased`}>
-                <Navbar />
-                <div className="container px-10 my-10 md:px-20">{children}</div>
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
+    </html>
+  );
 }
