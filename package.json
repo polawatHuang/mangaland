@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/colors": "^7.2.0",
     "@emotion/react": "^11.14.0",
     "@heroicons/react": "^2.2.0",
     "antd": "^5.24.0",
@@ -21,6 +22,7 @@
     "react-dom": "^19.0.0",
     "react-loading-indicators": "^1.0.0",
     "react-spinners": "^0.15.0",
+    "react-wavify": "^1.11.1",
     "swiper": "^11.2.2"
   },
   "devDependencies": {
