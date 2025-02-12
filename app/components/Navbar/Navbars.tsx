@@ -49,7 +49,7 @@ function Navbars() {
                         {Nav.map((items, index) => (
                             <li key={index} className=" w-full flex">
                                 <Link
-                                    className="bg-gray w-full py-4 flex justify-center items-center"
+                                    className=" bg-[#3b3b3b] w-full opacity-100 py-4 flex justify-center items-center"
                                     href={items.link}
                                     onClick={(e) => setNavOpen(!navOpen)}
                                 >
