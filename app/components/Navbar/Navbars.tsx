@@ -45,12 +45,13 @@ function Navbars() {
                         navOpen ? `h-80` : `h-0`
                     } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
                 >
-                    <ul className=" divide-y divide-[#6e6e6eaf] w-full flex flex-col">
+                    <ul className=" divide-y divide-[#ffffffaf] w-full flex flex-col">
                         {Nav.map((items, index) => (
                             <li key={index} className=" w-full flex">
                                 <Link
-                                    className="bg-pink w-full py-4 flex justify-center items-center"
+                                    className="bg-gray w-full py-4 flex justify-center items-center"
                                     href={items.link}
+                                    onClick={(e) => setNavOpen(!navOpen)}
                                 >
                                     {items.title}
                                 </Link>
@@ -60,7 +61,7 @@ function Navbars() {
                             <div className="h-full flex">
                                 <input
                                     type="text"
-                                    className=" w-full h-16 outline-none text-black px-2"
+                                    className=" w-full h-16 bg-[#333333] outline-none text-white px-2"
                                     placeholder="ค้นหาชื่อมังงะ"
                                 />
                                 <button className="w-20 h-16 bg-blue hover:bg-[#2b61a8] flex justify-center items-center">
@@ -83,7 +84,7 @@ function Navbars() {
                     </motion.li>
                 ))}
             </ul>
-            <div className="md:flex hidden justify-center gap-1">
+            <div className="md:flex hidden justify-center">
                 <input
                     type="text"
                     className=" w-36 outline-none h-8 text-black px-2 rounded-l-md"
