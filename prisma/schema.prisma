@@ -16,6 +16,7 @@ model User {
   latestLogin DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
   projects    Project[]
 
   View View[]
