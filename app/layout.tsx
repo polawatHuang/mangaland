@@ -3,6 +3,7 @@ import { Kanit } from "next/font/google";
 import "./globals.css";
 import Footer from "./components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbars";
+import Loading from "./components/Loading/Loading";
 
 const kanit = Kanit({
     weight: ["100", "200", "400", "600"],
@@ -22,9 +23,12 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${kanit.className} antialiased bg-black`}>
+            <body
+                className={`${kanit.className} relative antialiased bg-black`}
+            >
+                {/* <Loading /> */}
                 <Navbar />
-                <div className="min-h-screen px-10 md:px-20 py-10">
+                <div className="min-h-screen relative px-10 lg:px-20 2xl:px-0 mx-auto 2xl:max-w-6xl py-10">
                     {children}
                 </div>
                 <Footer />
