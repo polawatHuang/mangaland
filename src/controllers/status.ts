@@ -179,7 +179,7 @@ router.get('/status', async (req: Request, res: Response) => {
     try {
         const [systemStats, pingResult] = await Promise.all([
             monitor.getSystemStats(),
-            monitor.pingHost('api.varizz.xyz')
+            monitor.pingHost('119.59.103.34')
         ]);
 
         const formatBytes = (bytes: number): string => {
