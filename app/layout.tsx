@@ -24,7 +24,9 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${kanit.className} antialiased bg-black`}>
                 <Navbar />
-                <div className="min-h-screen">{children}</div>
+                <div className="min-h-screen px-10 md:px-20 py-10">
+                    {children}
+                </div>
                 <Footer />
             </body>
         </html>
