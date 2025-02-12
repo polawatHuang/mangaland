@@ -70,7 +70,7 @@ export default function Tags() {
             />
         </div>
 
-        <div className="bg-gray py-2 px-4 rounded-lg">
+        <div className="bg-gray py-4 px-4 rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {
                     sortedTags.map((tag) =>
