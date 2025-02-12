@@ -1,15 +1,30 @@
 import jwt from 'jsonwebtoken';
 
 interface TokenPayload {
-  [key: string]: any; // กำหนดว่า payload สามารถมี key อะไรก็ได้
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  iat?: number;
+  exp?: number;
 }
 
-// ฟังก์ชันสร้าง Access Token
 export const generateAccessToken = (payload: TokenPayload): string => {
-  return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is not defined in environment variables");
+  }
+
+  const { iat, exp, ...tokenPayload } = payload;
+
+  return jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '15m' });
 };
 
-// ฟังก์ชันสร้าง Refresh Token
 export const generateRefreshToken = (payload: TokenPayload): string => {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, { expiresIn: '7d' });
+  if (!process.env.JWT_REFRESH_SECRET) {
+    throw new Error("JWT_REFRESH_SECRET is not defined in environment variables");
+  }
+
+  const { iat, exp, ...tokenPayload } = payload;
+
+  return jwt.sign(tokenPayload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 };
