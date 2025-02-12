@@ -12,7 +12,7 @@ interface AdItem {
 const Advertise:React.FC<AdsCardProps> = () => {
     const adItems: AdItem[] = [
         { id: 1, img: "/mangaland/public/ads/ads-1.gif", name: "ads 1" },
-        { id: 2, img: "/mangaland/public/ads/ads-1.gif", name: "ads 2" },
+        { id: 2, img: "/mangaland/public/ads/ads-2.webp", name: "ads 2" },
       ];
     
   return (
