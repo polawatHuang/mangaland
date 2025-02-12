@@ -15,7 +15,7 @@ function Navbars() {
     ];
     const [navOpen, setNavOpen] = useState(false);
     return (
-        <nav className="flex relative justify-between items-center px-10 lg:px-20 h-16 bg-gray text-white">
+        <nav className="flex relative justify-between z-40 items-center px-10 lg:px-20 h-16 bg-gray text-white">
             <div className=" 2xl:max-w-6xl w-full mx-auto overflow-hidden flex justify-between items-center">
                 <div className=" flex gap-2 cursor-default font-normal text-2xl">
                     <span className="text-pink">MANGA</span>
