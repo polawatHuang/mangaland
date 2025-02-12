@@ -1,8 +1,36 @@
 /**
  * @swagger
+ * tags:
+ *   - name: Authentication
+ *     description: API related to Authentication management
+ */
+
+import { Request, Response, Router } from "express";
+import { Resp, ResponseOptions } from "@utils/Response";
+import passport from "@services/auth/authen";
+
+import { authenticateRefreshToken, authenticateToken } from "@middleware/auth";
+import { generateAccessToken, generateRefreshToken } from "@utils/GenerateToken";
+
+interface CustomResponseOptions extends ResponseOptions {
+    timestamp?: string;
+    error?: string;
+    meta?: {
+        status: number;
+        stack?: string;
+        [key: string]: any;
+    };
+}
+
+const router: Router = Router();
+
+
+/**
+ * @swagger
  * /api/auth/login:
  *   post:
  *     summary: User login
+ *     tags: [Authentication]
  *     description: User authentication and login to get access and refresh tokens.
  *     requestBody:
  *       required: true
@@ -38,11 +66,38 @@
  *         description: Internal server error
  */
 
+router.post('/login', (req: Request, res: Response, next) => {
+    passport.authenticate('local', { session: false }, (err: any, user: any, info: any) => {
+      if (err) return res.status(500).json({ error: "Internal Server Error" });
+      if (!user) return res.status(401).json({ error: info?.message || "Authentication failed" });
+  
+      try {
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+  
+        res.status(200).json(Resp.success({ accessToken, refreshToken }, "Login Success", { status: 200, meta: { timestamp: new Date().toISOString() } }));
+      } catch (error: any) {
+        const errorOptions: CustomResponseOptions = {
+            status: 500,
+            meta: {
+                status: 500,
+                error: error.message,
+                stack: error.stack,
+                timestamp: new Date().toISOString()
+            }
+        };
+
+        res.status(500).json(Resp.error("Failed to login", errorOptions));   
+      }
+    })(req, res, next);
+});
+
 /**
  * @swagger
  * /api/auth/@me:
  *   get:
  *     summary: Get the user profile
+ *     tags: [Authentication]
  *     description: Retrieve the authenticated user's profile information using the access token.
  *     security:
  *       - BearerAuth: []
@@ -76,11 +131,30 @@
  *       bearerFormat: JWT
  */
 
+router.get('/@me', authenticateToken, (req: Request, res: Response) => {
+    try {
+        res.status(200).json(Resp.success(req.user, "User Profile", { status: 200, meta: { timestamp: new Date().toISOString() } }));
+    } catch (error: any) {
+        const errorOptions: CustomResponseOptions = {
+            status: 500,
+            meta: {
+                status: 500,
+                error: error.message,
+                stack: error.stack,
+                timestamp: new Date().toISOString()
+            }
+        };
+
+        res.status(500).json(Resp.error("Failed to get user profile", errorOptions));        
+    }
+});
+
 /**
  * @swagger
  * /api/auth/refresh:
  *   get:
  *     summary: Refresh user access token
+ *     tags: [Authentication]
  *     description: Use a valid refresh token to generate a new access token and refresh token.
  *     security:
  *       - BearerAuth: []
@@ -103,69 +177,6 @@
  *       500:
  *         description: Internal server error
  */
-
-import { Request, Response, Router } from "express";
-import { Resp, ResponseOptions } from "@utils/Response";
-import passport from "@services/auth/authen";
-
-import { authenticateRefreshToken, authenticateToken } from "@middleware/auth";
-import { generateAccessToken, generateRefreshToken } from "@utils/GenerateToken";
-
-interface CustomResponseOptions extends ResponseOptions {
-    timestamp?: string;
-    error?: string;
-    meta?: {
-        status: number;
-        stack?: string;
-        [key: string]: any;
-    };
-}
-
-const router: Router = Router();
-
-router.post('/login', (req: Request, res: Response, next) => {
-    passport.authenticate('local', { session: false }, (err: any, user: any, info: any) => {
-      if (err) return res.status(500).json({ error: "Internal Server Error" });
-      if (!user) return res.status(401).json({ error: info?.message || "Authentication failed" });
-  
-      try {
-        const accessToken = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
-  
-        res.status(200).json(Resp.success({ accessToken, refreshToken }, "Login Success", { status: 200, meta: { timestamp: new Date().toISOString() } }));
-      } catch (error: any) {
-        const errorOptions: CustomResponseOptions = {
-            status: 500,
-            meta: {
-                status: 500,
-                error: error.message,
-                stack: error.stack,
-                timestamp: new Date().toISOString()
-            }
-        };
-
-        res.status(500).json(Resp.error("Failed to login", errorOptions));   
-      }
-    })(req, res, next);
-});
-
-router.get('/@me', authenticateToken, (req: Request, res: Response) => {
-    try {
-        res.status(200).json(Resp.success(req.user, "User Profile", { status: 200, meta: { timestamp: new Date().toISOString() } }));
-    } catch (error: any) {
-        const errorOptions: CustomResponseOptions = {
-            status: 500,
-            meta: {
-                status: 500,
-                error: error.message,
-                stack: error.stack,
-                timestamp: new Date().toISOString()
-            }
-        };
-
-        res.status(500).json(Resp.error("Failed to get user profile", errorOptions));        
-    }
-});
 
 router.get('/refresh', authenticateRefreshToken, (req: Request, res: Response) => {
     try {

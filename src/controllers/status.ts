@@ -1,8 +1,16 @@
 /**
  * @swagger
+ * tags:
+ *   - name: Status
+ *     description: API related to server status and system information
+ */
+
+/**
+ * @swagger
  * /api/status:
  *   get:
  *     summary: Get server status and system information
+ *     tags: [Status]
  *     description: Fetch detailed system stats, including CPU, memory, disk, network, and server connectivity status.
  *     responses:
  *       200:

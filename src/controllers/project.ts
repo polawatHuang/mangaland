@@ -30,6 +30,7 @@ interface CustomResponseOptions extends ResponseOptions {
  * /api/project:
  *   get:
  *     summary: Get all projects
+ *     tags: [Projects]
  *     description: Fetch all projects associated with the authenticated user.
  *     responses:
  *       200:
@@ -68,6 +69,7 @@ router.get("/", async (req: Request, res: Response) => {
  * /api/project/{id}:
  *   get:
  *     summary: Get a single project by ID
+ *     tags: [Projects]
  *     description: Fetch a project by its unique ID.
  *     parameters:
  *       - in: path
@@ -125,6 +127,7 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
  * /api/project:
  *   post:
  *     summary: Create a new project
+ *     tags: [Projects]
  *     description: Create a new project with the given details.
  *     security:
  *       - BearerAuth: []
@@ -190,6 +193,7 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
  * /api/project/{id}:
  *   put:
  *     summary: Update an existing project
+ *     tags: [Projects]
  *     description: Update a project by its unique ID.
  *     security:
  *       - BearerAuth: []
@@ -252,6 +256,7 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
  * /api/project/{id}:
  *   delete:
  *     summary: Delete a project
+ *     tags: [Projects]
  *     description: Delete a project by its unique ID.
  *     security:
  *       - BearerAuth: []
