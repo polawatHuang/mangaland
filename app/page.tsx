@@ -2,6 +2,10 @@
 import Advertise from "./components/Advertise/Advertise";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import { useState, useEffect } from "react";
+import { Typography } from "antd";
+import { gray } from "@ant-design/colors";
+
+const { Title } = Typography;
 
 export default function Home() {
     const [isVisible, setIsVisible] = useState(false);
@@ -25,7 +29,9 @@ export default function Home() {
     return (
         <div>
             <Advertise />
-            <h1>Manga Land</h1>
+            <div>
+                <h2>🔥 5 อันดับมังงะยอดฮิตประจำเดือนนี้</h2>
+            </div>
             <button
                 onClick={scrollToTop}
                 className={`${

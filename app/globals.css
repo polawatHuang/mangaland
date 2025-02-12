@@ -29,3 +29,22 @@ body {
 .Arrow > * {
     transition: all 0.3s;
 }
+h1 {
+    font-size: 38px;
+}
+h2 {
+    font-size: 30px;
+}
+h3 {
+    font-size: 24px;
+}
+h4 {
+    font-size: 20px;
+}
+p {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+a {
+    font-size: 14px;
+}
