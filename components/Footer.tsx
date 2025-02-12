@@ -13,7 +13,7 @@ interface MenuItem {
   href: string;
 }
 
-const FooterComponent: React.FC = () => {
+const Footer: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [socialLinks, setSocialLinks] = useState<MenuItem[]>([]);
   const router = useRouter();
@@ -114,4 +114,4 @@ const FooterComponent: React.FC = () => {
   );
 };
 
-export default FooterComponent;
+export default Footer;
