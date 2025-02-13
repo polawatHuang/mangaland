@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MagnifyingGlassIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import { Twirl as Hamburger } from "hamburger-react";
@@ -38,13 +38,13 @@ function Navbars() {
                             navOpen ? `h-80` : `h-0`
                         } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
                     >
-                        <ul className=" divide-y divide-[#5c5c5c] w-full flex flex-col">
+                        <ul className=" w-full divide-y-2 divide-[#4e4e4e] flex flex-col">
                             {Nav.map((items, index) => (
                                 <li key={index} className=" w-full flex">
                                     <Link
-                                        className=" bg-[#3b3b3b] w-full opacity-100 py-4 flex justify-center items-center"
+                                        className=" bg-[#3b3b3b] w-full py-4 flex justify-center items-center"
                                         href={items.href}
-                                        onClick={(e) => setNavOpen(!navOpen)}
+                                        onClick={() => setNavOpen(!navOpen)}
                                     >
                                         {items.name}
                                     </Link>

@@ -1,20 +1,42 @@
 "use client";
 
-import { goToRandomManga } from "@/libs/goToRandomManga";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Wave from "react-wavify";
+import axios from "axios";
+import { Footer as footer, Social, Root } from "./Interface";
 
 interface MenuItem {
     id: string;
     name: string;
     href: string;
 }
+interface DataURL {
+    name: string;
+    href: string;
+}
 
 const Footer: React.FC = () => {
+    const [Data, setData] = useState<Root>();
+    const [footerData, setFooterData] = useState<footer>();
+    const Data_Url = `${process.env.NEXT_PUBLIC_API_URL}/setting/1`;
+    useEffect(() => {
+        const fetchData = async () => {
+            let data = (await axios.get(Data_Url)) as any;
+            setData(data);
+            setFooterData(data.result.footer);
+            console.log(data);
+        };
+        fetchData();
+        // setFooterData(
+        //     footerData.filter((items: any) => {
+        //         items["footer"];
+        //     })
+        // );
+    }, []);
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
     const [socialLinks, setSocialLinks] = useState<MenuItem[]>([]);
     const router = useRouter();
@@ -47,12 +69,12 @@ const Footer: React.FC = () => {
     }, []);
 
     return (
-        <footer className="relative text-white py-8">
-            <div className=" absolute z-[-1] top-[-20px] left-0 w-full h-full">
+        <footer className="relative text-white pb-8 pt-14 h-full overflow-hidden flex flex-col ">
+            <div className=" absolute z-[-1] bottom-0 left-0 w-full h-full">
                 <Wave
                     fill="#1f2936"
                     paused={false}
-                    className="flex h-[110%] w-full"
+                    className="flex h-full w-full"
                     options={{
                         height: 10,
                         amplitude: 30,
@@ -61,11 +83,11 @@ const Footer: React.FC = () => {
                     }}
                 />
             </div>
-            <div className=" absolute z-[-2] top-[-30px] left-0 w-full h-full">
+            <div className=" absolute z-[-2] bottom-0 left-0 w-full h-full">
                 <Wave
                     fill="#eb4897"
                     paused={false}
-                    className="flex h-[110%] w-full"
+                    className="flex h-full w-full"
                     options={{
                         height: 10,
                         amplitude: 40,
@@ -118,10 +140,7 @@ const Footer: React.FC = () => {
                             )
                             .map((item) => (
                                 <li key={item.id} className="mb-2">
-                                    <button
-                                        onClick={() => goToRandomManga(router)}
-                                        className="hover:underline cursor-pointer"
-                                    >
+                                    <button className="hover:underline cursor-pointer">
                                         {item.name}
                                     </button>
                                 </li>
@@ -133,22 +152,23 @@ const Footer: React.FC = () => {
                         ติดตามเราได้ที่
                     </h4>
                     <div className="flex space-x-4">
-                        {socialLinks.map((social) => (
-                            <Link
-                                key={social.id}
-                                href={social.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:underline"
-                            >
-                                {social.name}
-                            </Link>
-                        ))}
+                        {footerData &&
+                            footerData.socials.map((social) => (
+                                <Link
+                                    key={social.href}
+                                    href={social.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:underline"
+                                >
+                                    {social.name}
+                                </Link>
+                            ))}
                     </div>
                 </div>
             </div>
-            <div className="mt-8 text-center text-sm">
-                <p>
+            <div className="text-center mt-5 text-sm">
+                <p className="">
                     &copy; {dayjs().format("YYYY")} Mangaland. All rights
                     reserved.
                 </p>
