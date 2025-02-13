@@ -13,6 +13,7 @@ import statusControllers from "@controllers/status";
 import authenController from "@controllers/authen";
 import projectController from "@controllers/project";
 import settingController from "@controllers/setting";
+import advertiseController from "@controllers/ads";
 
 dotenv.config();
 
@@ -63,6 +64,7 @@ app.use('/api', statusControllers);
 app.use('/api/auth', authenController);
 app.use('/api/project', projectController);
 app.use('/api/setting', settingController);
+app.use('/api/advertise', advertiseController);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

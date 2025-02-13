@@ -6,7 +6,7 @@
  */
 
 import { Request, Response, Router } from "express";
-import { PrismaClient, ProjectType, Status } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { authenticateToken } from "@middleware/auth";
 import { Resp, ResponseOptions } from "@utils/Response";
 

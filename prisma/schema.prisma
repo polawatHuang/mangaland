@@ -8,22 +8,22 @@ datasource db {
 }
 
 model Setting {
-  id                  Int      @id @default(autoincrement())
-  title               String   @default("Manga Reader")
-  description         String   @default("Manga Reader")
-  logo                String   @default("")
-  favicon             String   @default("")
-  timezone            String   @default("UTC")
-  theme               String   @default("light")
-  themeColors         Json     @default("{}")
-  navbar              Json?    @default("{}")
-  footer              Json?    @default("{}")
-  menus               Menu[]
-  status              WebsiteStatus @default(offline)
-  maintenanceTime     DateTime?
-  countdown           Int?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id              Int           @id @default(autoincrement())
+  title           String        @default("Manga Reader")
+  description     String        @default("Manga Reader")
+  logo            String        @default("")
+  favicon         String        @default("")
+  timezone        String        @default("UTC")
+  theme           String        @default("light")
+  themeColors     Json          @default("{}")
+  navbar          Json?         @default("{}")
+  footer          Json?         @default("{}")
+  menus           Menu[]
+  status          WebsiteStatus @default(offline)
+  maintenanceTime DateTime?
+  countdown       Int?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model User {
@@ -127,11 +127,22 @@ model Menu {
   id        Int      @id @default(autoincrement())
   title     String
   link      String
-  settingId Int      // การเชื่อมโยงกับ Setting
+  settingId Int // การเชื่อมโยงกับ Setting
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  setting   Setting  @relation(fields: [settingId], references: [id])
+  setting Setting @relation(fields: [settingId], references: [id])
+}
+
+model Advertise {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String
+  link            String
+  image           String
+  backgroundColor String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 enum Role {
