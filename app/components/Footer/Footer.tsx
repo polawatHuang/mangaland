@@ -3,22 +3,11 @@
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Wave from "react-wavify";
 import axios from "axios";
-import { Footer as IFooter, NavbarItem, Setting } from "../../models/settings";
+import { Footer as IFooter, NavbarItem } from "../../models/settings";
 import { LayoutReturnResponse } from "@/app/models/server";
-
-interface MenuItem {
-    id: string;
-    name: string;
-    href: string;
-}
-interface DataURL {
-    name: string;
-    href: string;
-}
 
 const Footer: React.FC = () => {
     const [menuItems, setMenuItems] = useState<NavbarItem[]>([]);
@@ -34,37 +23,6 @@ const Footer: React.FC = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
-    // const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-    // const [socialLinks, setSocialLinks] = useState<MenuItem[]>([]);
-    // const router = useRouter();
-
-    // useEffect(() => {
-    // const fetchMenuItems = async () => {
-    //   try {
-    //     const response = await fetch("/api/menubar");
-    //     const data: MenuItem[] = await response.json();
-    //     setMenuItems(data);
-    //   } catch (error) {
-    //     console.error("Error fetching menu items:", error);
-    //   }
-    // };
-
-    // fetchMenuItems();
-    //     const data = [
-    //         { id: "1", name: "สุ่มมังงะ", href: "/" },
-    //         { id: "2", name: "แท็กทั้งหมด", href: "/categories" },
-    //         { id: "3", name: "มังฮวาเกาหลี", href: "/popular" },
-    //         { id: "4", name: "มังงะที่ถูกใจ", href: "/" },
-    //     ];
-    //     const socials = [
-    //         { id: "1", name: "Facebook", href: "https://facebook.com" },
-    //         { id: "2", name: "Twitter", href: "https://twitter.com" },
-    //         { id: "3", name: "Instagram", href: "https://instagram.com" },
-    //     ];
-    //     setMenuItems(data);
-    //     setSocialLinks(socials);
-    // }, []);
 
     return (
         <footer className="relative text-white pb-8 pt-14 h-full overflow-hidden flex flex-col ">
