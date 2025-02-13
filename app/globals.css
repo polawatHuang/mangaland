@@ -29,3 +29,58 @@ body {
 .Arrow > * {
     transition: all 0.3s;
 }
+h1 {
+    font-size: 38px;
+}
+h2 {
+    font-size: 30px;
+}
+h3 {
+    font-size: 24px;
+}
+h4 {
+    font-size: 20px;
+}
+p {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+a {
+    font-size: 14px;
+}
+.scroll-bar {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background-color: pink;
+    margin: 2px;
+    z-index: 1000;
+    animation: scrollEIEI;
+    animation-timeline: scroll();
+}
+.scroll-contai > .scroll-bar::after {
+    content: "📘";
+    position: absolute;
+    bottom: -10px;
+    left: -19px;
+    z-index: 1000;
+    font-size: 20px;
+}
+@keyframes scrollEIEI {
+    to {
+        height: 0;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+::-webkit-scrollbar-track {
+    width: 0px;
+}
+::-webkit-scrollbar-thumb {
+    width: 0px;
+}

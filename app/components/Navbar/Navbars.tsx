@@ -17,12 +17,16 @@ function Navbars() {
     return (
         <nav className="flex relative justify-between z-40 items-center px-10 lg:px-20 h-16 bg-gray text-white">
             <div className=" 2xl:max-w-6xl w-full mx-auto overflow-hidden flex justify-between items-center">
-                <div className=" flex gap-2 cursor-default font-normal text-2xl">
-                    <span className="text-pink">MANGA</span>
-                    <span>LAND</span>
+                <div className=" flex gap-2 cursor-default font-normal text-2xl relative">
+                    <span className="text-pink [text-shadow:_#eb4897_2px_0_10px]">
+                        MANGA
+                    </span>
+                    <span className="[text-shadow:_white_2px_0_10px]">
+                        LAND
+                    </span>
                 </div>
-                <div className=" lg:hidden flex justify-center items-center">
-                    <button>
+                <div className=" lg:hidden bg-pink flex justify-center items-center h-16 w-16 hover:bg-[#bb3978] ">
+                    <button className="h-full">
                         <Hamburger
                             size={30}
                             toggled={navOpen}
@@ -34,7 +38,7 @@ function Navbars() {
                             navOpen ? `h-80` : `h-0`
                         } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
                     >
-                        <ul className=" divide-y divide-[#ffffffaf] w-full flex flex-col">
+                        <ul className=" divide-y divide-[#5c5c5c] w-full flex flex-col">
                             {Nav.map((items, index) => (
                                 <li key={index} className=" w-full flex">
                                     <Link

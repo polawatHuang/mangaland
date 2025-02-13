@@ -4,6 +4,8 @@ import "./globals.css";
 import Footer from "./components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbars";
 import Loading from "./components/Loading/Loading";
+import Image from "next/image";
+import book from "../public/images/book.png";
 
 const kanit = Kanit({
     weight: ["100", "200", "400", "600"],
@@ -24,7 +26,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${kanit.className} relative antialiased bg-black`}
+                className={`${kanit.className} relative w-screen max-w-screen overflow-x-hidden  antialiased bg-black`}
             >
                 {/* <Loading /> */}
                 <Navbar />
@@ -32,6 +34,9 @@ export default function RootLayout({
                     {children}
                 </div>
                 <Footer />
+                <div className="scroll-contai overflow-hidden">
+                    <div className="scroll-bar"></div>
+                </div>
             </body>
         </html>
     );

@@ -1,0 +1,9 @@
+[2025-02-12 15:21:26] [ERROR] Token missing | {"meta":{"timestamp":"2025-02-12T08:21:26.230Z"},"status":401}
+[2025-02-12 15:59:02] [ERROR] Incorrect username | {"meta":{"timestamp":"2025-02-12T08:59:02.638Z"},"status":401}
+[2025-02-12 16:00:08] [ERROR] Incorrect username | {"meta":{"timestamp":"2025-02-12T09:00:08.865Z"},"status":401}
+[2025-02-12 16:08:37] [ERROR] Incorrect username | {"meta":{"timestamp":"2025-02-12T09:08:37.549Z"},"status":401}
+[2025-02-12 17:23:28] [ERROR] Token missing | {"meta":{"timestamp":"2025-02-12T10:23:28.884Z"},"status":401}
+[2025-02-12 17:24:02] [ERROR] Token missing | {"meta":{"timestamp":"2025-02-12T10:24:02.943Z"},"status":401}
+[2025-02-12 17:25:02] [ERROR] Token missing | {"meta":{"timestamp":"2025-02-12T10:25:02.201Z"},"status":401}
+[2025-02-12 17:25:07] [ERROR] Token missing | {"meta":{"timestamp":"2025-02-12T10:25:07.366Z"},"status":401}
+[2025-02-12 17:25:15] [ERROR] Token missing | {"meta":{"timestamp":"2025-02-12T10:25:15.341Z"},"status":401}
