@@ -14,7 +14,6 @@ import authenController from "@controllers/authen";
 import projectController from "@controllers/project";
 import settingController from "@controllers/setting";
 import tagController from "@controllers/tag";
-
 import advertiseController from "@controllers/ads";
 
 dotenv.config();
@@ -26,9 +25,9 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "MangaLand API",
+      title: "Moodengmanga API",
       version: "1.0.0",
-      description: "API documentation for the MangaLand project",
+      description: "API documentation for the Moodengmanga project",
     },
   },
   apis: ["./src/controllers/**/*.ts"],
@@ -67,7 +66,6 @@ app.use('/api/auth', authenController);
 app.use('/api/project', projectController);
 app.use('/api/setting', settingController);
 app.use('/api/tag', tagController);
-
 app.use('/api/advertise', advertiseController);
 
 app.listen(port, () => {
