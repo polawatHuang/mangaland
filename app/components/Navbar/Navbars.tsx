@@ -2,18 +2,26 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MagnifyingGlassIcon, Bars3Icon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Twirl as Hamburger } from "hamburger-react";
 import "./Navbar.css";
+import axios from "axios";
+import { NavbarItem } from "@/app/models/settings";
 
 function Navbars() {
-    const Nav = [
-        { id: "1", name: "สุ่มมังงะ", href: "/" },
-        { id: "2", name: "แท็กทั้งหมด", href: "/categories" },
-        { id: "3", name: "มังฮวาเกาหลี", href: "/popular" },
-        { id: "4", name: "มังงะที่ถูกใจ", href: "/" },
-    ];
+    const [navbar, setNavbar] = useState<NavbarItem[]>([]);
     const [navOpen, setNavOpen] = useState(false);
+
+    const fetchNavbar = async () => {
+        const { data } = await axios.get<NavbarItem[]>(`/api/navbar`);
+
+        setNavbar(data);
+    };
+
+    useEffect(() => {
+        fetchNavbar()
+    }, [])
+
     return (
         <nav className="flex relative justify-between z-40 items-center px-10 lg:px-20 h-16 bg-gray text-white">
             <div className=" 2xl:max-w-6xl w-full mx-auto overflow-hidden flex justify-between items-center">
@@ -39,14 +47,14 @@ function Navbars() {
                         } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
                     >
                         <ul className=" w-full divide-y-2 divide-[#4e4e4e] flex flex-col">
-                            {Nav.map((items, index) => (
+                            {navbar.map((items, index) => (
                                 <li key={index} className=" w-full flex">
                                     <Link
                                         className=" bg-[#3b3b3b] w-full py-4 flex justify-center items-center"
-                                        href={items.href}
+                                        href={items.link}
                                         onClick={() => setNavOpen(!navOpen)}
                                     >
-                                        {items.name}
+                                        {items.title}
                                     </Link>
                                 </li>
                             ))}
@@ -66,14 +74,14 @@ function Navbars() {
                     </div>
                 </div>
                 <ul className="lg:flex Blurhover gap-5 hidden">
-                    {Nav.map((items, index) => (
+                    {navbar.map((items, index) => (
                         <motion.li
                             key={index}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             className="Underline"
                         >
-                            <Link href={items.href}>{items.name}</Link>
+                            <Link href={items.link}>{items.title}</Link>
                         </motion.li>
                     ))}
                 </ul>

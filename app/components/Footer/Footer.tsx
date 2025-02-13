@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Wave from "react-wavify";
 import axios from "axios";
-import { Footer as footer, Social, Root } from "./Interface";
+import { Footer as IFooter, Setting } from "../../models/settings";
 
 interface MenuItem {
     id: string;
@@ -20,8 +20,8 @@ interface DataURL {
 }
 
 const Footer: React.FC = () => {
-    const [Data, setData] = useState<Root>();
-    const [footerData, setFooterData] = useState<footer>();
+    const [Data, setData] = useState<Setting>();
+    const [footerData, setFooterData] = useState<IFooter>();
     const Data_Url = `${process.env.NEXT_PUBLIC_API_URL}/setting/1`;
     useEffect(() => {
         const fetchData = async () => {
