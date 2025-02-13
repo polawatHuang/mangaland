@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
     }, []);
 
     return (
-        <footer className="relative text-white pb-8 pt-14 h-full overflow-hidden flex flex-col justify-center ">
+        <footer className="relative text-white pb-8 pt-14 h-full overflow-hidden flex flex-col ">
             <div className=" absolute z-[-1] bottom-0 left-0 w-full h-full">
                 <Wave
                     fill="#1f2936"
