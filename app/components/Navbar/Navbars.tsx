@@ -48,17 +48,19 @@ function Navbars() {
                         } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
                     >
                         <ul className=" w-full divide-y-2 divide-[#4e4e4e] flex flex-col">
-                            {navbar.map((items, index) => (
-                                <li key={index} className=" w-full flex">
-                                    <Link
-                                        className=" bg-[#3b3b3b] w-full py-4 flex justify-center items-center"
-                                        href={items.link}
-                                        onClick={() => setNavOpen(!navOpen)}
-                                    >
-                                        {items.title}
-                                    </Link>
-                                </li>
-                            ))}
+                            {
+                                navbar && navbar.map((items, index) => (
+                                    <li key={index} className=" w-full flex">
+                                        <Link
+                                            className=" bg-[#3b3b3b] w-full py-4 flex justify-center items-center"
+                                            href={items.link}
+                                            onClick={() => setNavOpen(!navOpen)}
+                                        >
+                                            {items.title}
+                                        </Link>
+                                    </li>
+                                ))
+                            }
                             <li>
                                 <div className="h-full flex">
                                     <input

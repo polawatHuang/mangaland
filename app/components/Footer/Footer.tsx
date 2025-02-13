@@ -76,31 +76,35 @@ const Footer: React.FC = () => {
                 <div className="flex-1 sm:w-1/3 mb-6 sm:mb-0">
                     <h4 className="text-lg font-semibold mb-2">เมนู</h4>
                     <ul>
-                        {menuItems
-                            .filter(
-                                (item) => item.title !== "สุ่มเลือกอ่านมังงะ"
-                            )
-                            .map((item) => (
-                                <li key={item.title} className="mb-2">
-                                    <a
-                                        href={item.link}
-                                        className="hover:underline"
-                                    >
-                                        {item.title}
-                                    </a>
-                                </li>
-                            ))}
-                        {menuItems
-                            .filter(
-                                (item) => item.title === "สุ่มเลือกอ่านมังงะ"
-                            )
-                            .map((item) => (
-                                <li key={item.title} className="mb-2">
-                                    <button className="hover:underline cursor-pointer">
-                                        {item.title}
-                                    </button>
-                                </li>
-                            ))}
+                        {
+                            menuItems && menuItems
+                                .filter(
+                                    (item) => item.title !== "สุ่มเลือกอ่านมังงะ"
+                                )
+                                .map((item) => (
+                                    <li key={item.title} className="mb-2">
+                                        <a
+                                            href={item.link}
+                                            className="hover:underline"
+                                        >
+                                            {item.title}
+                                        </a>
+                                    </li>
+                                ))
+                        }
+                        {
+                            menuItems && menuItems
+                                .filter(
+                                    (item) => item.title === "สุ่มเลือกอ่านมังงะ"
+                                )
+                                .map((item) => (
+                                    <li key={item.title} className="mb-2">
+                                        <button className="hover:underline cursor-pointer">
+                                            {item.title}
+                                        </button>
+                                    </li>
+                                ))
+                        }
                     </ul>
                 </div>
                 <div className="flex-1 sm:w-1/3">
