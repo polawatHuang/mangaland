@@ -47,12 +47,12 @@ const Footer: React.FC = () => {
     }, []);
 
     return (
-        <footer className="relative text-white py-8">
-            <div className=" absolute z-[-1] top-[-20px] left-0 w-full h-full">
+        <footer className="relative text-white pb-8 pt-14 h-full overflow-hidden flex flex-col justify-center ">
+            <div className=" absolute z-[-1] bottom-0 left-0 w-full h-full">
                 <Wave
                     fill="#1f2936"
                     paused={false}
-                    className="flex h-[110%] w-full"
+                    className="flex h-full w-full"
                     options={{
                         height: 10,
                         amplitude: 30,
@@ -61,11 +61,11 @@ const Footer: React.FC = () => {
                     }}
                 />
             </div>
-            <div className=" absolute z-[-2] top-[-30px] left-0 w-full h-full">
+            <div className=" absolute z-[-2] bottom-0 left-0 w-full h-full">
                 <Wave
                     fill="#eb4897"
                     paused={false}
-                    className="flex h-[110%] w-full"
+                    className="flex h-full w-full"
                     options={{
                         height: 10,
                         amplitude: 40,
@@ -147,8 +147,8 @@ const Footer: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-8 text-center text-sm">
-                <p>
+            <div className="text-center mt-5 text-sm">
+                <p className="">
                     &copy; {dayjs().format("YYYY")} Mangaland. All rights
                     reserved.
                 </p>

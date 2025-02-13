@@ -26,7 +26,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${kanit.className} relative antialiased bg-black`}
+                className={`${kanit.className} relative w-screen  antialiased bg-black`}
             >
                 {/* <Loading /> */}
                 <Navbar />
@@ -34,9 +34,9 @@ export default function RootLayout({
                     {children}
                 </div>
                 <Footer />
-                <div className="scroll-contai">
+                {/* <div className="scroll-contai">
                     <div className="scroll-bar"></div>
-                </div>
+                </div> */}
             </body>
         </html>
     );
