@@ -34,18 +34,18 @@ passport.use(
       try {
         username = username.trim();
         if (!username || username.length < 4) {
-          return done(null, false, Resp.error("Username must be at least 4 characters", { status: 400 }));
+          return done(null, false, Resp.error("Username must be at least 4 characters", { status: 400, meta: { timestamp: new Date().toISOString() } }));
         }
 
         if (!password || password.length < 6) {
-          return done(null, false, Resp.error("Password must be at least 6 characters", { status: 400 }));
+          return done(null, false, Resp.error("Password must be at least 6 characters", { status: 400, meta: { timestamp: new Date().toISOString() } }));
         }
 
         const user = await prisma.user.findUnique({ where: { username } });
-        if (!user) return done(null, false, Resp.error("Incorrect username", { status: 401 }));
+        if (!user) return done(null, false, Resp.error("Incorrect username", { status: 401, meta: { timestamp: new Date().toISOString() } }));
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return done(null, false, Resp.error("Incorrect password", { status: 401 }));
+        if (!isMatch) return done(null, false, Resp.error("Incorrect password", { status: 401, meta: { timestamp: new Date().toISOString() } }));
 
         await prisma.user.update({
           where: { id: user.id },
