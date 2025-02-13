@@ -1,11 +1,7 @@
 "use client";
-import Advertise from "./components/Advertise/Advertise";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import { useState, useEffect } from "react";
-import { Typography } from "antd";
-import { gray } from "@ant-design/colors";
-
-const { Title } = Typography;
+import Advertise from "../components/Advertise/Advertise";
 
 export default function Home() {
     const [isVisible, setIsVisible] = useState(false);
