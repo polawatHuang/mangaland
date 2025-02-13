@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ITag } from "@/app/tags/page";
+import { ITag } from "@/app/(guest)/tags/page";
 
 export function TagLink({ name, total }: ITag) {
     return <Link href={`/tags/${name}`}>

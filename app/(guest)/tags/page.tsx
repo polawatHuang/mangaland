@@ -1,8 +1,8 @@
 "use client"
 
 import { useCallback, useMemo, useState } from "react"
-import { TagLink } from "../components/Tag/TagLink"
-import { SortButton } from "../components/Tag/SortButton"
+import { TagLink } from "../../components/Tag/TagLink"
+import { SortButton } from "../../components/Tag/SortButton"
 
 enum SortTags {
     ByCharactor = "by_char",
