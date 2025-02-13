@@ -1,4 +1,5 @@
-export interface Root {
+
+export interface Setting {
     success: boolean;
     message: string;
     result: Result;
@@ -31,10 +32,10 @@ export interface ThemeColors {
 }
 
 export interface Navbar {
-    items: Item[];
+    items: NavbarItem[];
 }
 
-export interface Item {
+export interface NavbarItem {
     link: string;
     title: string;
 }
