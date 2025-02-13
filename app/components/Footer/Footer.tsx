@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Wave from "react-wavify";
 import axios from "axios";
-import { Footer as IFooter, Setting } from "../../models/settings";
+import { Footer as IFooter, NavbarItem, Setting } from "../../models/settings";
+import { LayoutReturnResponse } from "@/app/models/server";
 
 interface MenuItem {
     id: string;
@@ -20,53 +21,50 @@ interface DataURL {
 }
 
 const Footer: React.FC = () => {
-    const [Data, setData] = useState<Setting>();
-    const [footerData, setFooterData] = useState<IFooter>();
-    const Data_Url = `${process.env.NEXT_PUBLIC_API_URL}/setting/1`;
+    const [menuItems, setMenuItems] = useState<NavbarItem[]>([]);
+    const [footer, setFooter] = useState<IFooter>();
+
+    const fetchData = async () => {
+        const { data } = await axios.get<LayoutReturnResponse>('/api/layout');
+
+        setMenuItems(data.navbar);
+        setFooter(data.footer);
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            let data = (await axios.get(Data_Url)) as any;
-            setData(data);
-            setFooterData(data.result.footer);
-            console.log(data);
-        };
         fetchData();
-        // setFooterData(
-        //     footerData.filter((items: any) => {
-        //         items["footer"];
-        //     })
-        // );
     }, []);
-    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-    const [socialLinks, setSocialLinks] = useState<MenuItem[]>([]);
-    const router = useRouter();
 
-    useEffect(() => {
-        // const fetchMenuItems = async () => {
-        //   try {
-        //     const response = await fetch("/api/menubar");
-        //     const data: MenuItem[] = await response.json();
-        //     setMenuItems(data);
-        //   } catch (error) {
-        //     console.error("Error fetching menu items:", error);
-        //   }
-        // };
+    // const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+    // const [socialLinks, setSocialLinks] = useState<MenuItem[]>([]);
+    // const router = useRouter();
 
-        // fetchMenuItems();
-        const data = [
-            { id: "1", name: "สุ่มมังงะ", href: "/" },
-            { id: "2", name: "แท็กทั้งหมด", href: "/categories" },
-            { id: "3", name: "มังฮวาเกาหลี", href: "/popular" },
-            { id: "4", name: "มังงะที่ถูกใจ", href: "/" },
-        ];
-        const socials = [
-            { id: "1", name: "Facebook", href: "https://facebook.com" },
-            { id: "2", name: "Twitter", href: "https://twitter.com" },
-            { id: "3", name: "Instagram", href: "https://instagram.com" },
-        ];
-        setMenuItems(data);
-        setSocialLinks(socials);
-    }, []);
+    // useEffect(() => {
+    // const fetchMenuItems = async () => {
+    //   try {
+    //     const response = await fetch("/api/menubar");
+    //     const data: MenuItem[] = await response.json();
+    //     setMenuItems(data);
+    //   } catch (error) {
+    //     console.error("Error fetching menu items:", error);
+    //   }
+    // };
+
+    // fetchMenuItems();
+    //     const data = [
+    //         { id: "1", name: "สุ่มมังงะ", href: "/" },
+    //         { id: "2", name: "แท็กทั้งหมด", href: "/categories" },
+    //         { id: "3", name: "มังฮวาเกาหลี", href: "/popular" },
+    //         { id: "4", name: "มังงะที่ถูกใจ", href: "/" },
+    //     ];
+    //     const socials = [
+    //         { id: "1", name: "Facebook", href: "https://facebook.com" },
+    //         { id: "2", name: "Twitter", href: "https://twitter.com" },
+    //         { id: "3", name: "Instagram", href: "https://instagram.com" },
+    //     ];
+    //     setMenuItems(data);
+    //     setSocialLinks(socials);
+    // }, []);
 
     return (
         <footer className="relative text-white pb-8 pt-14 h-full overflow-hidden flex flex-col ">
@@ -122,26 +120,26 @@ const Footer: React.FC = () => {
                     <ul>
                         {menuItems
                             .filter(
-                                (item) => item.name !== "สุ่มเลือกอ่านมังงะ"
+                                (item) => item.title !== "สุ่มเลือกอ่านมังงะ"
                             )
                             .map((item) => (
-                                <li key={item.id} className="mb-2">
+                                <li key={item.title} className="mb-2">
                                     <a
-                                        href={item.href}
+                                        href={item.link}
                                         className="hover:underline"
                                     >
-                                        {item.name}
+                                        {item.title}
                                     </a>
                                 </li>
                             ))}
                         {menuItems
                             .filter(
-                                (item) => item.name === "สุ่มเลือกอ่านมังงะ"
+                                (item) => item.title === "สุ่มเลือกอ่านมังงะ"
                             )
                             .map((item) => (
-                                <li key={item.id} className="mb-2">
+                                <li key={item.title} className="mb-2">
                                     <button className="hover:underline cursor-pointer">
-                                        {item.name}
+                                        {item.title}
                                     </button>
                                 </li>
                             ))}
@@ -152,8 +150,8 @@ const Footer: React.FC = () => {
                         ติดตามเราได้ที่
                     </h4>
                     <div className="flex space-x-4">
-                        {footerData &&
-                            footerData.socials.map((social) => (
+                        {
+                            footer && footer.socials.map((social) => (
                                 <Link
                                     key={social.href}
                                     href={social.href}
@@ -163,7 +161,8 @@ const Footer: React.FC = () => {
                                 >
                                     {social.name}
                                 </Link>
-                            ))}
+                            ))
+                        }
                     </div>
                 </div>
             </div>
