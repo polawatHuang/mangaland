@@ -77,7 +77,7 @@ function Navbars() {
                     </div>
                 </div>
                 <ul className="lg:flex Blurhover gap-5 hidden">
-                    {navbar.map((items, index) => (
+                    {navbar && navbar.map((items, index) => (
                         <motion.li
                             key={index}
                             whileHover={{ scale: 1.1 }}
