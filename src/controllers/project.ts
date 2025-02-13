@@ -14,13 +14,13 @@ const prisma = new PrismaClient();
 const router: Router = Router();
 
 interface CustomResponseOptions extends ResponseOptions {
-    timestamp?: string;
-    error?: string;
-    meta?: {
-        status: number;
-        stack?: string;
-        [key: string]: any;
-    };
+  timestamp?: string;
+  error?: string;
+  meta?: {
+    status: number;
+    stack?: string;
+    [key: string]: any;
+  };
 }
 
 // Get all projects
@@ -326,9 +326,9 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
 
     if (!id || isNaN(Number(id))) {
       res.status(400).json(
-        Resp.error("Invalid project ID", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Invalid project ID", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -347,33 +347,33 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
 
     if (!project) {
       res.status(404).json(
-        Resp.error("Project not found", { 
-          status: 404, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Project not found", {
+          status: 404,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
     }
 
     res.status(200).json(
-      Resp.success(project, "Get Project data Successfully", { 
-        status: 200, 
-        meta: { timestamp: new Date().toISOString() } 
+      Resp.success(project, "Get Project data Successfully", {
+        status: 200,
+        meta: { timestamp: new Date().toISOString() }
       })
     );
   } catch (error: any) {
     const errorOptions: CustomResponseOptions = {
+      status: 500,
+      meta: {
         status: 500,
-        meta: {
-            status: 500,
-            error: error.message,
-            stack: error.stack,
-            timestamp: new Date().toISOString()
-        }
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      }
     };
     res.status(500).json(
       Resp.error("Failed to get project data", errorOptions)
-    ); 
+    );
   }
 });
 
@@ -415,7 +415,7 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
  */
 
 router.post("/", authenticateToken, async (req: Request, res: Response) => {
-  const { title, description, type, status, coverImage, userId } = req.body;
+  const { title, description, type, status, coverImage, userId, tagIds } = req.body;
 
   try {
     if (!title || !description || !type || !status || !coverImage || !userId) {
@@ -481,6 +481,26 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
       return;
     }
 
+    if (!Array.isArray(tagIds)) {
+      res.status(400).json(
+        Resp.error("Invalid tagIds, must be an array", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() },
+        })
+      );
+      return;
+    }
+
+    if (tagIds.some((tagId) => isNaN(Number(tagId)))) {
+      res.status(400).json(
+        Resp.error("Invalid tagIds, must be an array of numbers", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() },
+        })
+      );
+      return;
+    }
+
     if (isNaN(Number(userId))) {
       res.status(400).json(
         Resp.error("Invalid user ID, must be a number", {
@@ -492,7 +512,7 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
     }
 
     const userIdNumber = parseInt(userId);
-    
+
     const userExists = await prisma.user.findUnique({
       where: { id: userIdNumber },
     });
@@ -507,6 +527,28 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
       return;
     }
 
+    if (tagIds) {
+      const existingTags = await prisma.tag.findMany({
+        where: {
+          id: {
+            in: tagIds.map((tagId) => parseInt(tagId)),
+          }
+        }
+      })
+
+      const invalidTagIds = tagIds.filter(tagId => !existingTags.some(tag => tag.id === parseInt(tagId)));
+
+      if (invalidTagIds.length > 0) {
+        res.status(400).json(
+          Resp.error(`Invalid tag IDs: ${invalidTagIds.join(', ')}`, {
+            status: 400,
+            meta: { timestamp: new Date().toISOString() },
+          })
+        );
+        return;
+      }
+    }
+
     const newProject = await prisma.project.create({
       data: {
         title,
@@ -517,6 +559,18 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
         userId: userIdNumber,
       },
     });
+
+    // create project tags
+    if (tagIds) {
+      await prisma.projectTag.createMany({
+        data: tagIds.map((tagId) => (
+          {
+            tagId: parseInt(tagId),
+            projectId: newProject.id
+          }
+        )),
+      });
+    }
 
     res.status(201).json(
       Resp.success(newProject, "Project created successfully", {
@@ -583,14 +637,14 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
 
 router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, description, type, status, coverImage } = req.body;
+  const { title, description, type, status, coverImage, tagIds } = req.body;
 
   try {
     if (!id || isNaN(Number(id))) {
       res.status(400).json(
-        Resp.error("Invalid project ID", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Invalid project ID", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -598,9 +652,9 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!title || typeof title !== "string" || title.trim() === "") {
       res.status(400).json(
-        Resp.error("Title is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Title is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -608,9 +662,9 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!description || typeof description !== "string" || description.trim() === "") {
       res.status(400).json(
-        Resp.error("Description is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Description is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
 
@@ -619,9 +673,9 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!type || typeof type !== "string" || type.trim() === "") {
       res.status(400).json(
-        Resp.error("Type is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Type is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -629,9 +683,9 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!status || typeof status !== "string" || status.trim() === "") {
       res.status(400).json(
-        Resp.error("Status is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Status is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -639,9 +693,29 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!coverImage || typeof coverImage !== "string" || coverImage.trim() === "") {
       res.status(400).json(
-        Resp.error("Cover image URL is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Cover image URL is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
+        })
+      );
+      return;
+    }
+
+    if (!Array.isArray(tagIds)) {
+      res.status(400).json(
+        Resp.error("Invalid tagIds, must be an array", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() },
+        })
+      );
+      return;
+    }
+
+    if (tagIds.some((tagId) => isNaN(Number(tagId)))) {
+      res.status(400).json(
+        Resp.error("Invalid tagIds, must be an array of numbers", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() },
         })
       );
       return;
@@ -653,12 +727,34 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!existingProject) {
       res.status(404).json(
-        Resp.error("Project not found", { 
-          status: 404, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Project not found", {
+          status: 404,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
+    }
+
+    if (tagIds) {
+      const existingTags = await prisma.tag.findMany({
+        where: {
+          id: {
+            in: tagIds.map((tagId) => parseInt(tagId)),
+          }
+        }
+      })
+
+      const invalidTagIds = tagIds.filter(tagId => !existingTags.some(tag => tag.id === parseInt(tagId)));
+
+      if (invalidTagIds.length > 0) {
+        res.status(400).json(
+          Resp.error(`Invalid tag IDs: ${invalidTagIds.join(', ')}`, {
+            status: 400,
+            meta: { timestamp: new Date().toISOString() },
+          })
+        );
+        return;
+      }
     }
 
     await prisma.project.update({
@@ -672,27 +768,42 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
       },
     });
 
+    if (tagIds) {
+      await prisma.projectTag.deleteMany({
+        where: { projectId: parseInt(id) },
+      })
+
+      await prisma.projectTag.createMany({
+        data: tagIds.map((tagId) => (
+          {
+            tagId: parseInt(tagId),
+            projectId: parseInt(id)
+          }
+        )),
+      });
+    }
+
     res.status(200).json(
-      Resp.success(null, "Project updated successfully", { 
-        status: 200, 
-        meta: { timestamp: new Date().toISOString() } 
+      Resp.success(null, "Project updated successfully", {
+        status: 200,
+        meta: { timestamp: new Date().toISOString() }
       })
     );
-    
+
   } catch (error: any) {
     const errorOptions: CustomResponseOptions = {
+      status: 500,
+      meta: {
         status: 500,
-        meta: {
-            status: 500,
-            error: error.message,
-            stack: error.stack,
-            timestamp: new Date().toISOString()
-        }
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      }
     };
-    
+
     res.status(500).json(
       Resp.error("Failed to update project", errorOptions)
-    ); 
+    );
   }
 });
 
@@ -724,20 +835,20 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
 router.delete("/:id", authenticateToken, async (req: Request, res: Response) => {
   const { id } = req.params;
-  
+
   try {
     if (!id || isNaN(Number(id))) {
       res.status(400).json(
-        Resp.error("Invalid project ID", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Invalid project ID", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
     }
-    
+
     const parsedId = parseInt(id);
-    
+
     const project = await prisma.project.findUnique({
       where: { id: parsedId },
       select: { id: true },
@@ -747,9 +858,9 @@ router.delete("/:id", authenticateToken, async (req: Request, res: Response) => 
 
     if (!project) {
       res.status(404).json(
-        Resp.error("Project not found", { 
-          status: 404, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Project not found", {
+          status: 404,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -760,25 +871,25 @@ router.delete("/:id", authenticateToken, async (req: Request, res: Response) => 
     });
 
     res.status(200).json(
-      Resp.success(null, "Project deleted successfully", { 
-        status: 200, 
-        meta: { timestamp: new Date().toISOString() } 
+      Resp.success(null, "Project deleted successfully", {
+        status: 200,
+        meta: { timestamp: new Date().toISOString() }
       })
     );
   } catch (error: any) {
     const errorOptions: CustomResponseOptions = {
+      status: 500,
+      meta: {
         status: 500,
-        meta: {
-            status: 500,
-            error: error.message,
-            stack: error.stack,
-            timestamp: new Date().toISOString()
-        }
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      }
     };
-    
+
     res.status(500).json(
       Resp.error("Failed to delete project", errorOptions)
-    ); 
+    );
   }
 });
 
