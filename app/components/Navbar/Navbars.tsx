@@ -7,15 +7,16 @@ import { Twirl as Hamburger } from "hamburger-react";
 import "./Navbar.css";
 import axios from "axios";
 import { NavbarItem } from "@/app/models/settings";
+import { LayoutReturnResponse } from "@/app/models/server";
 
 function Navbars() {
     const [navbar, setNavbar] = useState<NavbarItem[]>([]);
     const [navOpen, setNavOpen] = useState(false);
 
     const fetchNavbar = async () => {
-        const { data } = await axios.get<NavbarItem[]>(`/api/navbar`);
+        const { data } = await axios.get<LayoutReturnResponse>(`/api/layout`);
 
-        setNavbar(data);
+        setNavbar(data.navbar);
     };
 
     useEffect(() => {
