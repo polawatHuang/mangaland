@@ -1,20 +1,42 @@
 "use client";
 
-import { goToRandomManga } from "@/libs/goToRandomManga";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Wave from "react-wavify";
+import axios from "axios";
+import { Footer as footer, Social, Root } from "./Interface";
 
 interface MenuItem {
     id: string;
     name: string;
     href: string;
 }
+interface DataURL {
+    name: string;
+    href: string;
+}
 
 const Footer: React.FC = () => {
+    const [Data, setData] = useState<Root>();
+    const [footerData, setFooterData] = useState<footer>();
+    const Data_Url = `${process.env.NEXT_PUBLIC_API_URL}/setting/1`;
+    useEffect(() => {
+        const fetchData = async () => {
+            let data = (await axios.get(Data_Url)) as any;
+            setData(data);
+            setFooterData(data.result.footer);
+            console.log(data);
+        };
+        fetchData();
+        // setFooterData(
+        //     footerData.filter((items: any) => {
+        //         items["footer"];
+        //     })
+        // );
+    }, []);
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
     const [socialLinks, setSocialLinks] = useState<MenuItem[]>([]);
     const router = useRouter();
@@ -118,10 +140,7 @@ const Footer: React.FC = () => {
                             )
                             .map((item) => (
                                 <li key={item.id} className="mb-2">
-                                    <button
-                                        onClick={() => goToRandomManga(router)}
-                                        className="hover:underline cursor-pointer"
-                                    >
+                                    <button className="hover:underline cursor-pointer">
                                         {item.name}
                                     </button>
                                 </li>
@@ -133,17 +152,18 @@ const Footer: React.FC = () => {
                         ติดตามเราได้ที่
                     </h4>
                     <div className="flex space-x-4">
-                        {socialLinks.map((social) => (
-                            <Link
-                                key={social.id}
-                                href={social.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:underline"
-                            >
-                                {social.name}
-                            </Link>
-                        ))}
+                        {footerData &&
+                            footerData.socials.map((social) => (
+                                <Link
+                                    key={social.href}
+                                    href={social.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:underline"
+                                >
+                                    {social.name}
+                                </Link>
+                            ))}
                     </div>
                 </div>
             </div>
