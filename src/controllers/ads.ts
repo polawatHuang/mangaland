@@ -22,4 +22,19 @@ router.get("/:id", async (req: Request, res: Response) => {
     await AdsService.getAdsById(req, res);
 });
 
+// Create ad
+router.post("/", authenticateToken, async (req: Request, res: Response) => {
+    await AdsService.createAds(req, res);
+});
+
+// Update ad
+router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
+    await AdsService.updateAds(req, res);
+});
+
+// Delete ad
+router.delete("/:id", authenticateToken, async (req: Request, res: Response) => {
+    await AdsService.deleteAds(req, res);
+});
+
 export default router;
