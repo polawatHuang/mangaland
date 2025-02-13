@@ -11,6 +11,7 @@ import passport from "@services/auth/authen";
 
 import { authenticateRefreshToken, authenticateToken } from "@middleware/auth";
 import { generateAccessToken, generateRefreshToken } from "@utils/GenerateToken";
+import { loginRateLimiter } from "@middleware/rateLimiter";
 
 interface CustomResponseOptions extends ResponseOptions {
     timestamp?: string;
@@ -66,7 +67,7 @@ const router: Router = Router();
  *         description: Internal server error
  */
 
-router.post('/login', (req: Request, res: Response, next) => {
+router.post('/login', loginRateLimiter, (req: Request, res: Response, next) => {
     passport.authenticate('local', { session: false }, (err: any, user: any, info: any) => {
       if (err) return res.status(500).json({ error: "Internal Server Error" });
       if (!user) return res.status(401).json({ error: info?.message || "Authentication failed" });

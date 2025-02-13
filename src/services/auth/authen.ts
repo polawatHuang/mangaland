@@ -29,21 +29,29 @@ passport.use(
 
 passport.use(
   new LocalStrategy(
-    { usernameField: "username", passwordField: "password" },
-    async (username: string, password: string, done: any) => {
+    { usernameField: "username", passwordField: "password", passReqToCallback: true },
+    async (req, username: string, password: string, done: any) => {
       try {
+        username = username.trim();
+        if (!username || username.length < 4) {
+          return done(null, false, Resp.error("Username must be at least 4 characters", { status: 400 }));
+        }
+
+        if (!password || password.length < 6) {
+          return done(null, false, Resp.error("Password must be at least 6 characters", { status: 400 }));
+        }
+
         const user = await prisma.user.findUnique({ where: { username } });
-        if (!user) return done(null, false, Resp.error("Incorrect username", { status: 401, meta: { timestamp: new Date().toISOString() } }));
+        if (!user) return done(null, false, Resp.error("Incorrect username", { status: 401 }));
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return done(null, false, Resp.error("Incorrect password", { status: 401, meta: { timestamp: new Date().toISOString() } }));
-        
+        if (!isMatch) return done(null, false, Resp.error("Incorrect password", { status: 401 }));
+
         await prisma.user.update({
           where: { id: user.id },
-          data: {
-            latestLogin: new Date().toISOString()
-          }
+          data: { latestLogin: new Date() },
         });
+
         return done(null, user);
       } catch (error) {
         return done(error, false);
