@@ -1,39 +1,41 @@
 {
-  "name": "manga-land",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@ant-design/colors": "^7.2.0",
-    "@emotion/react": "^11.14.0",
-    "@headlessui/react": "^2.2.0",
-    "@heroicons/react": "^2.2.0",
-    "antd": "^5.24.0",
-    "clsx": "^2.1.1",
-    "dayjs": "^1.11.13",
-    "framer-motion": "^12.4.2",
-    "hamburger-react": "^2.5.2",
-    "manga-land": "file:",
-    "next": "15.1.7",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-loading-indicators": "^1.0.0",
-    "react-select": "^5.10.0",
-    "react-spinners": "^0.15.0",
-    "react-wavify": "^1.11.1",
-    "swiper": "^11.2.2"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
-  }
+    "name": "manga-land",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@ant-design/colors": "^7.2.0",
+        "@emotion/react": "^11.14.0",
+        "@headlessui/react": "^2.2.0",
+        "@heroicons/react": "^2.2.0",
+        "@next/env": "^15.1.7",
+        "antd": "^5.24.0",
+        "axios": "^1.7.9",
+        "clsx": "^2.1.1",
+        "dayjs": "^1.11.13",
+        "framer-motion": "^12.4.2",
+        "hamburger-react": "^2.5.2",
+        "manga-land": "file:",
+        "next": "15.1.7",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-loading-indicators": "^1.0.0",
+        "react-select": "^5.10.0",
+        "react-spinners": "^0.15.0",
+        "react-wavify": "^1.11.1",
+        "swiper": "^11.2.2"
+    },
+    "devDependencies": {
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "postcss": "^8",
+        "tailwindcss": "^3.4.1",
+        "typescript": "^5"
+    }
 }
