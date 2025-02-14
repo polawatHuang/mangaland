@@ -137,6 +137,8 @@ export class AdsService {
                 }
             });
 
+            if (!ads) return res.status(404).json(Resp.error(`No ads found by id ${id}`, { status: 404, meta: { timestamp: new Date().toISOString() } }));
+
             res.status(200).json(Resp.success(ads, "Ad updated successfully", { status: 200, meta: { timestamp: new Date().toISOString() } }));
         } catch (error: any) {
             const errorOptions = {
@@ -160,13 +162,15 @@ export class AdsService {
         if (id.length < 1) return res.status(400).json(Resp.error("Id must be at least 1 character", { status: 400, meta: { timestamp: new Date().toISOString() } }));
 
         try {
-            await prisma.advertise.delete({
+            const ads = await prisma.advertise.delete({
                 where: {
                     id: parseInt(id)
                 }
             });
 
-            res.status(200).json(Resp.success(null, "Ad deleted successfully", { status: 200, meta: { timestamp: new Date().toISOString() } }));
+            if (!ads) return res.status(404).json(Resp.error(`No ads found by id ${id}`, { status: 404, meta: { timestamp: new Date().toISOString() } }));
+
+            res.status(200).json(Resp.success(null, "Ads deleted successfully", { status: 200, meta: { timestamp: new Date().toISOString() } }));
         } catch (error: any) {
             const errorOptions = {
                 status: 500,
