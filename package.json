@@ -18,7 +18,7 @@
         "axios": "^1.7.9",
         "clsx": "^2.1.1",
         "dayjs": "^1.11.13",
-        "framer-motion": "^12.4.2",
+        "framer-motion": "^12.4.3",
         "hamburger-react": "^2.5.2",
         "manga-land": "file:",
         "next": "15.1.7",
@@ -28,14 +28,14 @@
         "react-select": "^5.10.0",
         "react-spinners": "^0.15.0",
         "react-wavify": "^1.11.1",
-        "swiper": "^11.2.2"
+        "swiper": "^11.2.4"
     },
     "devDependencies": {
-        "@types/node": "^20",
-        "@types/react": "^19",
-        "@types/react-dom": "^19",
-        "postcss": "^8",
-        "tailwindcss": "^3.4.1",
-        "typescript": "^5"
+        "@types/node": "^20.17.19",
+        "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
+        "postcss": "^8.5.2",
+        "tailwindcss": "^3.4.17",
+        "typescript": "^5.7.3"
     }
 }
