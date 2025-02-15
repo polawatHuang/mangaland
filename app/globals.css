@@ -69,6 +69,12 @@ a {
     z-index: 1000;
     font-size: 20px;
 }
+
+img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+
 @keyframes scrollEIEI {
     to {
         height: 0;

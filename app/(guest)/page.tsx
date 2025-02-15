@@ -24,7 +24,6 @@ export default function Home() {
                 const response = await axios.get<ProjectResponse>(
                     `${process.env.NEXT_PUBLIC_API_URL}/project`
                 );
-                console.log(response);
                 const mappedMangaList = response.data.result.projects.map(
                     (project: Project) => ({
                         id: project.id,

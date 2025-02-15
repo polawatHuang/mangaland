@@ -3,6 +3,7 @@ import { Kanit } from "next/font/google";
 import "../globals.css";
 import Navbars from "../components/Navbar/Navbars";
 import Footer from "../components/Footer/Footer";
+import DisableRightClick from "../components/DisableRightClick/DisableRightClick";
 
 const kanit = Kanit({
     weight: ["100", "200", "400", "600"],
