@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import {
   HomeIcon,
@@ -10,6 +10,7 @@ import {
   InboxIcon,
   Cog6ToothIcon,
 } from "@heroicons/react/24/solid";
+import Loading from "@/app/components/Loading/Loading";
 
 const menuItems = [
   { name: "Dashboard", icon: HomeIcon },
@@ -21,33 +22,89 @@ const menuItems = [
   { name: "Message & Ticket", icon: InboxIcon },
 ];
 
+type ServerStatus = {
+  success: boolean;
+  message: string;
+  result: {
+    systemStats: {
+      server: string;
+      cpu: {
+        usage: number;
+      };
+      memory: {
+        usagePercent: number;
+      };
+      disk: {
+        usagePercent: number;
+      };
+      uptime: {
+        days: number;
+        hours: number;
+        minutes: number;
+      };
+    };
+  };
+};
+
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/status`);
+        if (response.ok) {
+          const data: ServerStatus = await response.json();
+          setServerStatus(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch server status:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStatus();
+  }, []);
 
   return (
-    <div className="min-h-screen p-6 bg-gray-900 text-white">
+    <div className="min-h-screen p-6 bg-gray-900 text-black">
       <h1 className="text-3xl font-semibold">{activeTab}</h1>
 
-      {/* Dashboard Content */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Example Dashboard Widgets */}
-        <div className="p-4 bg-gray-800 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold">Total Projects</h2>
-          <p className="text-2xl mt-2 font-semibold">125</p>
-        </div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
+            <h2 className="text-lg font-bold">Server Status:</h2>
+            <p className="text-2xl mt-2 font-semibold">{serverStatus?.result.systemStats.server}</p>
+          </div>
 
-        <div className="p-4 bg-gray-800 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold">Active Users</h2>
-          <p className="text-2xl mt-2 font-semibold">48</p>
-        </div>
+          <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
+            <h2 className="text-lg font-bold">CPU Usage:</h2>
+            <p className="text-2xl mt-2 font-semibold">{serverStatus?.result.systemStats.cpu.usage}%</p>
+          </div>
 
-        <div className="p-4 bg-gray-800 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold">New Messages</h2>
-          <p className="text-2xl mt-2 font-semibold">8</p>
-        </div>
-      </div>
+          <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
+            <h2 className="text-lg font-bold">Memory Usage:</h2>
+            <p className="text-2xl mt-2 font-semibold">{serverStatus?.result.systemStats.memory.usagePercent}%</p>
+          </div>
 
-      {/* Menu Items Section */}
+          <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
+            <h2 className="text-lg font-bold">Disk Usage:</h2>
+            <p className="text-2xl mt-2 font-semibold">{serverStatus?.result.systemStats.disk.usagePercent}%</p>
+          </div>
+
+          <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
+            <h2 className="text-lg font-bold">Uptime:</h2>
+            <p className="text-2xl mt-2 font-semibold">
+              {serverStatus?.result.systemStats.uptime.days}d {serverStatus?.result.systemStats.uptime.hours}h {serverStatus?.result.systemStats.uptime.minutes}m
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-4">Quick Access</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -55,7 +112,7 @@ export default function DashboardPage() {
             <button
               key={item.name}
               className={clsx(
-                "flex items-center gap-3 p-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors",
+                "flex items-center gap-3 p-4 rounded-lg border border-solid border-[#bfbfbf] text-[#808080] hover:bg-[#bfbfbf] transition-colors",
                 activeTab === item.name && "bg-gray-600"
               )}
               onClick={() => setActiveTab(item.name)}
@@ -68,4 +125,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-};
+}

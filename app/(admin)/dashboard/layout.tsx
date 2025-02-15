@@ -16,7 +16,7 @@ import Footer from "@/app/components/Footer/Footer";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon },
-  { name: "Manga List", href: "#", icon: BookOpenIcon },
+  { name: "Project List", href: "/dashboard/project-list", icon: BookOpenIcon },
   { name: "Users", href: "#", icon: UsersIcon },
   { name: "Settings", href: "#", icon: CogIcon },
 ];
@@ -38,7 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html>
       <body>
         <Navbars />
-        <div className="h-screen flex overflow-hidden bg-gray-900 text-gray-100">
+        <div className="h-screen flex overflow-hidden text-[#333] bg-gradient-to-b from-[#f5f5f5] to-[#ffffff]">
           {/* Mobile sidebar */}
           <Transition.Root show={sidebarOpen} as={Fragment}>
             <Dialog
@@ -55,7 +55,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <div className="fixed inset-0 bg-black bg-opacity-75" />
+                <div className="fixed inset-0 bg-[#000000] bg-opacity-25" />
               </Transition.Child>
               <Transition.Child
                 as={Fragment}
@@ -66,14 +66,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel className="relative flex-1 flex flex-col max-w-xs w-full bg-gray-800">
+                <Dialog.Panel className="relative flex-1 flex flex-col max-w-xs w-full bg-gradient-to-b from-[#d4d4d4] to-[#ffffff]">
                   <div className="absolute top-0 right-0 -mr-12 pt-2">
                     <button
-                      className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                      className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#555]"
                       onClick={() => setSidebarOpen(false)}
                     >
                       <XMarkIcon
-                        className="h-6 w-6 text-white"
+                        className="h-6 w-6 text-[#333]"
                         aria-hidden="true"
                       />
                     </button>
@@ -83,10 +83,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       <a
                         key={item.name}
                         href={item.href}
-                        className="group flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700"
+                        className="group flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-[#bfbfbf] text-[#333]"
                       >
                         <item.icon
-                          className="mr-4 h-6 w-6"
+                          className="mr-4 h-6 w-6 text-[#333]"
                           aria-hidden="true"
                         />
                         {item.name}
@@ -100,16 +100,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Sidebar for larger screens */}
           <div className="hidden md:flex md:flex-shrink-0">
-            <div className="flex flex-col w-64 bg-gray-800">
-              <div className="h-16 flex items-center justify-center text-xl font-bold border-b border-gray-700">
-                Manga Admin
+            <div className="flex flex-col w-64 bg-gradient-to-b from-[#ffc2df] to-[#ffffff] border-r border-[#bfbfbf]">
+              <div className="h-16 flex items-center justify-center text-xl font-bold border-b border-[#ffc2df] text-[#333]">
+                Menu
               </div>
-              <nav className="mt-5 flex-1 px-2 space-y-1">
+              <nav className="flex-1 px-2 space-y-1">
+                <br />
                 {navigation.map((item) => (
                   <a
                     key={item.name}
                     href={item.href}
-                    className="group flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700"
+                    className="group flex items-center px-2 py-2 text-base text-[#333] hover:bg-[#eb4897] hover:text-white font-medium rounded-md"
                   >
                     <item.icon className="mr-4 h-6 w-6" aria-hidden="true" />
                     {item.name}
@@ -121,20 +122,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Main content */}
           <div className="flex flex-col flex-1 overflow-hidden">
-            <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-gray-900 shadow">
+            <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-[#f5f5f5] border-b border-[#bfbfbf] shadow">
               <button
-                className="px-4 border-r border-gray-700 text-gray-300 focus:outline-none md:hidden"
+                className="px-4 border-r border-[#bfbfbf] text-[#333] focus:outline-none md:hidden"
                 onClick={() => setSidebarOpen(true)}
               >
                 <Bars2Icon className="h-6 w-6" aria-hidden="true" />
               </button>
               <div className="flex-1 px-4 flex justify-between">
                 <h1 className="text-lg font-semibold self-center">Dashboard</h1>
-                <Menu as="div" className="relative">
-                  <Menu.Button className="flex items-center space-x-2 text-sm focus:outline-none">
-                    <span>Admin</span>
-                  </Menu.Button>
-                </Menu>
               </div>
             </div>
             <main className="flex-1 p-6">{children}</main>
