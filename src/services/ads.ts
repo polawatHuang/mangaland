@@ -77,7 +77,6 @@ export class AdsService {
         if (backgroundColor.length < 1) return res.status(400).json(Resp.error("Background color must be at least 1 character", { status: 400, meta: { timestamp: new Date().toISOString() } }));
 
         try {
-
             const ads = await prisma.advertise.create({
                 data: {
                     title,

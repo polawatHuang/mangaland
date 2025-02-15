@@ -15,6 +15,7 @@ import projectController from "@controllers/project";
 import settingController from "@controllers/setting";
 import tagController from "@controllers/tag";
 import advertiseController from "@controllers/ads";
+import episodeController from "@controllers/episode";
 
 dotenv.config();
 
@@ -67,6 +68,7 @@ app.use('/api/project', projectController);
 app.use('/api/setting', settingController);
 app.use('/api/tag', tagController);
 app.use('/api/advertise', advertiseController);
+app.use('/api/episode', episodeController);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

@@ -24,7 +24,7 @@ const router: Router = Router();
  *       500:
  *         description: Internal Server Error
  */
-router.get("/", authenticateToken, async (req: Request, res: Response): Promise<void> => {
+router.get("/", async (req: Request, res: Response): Promise<void> => {
   await EpisodeService.getAllEpisodes(req, res);
 });
 
@@ -50,7 +50,7 @@ router.get("/", authenticateToken, async (req: Request, res: Response): Promise<
  *       500:
  *         description: Internal Server Error
  */
-router.get("/:id", authenticateToken, async (req: Request, res: Response): Promise<void> => {
+router.get("/:id", async (req: Request, res: Response): Promise<void> => {
   await EpisodeService.getEpisodeById(req, res);
 });
 
