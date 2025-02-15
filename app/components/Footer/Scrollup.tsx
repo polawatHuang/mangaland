@@ -22,11 +22,14 @@ export const ScrollUp = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    return <button
-        onClick={scrollToTop}
-        className={`${isVisible ? `opacity-100` : `opacity-0`
-            } fixed right-10 z-50 bottom-10 md:right-20 md:bottom-20 bg-pink w-10 h-10 rounded-full Arrow`}
-    >
-        <ChevronUpIcon className="size-10" />
-    </button>
-}
+    return (
+        <button
+            onClick={scrollToTop}
+            className={`${
+                isVisible ? `opacity-100` : `opacity-0`
+            } fixed right-10 z-50 bottom-10 md:right-20 md:bottom-20 bg-pink w-10 h-10 rounded-full Arrow flex justify-center`}
+        >
+            <ChevronUpIcon className="size-8" />
+        </button>
+    );
+};
