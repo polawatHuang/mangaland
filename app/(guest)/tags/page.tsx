@@ -1,8 +1,7 @@
-"use client"
-
 import { useCallback, useMemo, useState } from "react"
 import { TagLink } from "../../components/Tag/TagLink"
 import { SortButton } from "../../components/Tag/SortButton"
+import axios from "axios"
 
 enum SortTags {
     ByCharactor = "by_char",
@@ -37,9 +36,19 @@ const TagsMockUp: ITag[] = [
     }
 ]
 
-export default function Tags() {
+export default async function Tags() {
     const [sortBy, setSortBy] = useState<SortTags>(SortTags.ByCharactor)
     const [tags, _] = useState<ITag[]>(TagsMockUp)
+
+    const fetchTags = useMemo(async () => {
+        try {
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tag`)
+
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+    }, [])
 
     const onChangeSort = useCallback((sortType: SortTags) => {
         setSortBy(sortType)
