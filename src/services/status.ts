@@ -46,6 +46,7 @@ interface SystemStats {
         hours: number;
         minutes: number;
     };
+    heavyServices: string[];
 }
 
 export class ServerMonitor {
@@ -186,17 +187,42 @@ export class ServerMonitor {
         };
     }
 
+    async getHeavyServices(): Promise<string[]> {
+        try {
+            const { stdout } = await execAsync('ps aux --sort=-%cpu | head -n 10'); 
+            const processes = stdout.trim().split('\n').slice(1);
+            const heavyServices: string[] = [];
+
+            processes.forEach(process => {
+                const columns = process.split(/\s+/);
+                const cpuUsage = parseFloat(columns[2]);
+                const memoryUsage = parseFloat(columns[3]);
+                const processName = columns.slice(10).join(' ');
+
+                if (cpuUsage > 10 || memoryUsage > 10) {
+                    heavyServices.push(`Process ${processName} - CPU: ${cpuUsage}%, Memory: ${memoryUsage}%`);
+                }
+            });
+
+            return heavyServices;
+        } catch (error) {
+            console.error('Error getting heavy services:', error);
+            return [];
+        }
+    }
+
     async getSystemStats(): Promise<SystemStats> {
         try {
-            const [cpuUsage, memory, disk] = await Promise.all([
+            const [cpuUsage, memory, disk, heavyServices] = await Promise.all([
                 this.getCPUUsage(),
                 this.getMemoryUsage(),
-                this.getDiskUsage()
+                this.getDiskUsage(),
+                this.getHeavyServices()
             ]);
-
+    
             const network = this.getNetworkBandwidth();
             const uptimeSeconds = os.uptime();
-
+    
             return {
                 cpu: {
                     name: os.hostname(),
@@ -218,7 +244,8 @@ export class ServerMonitor {
                     days: Math.floor(uptimeSeconds / 86400),
                     hours: Math.floor((uptimeSeconds % 86400) / 3600),
                     minutes: Math.floor((uptimeSeconds % 3600) / 60)
-                }
+                },
+                heavyServices
             };
         } catch (error) {
             console.error('Error getting system stats:', error);

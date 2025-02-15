@@ -179,6 +179,8 @@ interface ServerStatusResponse {
         pingDetails: string;
         lastChecked: string;
     };
+    alerts: string[];
+    heavyServices: string[];
 }
 
 router.get('/status', async (req: Request, res: Response) => {
@@ -197,6 +199,17 @@ router.get('/status', async (req: Request, res: Response) => {
             const i = Math.floor(Math.log(bytes) / Math.log(1024));
             return `${Math.round(bytes / Math.pow(1024, i))} ${sizes[i]}`;
         };
+
+        const alerts: string[] = [];
+        if (systemStats.cpu.usage > 75) {
+            alerts.push(`CPU usage is high: ${systemStats.cpu.usage}%`);
+        }
+        if (systemStats.memory.usagePercent > 75) {
+            alerts.push(`Memory usage is high: ${systemStats.memory.usagePercent}%`);
+        }
+        if (systemStats.disk.usagePercent > 85) {
+            alerts.push(`Disk usage is high: ${systemStats.disk.usagePercent}%`);
+        }
 
         const response: ServerStatusResponse = {
             systemStats: {
@@ -227,7 +240,9 @@ router.get('/status', async (req: Request, res: Response) => {
                 isReachable: pingResult,
                 pingDetails: pingResult ? 'Server is responding' : 'Server is not responding',
                 lastChecked: new Date().toISOString()
-            }
+            },
+            alerts: alerts,
+            heavyServices: systemStats.heavyServices,
         };
 
         const humanReadableStats = {
