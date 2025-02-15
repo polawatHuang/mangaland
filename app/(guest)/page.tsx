@@ -1,5 +1,5 @@
 import Advertise from "../components/Advertise/Advertise";
-import { ScrollUp } from "../components/Footer/ScrollUp";
+// import { ScrollUp } from "../components/Footer/ScrollUp";
 
 export default function Home() {
     return (
@@ -9,8 +9,8 @@ export default function Home() {
             <div>
                 <h2>🔥 5 อันดับมังงะยอดฮิตประจำเดือนนี้</h2>
             </div>
-            
-            <ScrollUp />
+
+            {/* <ScrollUp /> */}
         </div>
     );
 }
