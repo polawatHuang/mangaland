@@ -71,6 +71,8 @@ router.get("/:id", async (req: Request, res: Response) => {
  *   post:
  *     summary: Create ad
  *     tags: [Ads]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -195,6 +197,8 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
  *   put:
  *     summary: Update ad
  *     tags: [Ads]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -374,6 +378,8 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
  *   delete:
  *     summary: Delete ad
  *     tags: [Ads]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

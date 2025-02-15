@@ -61,6 +61,8 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
  *   post:
  *     summary: Create a new episode
  *     tags: [Episode]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -101,6 +103,8 @@ router.post("/", authenticateToken, async (req: Request, res: Response): Promise
  *   put:
  *     summary: Update an episode
  *     tags: [Episode]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -129,7 +133,7 @@ router.post("/", authenticateToken, async (req: Request, res: Response): Promise
  *       500:
  *         description: Internal Server Error
  */
-router.put("/:id", authenticateToken, async (req: Request, res: Response): Promise<void> => {
+router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
   await EpisodeService.updateEpisode(req, res);
 });
 
@@ -140,6 +144,8 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response): Promi
  *   delete:
  *     summary: Delete an episode
  *     tags: [Episode]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
