@@ -1,5 +1,5 @@
 import Advertise from "../components/Advertise/Advertise";
-import { ScrollUp } from "../components/Footer/ScrollUp";
+import { ScrollUp } from "../components/Footer/Scrollup";
 
 export default function Home() {
     return (
