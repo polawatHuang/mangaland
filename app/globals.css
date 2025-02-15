@@ -20,7 +20,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 .Arrow:hover > * {
-    transform: translateY(-10px);
+    transform: translateY(0px);
 }
 .Arrow:hover {
     height: 60px;
@@ -65,7 +65,7 @@ a {
     content: "📘";
     position: absolute;
     bottom: -10px;
-    left: -19px;
+    left: -20px;
     z-index: 1000;
     font-size: 20px;
 }

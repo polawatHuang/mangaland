@@ -1,0 +1,38 @@
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, black, transparent);
+    z-index: 1;
+}
+.swiper {
+    overflow: visible !important;
+}
+.swiper-wrapper {
+    transform-style: preserve-3d !important;
+    transform: perspective(1000px) !important;
+}
+.swiper-wrapper .item {
+    transition: 0.5s !important;
+}
+.swiper-wrapper:hover > :not(:hover) {
+    filter: opacity(0.5) blur(5px);
+}
+.swiper-wrapper .item:hover {
+    transform: translateZ(100px) !important;
+}
+.swiper-wrapper .item:hover + * {
+    transform: translateZ(50px) rotateY(20deg) !important;
+}
+.swiper-wrapper .item:hover + * + * {
+    transform: rotateY(2deg) !important;
+}
+.swiper-wrapper .item:has(+ *:hover) {
+    transform: translateZ(50px) rotateY(-20deg) !important;
+}
+.swiper-wrapper .item:has(+ * + *:hover) {
+    transform: rotateY(-2deg) !important;
+}
