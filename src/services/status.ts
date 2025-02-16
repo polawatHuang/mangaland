@@ -20,6 +20,19 @@ interface NetworkData {
     interfaces: NetworkInterfaces;
 }
 
+interface Alert {
+    message: string;
+    severity: 'critical' | 'warning' | 'info';
+    timestamp: string;
+}
+
+interface HeavyService {
+    name: string;
+    cpu: number;
+    memory: number;
+    pid: number;
+}
+
 interface SystemStats {
     cpu: {
         name: string;
@@ -46,12 +59,14 @@ interface SystemStats {
         hours: number;
         minutes: number;
     };
-    heavyServices: string[];
+    alerts: Alert[];
+    heavyServices: HeavyService[];
 }
 
 export class ServerMonitor {
     private lastNetworkStats: NetworkInterfaces = {};
     private networkStatsInterval: NodeJS.Timeout | null = null;
+    private lastNetworkUpdate = 0;
 
     constructor() {
         this.updateNetworkStats();
@@ -59,9 +74,13 @@ export class ServerMonitor {
     }
 
     private async updateNetworkStats(): Promise<void> {
+        const now = Date.now();
+        if (now - this.lastNetworkUpdate < 1000) return;
+        
         try {
             const stats = await this.getNetworkStats();
             this.lastNetworkStats = stats;
+            this.lastNetworkUpdate = now;
         } catch (error) {
             console.error('Error updating network stats:', error);
         }
@@ -70,14 +89,30 @@ export class ServerMonitor {
     private async getNetworkStats(): Promise<NetworkInterfaces> {
         const stats: NetworkInterfaces = {};
         try {
-            const interfaces = await fs.readdir('/sys/class/net/');
-            for (const iface of interfaces) {
-                const rx = await fs.readFile(`/sys/class/net/${iface}/statistics/rx_bytes`, 'utf-8');
-                const tx = await fs.readFile(`/sys/class/net/${iface}/statistics/tx_bytes`, 'utf-8');
-                stats[iface] = {
-                    rx_bytes: parseInt(rx),
-                    tx_bytes: parseInt(tx)
-                };
+            if (process.platform === 'linux') {
+                const { stdout } = await execAsync("cat /proc/net/dev | grep -E 'eth0|ens|enp|wlan0'");
+                const lines = stdout.trim().split('\n');
+                
+                lines.forEach(line => {
+                    const [iface, data] = line.trim().split(':');
+                    if (data) {
+                        const [rx_bytes, , , , , , , , tx_bytes] = data.trim().split(/\s+/);
+                        stats[iface.trim()] = {
+                            rx_bytes: parseInt(rx_bytes),
+                            tx_bytes: parseInt(tx_bytes)
+                        };
+                    }
+                });
+            } else {
+                const interfaces = await fs.readdir('/sys/class/net/');
+                for (const iface of interfaces) {
+                    const rx = await fs.readFile(`/sys/class/net/${iface}/statistics/rx_bytes`, 'utf-8');
+                    const tx = await fs.readFile(`/sys/class/net/${iface}/statistics/tx_bytes`, 'utf-8');
+                    stats[iface] = {
+                        rx_bytes: parseInt(rx),
+                        tx_bytes: parseInt(tx)
+                    };
+                }
             }
         } catch (error) {
             const osInterfaces = os.networkInterfaces();
@@ -91,6 +126,129 @@ export class ServerMonitor {
             });
         }
         return stats;
+    }
+
+    async getHeavyServices(): Promise<HeavyService[]> {
+        try {
+            const { stdout } = await execAsync('ps aux --sort=-%cpu | head -n 10');
+            const processes = stdout.trim().split('\n').slice(1);
+            return processes.map(process => {
+                const [
+                    user, pid, cpu, mem, vsz, rss, tty,
+                    stat, start, time, ...cmdParts
+                ] = process.trim().split(/\s+/);
+                
+                return {
+                    name: cmdParts.join(' '),
+                    cpu: parseFloat(cpu),
+                    memory: parseFloat(mem),
+                    pid: parseInt(pid)
+                };
+            });
+        } catch (error) {
+            console.error('Error getting heavy services:', error);
+            return [];
+        }
+    }
+
+    private generateAlerts(cpu: number, memory: number, disk: number): Alert[] {
+        const alerts: Alert[] = [];
+        const now = new Date().toISOString();
+
+        // CPU Alerts
+        if (cpu > 90) {
+            alerts.push({
+                message: `Critical: CPU usage is extremely high at ${cpu.toFixed(1)}%`,
+                severity: 'critical',
+                timestamp: now
+            });
+        } else if (cpu > 75) {
+            alerts.push({
+                message: `Warning: CPU usage is high at ${cpu.toFixed(1)}%`,
+                severity: 'warning',
+                timestamp: now
+            });
+        }
+
+        // Memory Alerts
+        if (memory > 90) {
+            alerts.push({
+                message: `Critical: Memory usage is extremely high at ${memory.toFixed(1)}%`,
+                severity: 'critical',
+                timestamp: now
+            });
+        } else if (memory > 75) {
+            alerts.push({
+                message: `Warning: Memory usage is high at ${memory.toFixed(1)}%`,
+                severity: 'warning',
+                timestamp: now
+            });
+        }
+
+        // Disk Alerts
+        if (disk > 95) {
+            alerts.push({
+                message: `Critical: Disk usage is extremely high at ${disk.toFixed(1)}%`,
+                severity: 'critical',
+                timestamp: now
+            });
+        } else if (disk > 85) {
+            alerts.push({
+                message: `Warning: Disk usage is high at ${disk.toFixed(1)}%`,
+                severity: 'warning',
+                timestamp: now
+            });
+        }
+
+        return alerts;
+    }
+
+    async getSystemStats(): Promise<SystemStats> {
+        try {
+            const [cpuUsage, memory, disk, heavyServices] = await Promise.all([
+                this.getCPUUsage(),
+                this.getMemoryUsage(),
+                this.getDiskUsage(),
+                this.getHeavyServices()
+            ]);
+
+            const network = this.getNetworkBandwidth();
+            const uptimeSeconds = os.uptime();
+            
+            const memoryPercent = (memory.used / memory.total) * 100;
+            const diskPercent = disk.total > 0 ? (disk.used / disk.total) * 100 : 0;
+            
+            const alerts = this.generateAlerts(cpuUsage, memoryPercent, diskPercent);
+
+            return {
+                cpu: {
+                    name: os.hostname(),
+                    model: os.cpus()[0].model,
+                    usage: cpuUsage,
+                    cores: os.cpus().length,
+                    load: os.loadavg()
+                },
+                memory: {
+                    ...memory,
+                    usagePercent: memoryPercent
+                },
+                disk: {
+                    ...disk,
+                    usagePercent: diskPercent
+                },
+                network,
+                uptime: {
+                    days: Math.floor(uptimeSeconds / 86400),
+                    hours: Math.floor((uptimeSeconds % 86400) / 3600),
+                    minutes: Math.floor((uptimeSeconds % 3600) / 60)
+                },
+                alerts,
+                heavyServices
+            };
+        } catch (error) {
+            console.error('Error getting system stats:', error);
+            throw error;
+        }
     }
 
     async getCPUUsage(): Promise<number> {
@@ -141,23 +299,12 @@ export class ServerMonitor {
                 };
             }
         } catch (error) {
-            try {
-                const drive = path === '/' ? os.platform() === 'win32' ? 'C:' : '/' : path;
-                const stats = await fs.statfs(drive);
-                
-                const total = stats.blocks * stats.bsize;
-                const free = stats.bfree * stats.bsize;
-                const used = total - free;
-                
-                return { total, used, free };
-            } catch (fallbackError) {
-                console.error('Failed to get disk usage:', fallbackError);
-                return {
-                    total: 0,
-                    used: 0,
-                    free: 0
-                };
-            }
+            console.error('Failed to get disk usage:', error);
+            return {
+                total: 0,
+                used: 0,
+                free: 0
+            };
         }
     }
 
@@ -185,72 +332,6 @@ export class ServerMonitor {
             outgoing: totalOutgoing,
             interfaces: this.lastNetworkStats
         };
-    }
-
-    async getHeavyServices(): Promise<string[]> {
-        try {
-            const { stdout } = await execAsync('ps aux --sort=-%cpu | head -n 10'); 
-            const processes = stdout.trim().split('\n').slice(1);
-            const heavyServices: string[] = [];
-
-            processes.forEach(process => {
-                const columns = process.split(/\s+/);
-                const cpuUsage = parseFloat(columns[2]);
-                const memoryUsage = parseFloat(columns[3]);
-                const processName = columns.slice(10).join(' ');
-
-                if (cpuUsage > 10 || memoryUsage > 10) {
-                    heavyServices.push(`Process ${processName} - CPU: ${cpuUsage}%, Memory: ${memoryUsage}%`);
-                }
-            });
-
-            return heavyServices;
-        } catch (error) {
-            console.error('Error getting heavy services:', error);
-            return [];
-        }
-    }
-
-    async getSystemStats(): Promise<SystemStats> {
-        try {
-            const [cpuUsage, memory, disk, heavyServices] = await Promise.all([
-                this.getCPUUsage(),
-                this.getMemoryUsage(),
-                this.getDiskUsage(),
-                this.getHeavyServices()
-            ]);
-    
-            const network = this.getNetworkBandwidth();
-            const uptimeSeconds = os.uptime();
-    
-            return {
-                cpu: {
-                    name: os.hostname(),
-                    model: os.cpus()[0].model,
-                    usage: cpuUsage,
-                    cores: os.cpus().length,
-                    load: os.loadavg()
-                },
-                memory: {
-                    ...memory,
-                    usagePercent: (memory.used / memory.total) * 100
-                },
-                disk: {
-                    ...disk,
-                    usagePercent: disk.total > 0 ? (disk.used / disk.total) * 100 : 0
-                },
-                network,
-                uptime: {
-                    days: Math.floor(uptimeSeconds / 86400),
-                    hours: Math.floor((uptimeSeconds % 86400) / 3600),
-                    minutes: Math.floor((uptimeSeconds % 3600) / 60)
-                },
-                heavyServices
-            };
-        } catch (error) {
-            console.error('Error getting system stats:', error);
-            throw error;
-        }
     }
 
     async pingHost(host: string): Promise<boolean> {

@@ -123,6 +123,8 @@
 import { Request, Response, Router } from "express";
 import { ServerMonitor } from "@services/status";
 import { Resp, ResponseOptions } from "@utils/Response";
+import { Format } from "@utils/format";
+import logger from "@utils/logger";
 
 interface CustomResponseOptions extends ResponseOptions {
     timestamp?: string;
@@ -136,82 +138,26 @@ interface CustomResponseOptions extends ResponseOptions {
 
 const router: Router = Router();
 
-interface ServerStatusResponse {
-    systemStats: {
-        server: string;
-        cpu: {
-            name: string;
-            model: string;
-            usage: number;
-            cores: number;
-            load: number[];
-        };
-        memory: {
-            total: number;
-            used: number;
-            free: number;
-            usagePercent: number;
-        };
-        disk: {
-            total: number;
-            used: number;
-            free: number;
-            usagePercent: number;
-        };
-        network: {
-            incoming: number;
-            outgoing: number;
-            interfaces: {
-                [key: string]: {
-                    rx_bytes: number;
-                    tx_bytes: number;
-                };
-            };
-        };
-        uptime: {
-            days: number;
-            hours: number;
-            minutes: number;
-        };
-    };
-    connectivity: {
-        isReachable: boolean;
-        pingDetails: string;
-        lastChecked: string;
-    };
-    alerts: string[];
-    heavyServices: string[];
-}
-
 router.get('/status', async (req: Request, res: Response) => {
     const monitor = new ServerMonitor();
     
     try {
         const [systemStats, pingResult] = await Promise.all([
-            monitor.getSystemStats(),
-            monitor.pingHost('119.59.103.34')
+            monitor.getSystemStats().catch(err => {
+                logger.error("Error fetching system stats", err);
+                return null;
+            }),
+            monitor.pingHost('119.59.103.34').catch(err => {
+                logger.error("Error pinging host", err);
+                return false;
+            })
         ]);
 
-        const formatBytes = (bytes: number): string => {
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-            if (bytes === 0) return '0 Byte';
-            
-            const i = Math.floor(Math.log(bytes) / Math.log(1024));
-            return `${Math.round(bytes / Math.pow(1024, i))} ${sizes[i]}`;
-        };
-
-        const alerts: string[] = [];
-        if (systemStats.cpu.usage > 75) {
-            alerts.push(`CPU usage is high: ${systemStats.cpu.usage}%`);
-        }
-        if (systemStats.memory.usagePercent > 75) {
-            alerts.push(`Memory usage is high: ${systemStats.memory.usagePercent}%`);
-        }
-        if (systemStats.disk.usagePercent > 85) {
-            alerts.push(`Disk usage is high: ${systemStats.disk.usagePercent}%`);
+        if (!systemStats) {
+            throw new Error("Failed to retrieve system stats");
         }
 
-        const response: ServerStatusResponse = {
+        const response = {
             systemStats: {
                 server: "online",
                 cpu: {
@@ -225,15 +171,27 @@ router.get('/status', async (req: Request, res: Response) => {
                     total: systemStats.memory.total,
                     used: systemStats.memory.used,
                     free: systemStats.memory.free,
-                    usagePercent: Math.round(systemStats.memory.usagePercent * 100) / 100
+                    usagePercent: Math.round(systemStats.memory.usagePercent * 100) / 100,
+                    totalReadable: Format.bytes(systemStats.memory.total),
+                    usedReadable: Format.bytes(systemStats.memory.used),
+                    freeReadable: Format.bytes(systemStats.memory.free)
                 },
                 disk: {
                     total: systemStats.disk.total,
                     used: systemStats.disk.used,
                     free: systemStats.disk.free,
-                    usagePercent: Math.round(systemStats.disk.usagePercent * 100) / 100
+                    usagePercent: Math.round(systemStats.disk.usagePercent * 100) / 100,
+                    totalReadable: Format.bytes(systemStats.disk.total),
+                    usedReadable: Format.bytes(systemStats.disk.used),
+                    freeReadable: Format.bytes(systemStats.disk.free)
                 },
-                network: systemStats.network,
+                network: {
+                    incoming: systemStats.network.incoming,
+                    outgoing: systemStats.network.outgoing,
+                    incomingReadable: Format.bytes(systemStats.network.incoming),
+                    outgoingReadable: Format.bytes(systemStats.network.outgoing),
+                    interfaces: systemStats.network.interfaces
+                },
                 uptime: systemStats.uptime
             },
             connectivity: {
@@ -241,27 +199,8 @@ router.get('/status', async (req: Request, res: Response) => {
                 pingDetails: pingResult ? 'Server is responding' : 'Server is not responding',
                 lastChecked: new Date().toISOString()
             },
-            alerts: alerts,
-            heavyServices: systemStats.heavyServices,
-        };
-
-        const humanReadableStats = {
-            ...response,
-            systemStats: {
-                ...response.systemStats,
-                memory: {
-                    ...response.systemStats.memory,
-                    totalReadable: formatBytes(response.systemStats.memory.total),
-                    usedReadable: formatBytes(response.systemStats.memory.used),
-                    freeReadable: formatBytes(response.systemStats.memory.free)
-                },
-                disk: {
-                    ...response.systemStats.disk,
-                    totalReadable: formatBytes(response.systemStats.disk.total),
-                    usedReadable: formatBytes(response.systemStats.disk.used),
-                    freeReadable: formatBytes(response.systemStats.disk.free)
-                }
-            }
+            alerts: systemStats.alerts,
+            heavyServices: systemStats.heavyServices
         };
 
         const responseOptions: CustomResponseOptions = {
@@ -272,8 +211,10 @@ router.get('/status', async (req: Request, res: Response) => {
             }
         };
 
-        res.status(200).json(Resp.success(humanReadableStats, "Server status fetched successfully", responseOptions));
+        res.status(200).json(Resp.success(response, "Server status fetched successfully", responseOptions));
     } catch (error: any) {
+        logger.error("Failed to fetch server status", error);
+
         const errorOptions: CustomResponseOptions = {
             status: 500,
             meta: {
