@@ -27,7 +27,7 @@ export default function RootLayout({
                 className={`${kanit.className} relative w-screen max-w-screen overflow-x-hidden  antialiased bg-black`}
             >
                 <Navbars />
-                <div className="min-h-screen relative px-10 lg:px-20 2xl:px-0 mx-auto 2xl:max-w-6xl py-10">
+                <div className="min-h-screen relative px-0 lg:px-20 2xl:px-0 mx-auto 2xl:max-w-6xl py-10">
                     {children}
                 </div>
                 <Footer />
