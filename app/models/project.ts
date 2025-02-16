@@ -1,12 +1,15 @@
 import { BaseResponse } from ".";
 
-export interface ProjectResponse extends BaseResponse {
-    status: number;
+export interface SingleProjectResponse extends BaseResponse {
+    result: Project;
+}
+
+export interface MultiProjectResponse extends BaseResponse {
     result: ProjectResult;
 }
 
 export interface ProjectResult {
-    projects: Project;
+    projects: Project[];
     pagination: Pagination;
 }
 
