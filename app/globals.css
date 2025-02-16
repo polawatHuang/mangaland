@@ -70,6 +70,10 @@ a {
     font-size: 20px;
 }
 
+.font-kanit {
+    font-family: "Kanit", sans-serif;
+}
+
 img {
     pointer-events: none;
     -webkit-user-drag: none;

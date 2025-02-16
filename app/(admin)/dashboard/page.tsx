@@ -83,29 +83,29 @@ export default function DashboardPage() {
     }, []);
 
     return (
-        <div className="min-h-screen p-6 bg-gray-900 text-black">
+        <div className="min-h-screen p-6 bg-gray-900 text-white">
             <h1 className="text-3xl font-semibold">{activeTab}</h1>
 
             {loading ? (
                 <Loading />
             ) : (
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
-                        <h2 className="text-lg font-bold">Server Status:</h2>
+                    <div className="p-4 bg-[#060606] border border-solid border-[#161616] rounded-lg shadow-md text-white">
+                        <h2 className="text-lg font-bold text-[#8f8d8d]">Server Status:</h2>
                         <p className="text-2xl mt-2 font-semibold">
                             {serverStatus?.result.systemStats.server}
                         </p>
                     </div>
 
-                    <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
-                        <h2 className="text-lg font-bold">CPU Usage:</h2>
+                    <div className="p-4 bg-[#060606] border border-solid border-[#161616] rounded-lg shadow-md text-white">
+                        <h2 className="text-lg font-bold text-[#8f8d8d]">CPU Usage:</h2>
                         <p className="text-2xl mt-2 font-semibold">
                             {serverStatus?.result.systemStats.cpu.usage}%
                         </p>
                     </div>
 
-                    <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
-                        <h2 className="text-lg font-bold">Memory Usage:</h2>
+                    <div className="p-4 bg-[#060606] border border-solid border-[#161616] rounded-lg shadow-md text-white">
+                        <h2 className="text-lg font-bold text-[#8f8d8d]">Memory Usage:</h2>
                         <p className="text-2xl mt-2 font-semibold">
                             {
                                 serverStatus?.result.systemStats.memory
@@ -115,16 +115,16 @@ export default function DashboardPage() {
                         </p>
                     </div>
 
-                    <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
-                        <h2 className="text-lg font-bold">Disk Usage:</h2>
+                    <div className="p-4 bg-[#060606] border border-solid border-[#161616] rounded-lg shadow-md text-white">
+                        <h2 className="text-lg font-bold text-[#8f8d8d]">Disk Usage:</h2>
                         <p className="text-2xl mt-2 font-semibold">
                             {serverStatus?.result.systemStats.disk.usagePercent}
                             %
                         </p>
                     </div>
 
-                    <div className="p-4 bg-[#3a82f6] rounded-lg shadow-md text-white">
-                        <h2 className="text-lg font-bold">Uptime:</h2>
+                    <div className="p-4 bg-[#060606] border border-solid border-[#161616] rounded-lg shadow-md text-white">
+                        <h2 className="text-lg font-bold text-[#8f8d8d]">Uptime:</h2>
                         <p className="text-2xl mt-2 font-semibold">
                             {serverStatus?.result.systemStats.uptime.days}d{" "}
                             {serverStatus?.result.systemStats.uptime.hours}h{" "}
