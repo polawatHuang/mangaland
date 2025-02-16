@@ -20,7 +20,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 .Arrow:hover > * {
-    transform: translateY(-10px);
+    transform: translateY(0px);
 }
 .Arrow:hover {
     height: 60px;
@@ -28,4 +28,69 @@ body {
 .Arrow,
 .Arrow > * {
     transition: all 0.3s;
+}
+h1 {
+    font-size: 38px;
+}
+h2 {
+    font-size: 30px;
+}
+h3 {
+    font-size: 24px;
+}
+h4 {
+    font-size: 20px;
+}
+p {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+a {
+    font-size: 14px;
+}
+.scroll-bar {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background-color: pink;
+    margin: 2px;
+    z-index: 1000;
+    animation: scrollEIEI;
+    animation-timeline: scroll();
+}
+.scroll-contai > .scroll-bar::after {
+    content: "📘";
+    position: absolute;
+    bottom: -10px;
+    left: -20px;
+    z-index: 1000;
+    font-size: 20px;
+}
+
+.font-kanit {
+    font-family: "Kanit", sans-serif;
+}
+
+img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+
+@keyframes scrollEIEI {
+    to {
+        height: 0;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+::-webkit-scrollbar-track {
+    width: 0px;
+}
+::-webkit-scrollbar-thumb {
+    width: 0px;
 }

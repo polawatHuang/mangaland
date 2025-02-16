@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+package-lock.json
+pnpm-lock.yaml
 /.pnp
 .pnp.*
 .yarn/*
@@ -38,4 +40,4 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+dist

@@ -1,0 +1,45 @@
+.CardAnime {
+    padding: 5px;
+}
+
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.CardAnime::before,
+.CardAnime::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    border-radius: 5px;
+    background-image: conic-gradient(
+        from var(--angle),
+        #9c4f96,
+        #ff6355,
+        #fba949,
+        #fae442,
+        #8bd448,
+        #2aa8f2,
+        #9c4f96
+    );
+    animation: 3s spin linear infinite;
+}
+.CardAnime::after {
+    filter: blur(10px);
+}
+@keyframes spin {
+    from {
+        --angle: 0deg;
+    }
+    to {
+        --angle: 360deg;
+    }
+}

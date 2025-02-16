@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Kanit } from "next/font/google";
-import "./globals.css";
-import Footer from "./components/Footer/Footer";
-import Navbar from "./components/Navbar/Navbars";
-import Loading from "./components/Loading/Loading";
+import "../globals.css";
+import Navbars from "../components/Navbar/Navbars";
+import Footer from "../components/Footer/Footer";
+import DisableRightClick from "../components/DisableRightClick/DisableRightClick";
 
 const kanit = Kanit({
     weight: ["100", "200", "400", "600"],
@@ -24,14 +24,16 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${kanit.className} relative antialiased bg-black`}
+                className={`${kanit.className} relative w-screen max-w-screen overflow-x-hidden  antialiased bg-black`}
             >
-                {/* <Loading /> */}
-                <Navbar />
+                <Navbars />
                 <div className="min-h-screen relative px-10 lg:px-20 2xl:px-0 mx-auto 2xl:max-w-6xl py-10">
                     {children}
                 </div>
                 <Footer />
+                <div className="scroll-contai overflow-hidden">
+                    <div className="scroll-bar"></div>
+                </div>
             </body>
         </html>
     );

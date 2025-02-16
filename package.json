@@ -1,33 +1,43 @@
 {
-  "name": "manga-land",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@heroicons/react": "^2.2.0",
-    "antd": "^5.24.0",
-    "dayjs": "^1.11.13",
-    "framer-motion": "^12.4.2",
-    "hamburger-react": "^2.5.2",
-    "next": "15.1.7",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "swiper": "^11.2.2",
-    "react-loading-indicators": "^1.0.0",
-    "react-spinners": "^0.15.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
-  }
+    "name": "manga-land",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@ant-design/colors": "^7.2.0",
+        "@emotion/react": "^11.14.0",
+        "@headlessui/react": "^2.2.0",
+        "@heroicons/react": "^2.2.0",
+        "@next/env": "^15.1.7",
+        "antd": "^5.24.0",
+        "axios": "^1.7.9",
+        "clsx": "^2.1.1",
+        "dayjs": "^1.11.13",
+        "framer-motion": "^12.4.3",
+        "hamburger-react": "^2.5.2",
+        "manga-land": "file:",
+        "next": "15.1.7",
+        "next-auth": "^4.24.11",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-icons": "^5.4.0",
+        "react-loading-indicators": "^1.0.0",
+        "react-select": "^5.10.0",
+        "react-spinners": "^0.15.0",
+        "react-wavify": "^1.11.1",
+        "swiper": "^11.2.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.17.19",
+        "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
+        "postcss": "^8.5.2",
+        "tailwindcss": "^3.4.17",
+        "typescript": "^5.7.3"
+    }
 }
