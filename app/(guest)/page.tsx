@@ -5,6 +5,7 @@ import Advertise from "../components/Advertise/Advertise";
 import { ScrollUp } from "../components/Footer/Scrollup";
 import CardSliderComponent from "../components/Card/CardSlider";
 import { Project, MultiProjectResponse } from "../models/project";
+import NewManga from "../components/NewManga/NewManga";
 
 interface Manga {
     id: number;
@@ -57,6 +58,7 @@ export default function Home() {
                     <CardSliderComponent mangaList={mangaList.slice(0, 5)} />
                 )}
             </div>
+            <NewManga />
             <ScrollUp />
         </div>
     );

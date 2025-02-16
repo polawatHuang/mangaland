@@ -1,0 +1,46 @@
+.item {
+    border: 2px solid black;
+    padding: 16px;
+}
+.MyGrid {
+    display: grid;
+    grid-template-columns: 80% 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas:
+        "NewMan Tag"
+        "UpMan TopMan"
+        "YouMan TopMan";
+}
+.NewMan {
+    grid-area: NewMan;
+}
+.UpMan {
+    grid-area: UpMan;
+}
+.YouMan {
+    grid-area: YouMan;
+}
+.TopMan {
+    grid-area: TopMan;
+}
+.Tag {
+    grid-area: Tag;
+}
+/* .CardGrid {
+    display: grid;
+    grid-template-columns: repeat(autofill, 0px);
+    justify-content: start;
+    gap: 8px;
+} */
+@media (max-width: 1023px) {
+    .MyGrid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 200px 400px 1fr 1fr 1fr;
+        grid-template-areas:
+            "Tag"
+            "TopMan"
+            "NewMan"
+            "UpMan"
+            "YouMan";
+    }
+}
