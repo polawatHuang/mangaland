@@ -52,6 +52,7 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        checkIsLogin();
         const fetchStatus = async () => {
             try {
                 const response = await fetch(
@@ -69,6 +70,13 @@ export default function DashboardPage() {
         };
         fetchStatus();
     }, []);
+
+    const checkIsLogin = () => {
+        const accessToken = localStorage.getItem("accessToken");
+        if (!accessToken) {
+            window.location.href = "/login";
+        }
+    };
 
     useEffect(() => {
         const handleRightClick = (e: any) => {
