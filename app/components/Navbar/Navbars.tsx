@@ -1,10 +1,9 @@
 "use client";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Twirl as Hamburger } from "hamburger-react";
-import "./Navbar.css";
 import axios from "axios";
 import { NavbarItem } from "@/app/models/settings";
 import { LayoutReturnResponse } from "@/app/models/server";
@@ -15,22 +14,36 @@ function Navbars() {
     const [navbar, setNavbar] = useState<NavbarItem[]>([]);
     const [navOpen, setNavOpen] = useState(false);
 
-    const fetchNavbar = async () => {
-        const { data } = await axios.get<LayoutReturnResponse>(`/api/layout`);
-
-        setNavbar(data.navbar);
-    };
+    const fetchNavbar = useCallback(async () => {
+        try {
+            const { data } = await axios.get<LayoutReturnResponse>(
+                `/api/layout`
+            );
+            setNavbar(data.navbar);
+        } catch (error) {
+            console.error("Failed to fetch navbar data:", error);
+        }
+    }, []);
 
     useEffect(() => {
         fetchNavbar();
-    }, []);
+    }, [fetchNavbar]);
 
     return (
         <nav className="flex relative justify-between z-40 items-center px-10 lg:px-20 h-16 bg-gray text-white">
-            <div className=" 2xl:max-w-6xl w-full mx-auto overflow-hidden flex justify-between items-center">
-                <div className=" flex gap-2 cursor-default items-center font-normal text-2xl relative">
-                    <Image src={logo} className="w-16 block" alt="logo" />
-                    <div className=" gap-2 lg:flex hidden">
+            <div className="2xl:max-w-6xl w-full mx-auto flex justify-between items-center">
+                {/* Logo */}
+                <Link
+                    href="/"
+                    className="cursor-pointer flex gap-2 items-center font-normal text-2xl"
+                >
+                    <Image
+                        src={logo}
+                        className="w-16 block"
+                        alt="logo"
+                        priority
+                    />
+                    <div className="gap-2 lg:flex hidden">
                         <span className="text-pink [text-shadow:_#eb4897_2px_0_10px]">
                             MOODENG
                         </span>
@@ -38,7 +51,7 @@ function Navbars() {
                             MANGA
                         </span>
                     </div>
-                    <div className=" gap-2 lg:hidden block">
+                    <div className="gap-2 lg:hidden block">
                         <span className="text-pink [text-shadow:_#eb4897_2px_0_10px]">
                             M
                         </span>
@@ -46,69 +59,80 @@ function Navbars() {
                             MANGA
                         </span>
                     </div>
-                </div>
-                <div className=" lg:hidden bg-pink flex justify-center items-center h-16 w-16 hover:bg-[#bb3978] ">
-                    <button className="h-full">
+                </Link>
+
+                {/* Mobile Navigation */}
+                <div className="lg:hidden flex items-center">
+                    <button
+                        aria-label="Toggle navigation menu"
+                        className="bg-pink flex justify-center items-center h-16 w-16 hover:bg-[#bb3978]"
+                        onClick={() => setNavOpen(!navOpen)}
+                    >
                         <Hamburger
                             size={30}
                             toggled={navOpen}
                             toggle={setNavOpen}
                         />
                     </button>
+
                     <div
-                        className={`${
-                            navOpen ? `h-80` : `h-0`
-                        } w-full overflow-hidden absolute top-16 left-0 transition-all duration-700`}
+                        className={`absolute top-16 left-0 w-full bg-[#3b3b3b] transition-all duration-700 overflow-hidden ${
+                            navOpen ? "h-80" : "h-0"
+                        }`}
                     >
-                        <ul className=" w-full divide-y-2 divide-[#4e4e4e] flex flex-col">
+                        <ul className="w-full divide-y-2 divide-[#4e4e4e] flex flex-col">
                             {navbar &&
-                                navbar.map((items, index) => (
-                                    <li key={index} className=" w-full flex">
+                                navbar.map((item, index) => (
+                                    <li key={index} className="w-full flex">
                                         <Link
-                                            className=" bg-[#3b3b3b] w-full py-4 flex justify-center items-center"
-                                            href={items.link}
-                                            onClick={() => setNavOpen(!navOpen)}
+                                            href={item.link}
+                                            className="w-full py-4 flex justify-center items-center text-white"
+                                            onClick={() => setNavOpen(false)}
                                         >
-                                            {items.title}
+                                            {item.title}
                                         </Link>
                                     </li>
                                 ))}
                             <li>
-                                <div className="h-full flex">
+                                <div className="flex">
                                     <input
                                         type="text"
-                                        className=" w-full h-16 bg-[#333333] outline-none text-white px-2"
+                                        className="w-full h-16 bg-[#333333] outline-none text-white px-2"
                                         placeholder="ค้นหาชื่อมังงะ"
                                     />
                                     <button className="w-20 h-16 bg-blue hover:bg-[#2b61a8] flex justify-center items-center">
-                                        <MagnifyingGlassIcon className=" size-5 h-full" />
+                                        <MagnifyingGlassIcon className="size-5 h-full" />
                                     </button>
                                 </div>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <ul className="lg:flex Blurhover gap-5 hidden">
+
+                {/* Desktop Navigation */}
+                <ul className="lg:flex hidden gap-5">
                     {navbar &&
-                        navbar.map((items, index) => (
+                        navbar.map((item, index) => (
                             <motion.li
                                 key={index}
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 className="Underline"
                             >
-                                <Link href={items.link}>{items.title}</Link>
+                                <Link href={item.link}>{item.title}</Link>
                             </motion.li>
                         ))}
                 </ul>
-                <div className="lg:flex hidden justify-center">
+
+                {/* Search Bar */}
+                <div className="lg:flex hidden">
                     <input
                         type="text"
-                        className=" w-36 outline-none h-8 text-black px-2 rounded-l-lg"
+                        className="w-36 outline-none h-8 text-black px-2 rounded-l-lg"
                         placeholder="ค้นหาชื่อมังงะ"
                     />
                     <button className="w-8 h-8 bg-blue hover:bg-[#2b61a8] flex justify-center items-center rounded-r-lg">
-                        <MagnifyingGlassIcon className=" size-5 h-full" />
+                        <MagnifyingGlassIcon className="size-5 h-full" />
                     </button>
                 </div>
             </div>

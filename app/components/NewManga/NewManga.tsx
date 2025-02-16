@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import style from "./NewManga.module.css";
 import axios from "axios";
-import { ProjectResponse, Project } from "../../models/project";
+import { MultiProjectResponse, Project } from "../../models/project";
 import Card from "../../components/Card/Card";
 import Link from "next/link";
 import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
@@ -23,7 +23,7 @@ function NewManga() {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await axios.get<ProjectResponse>(
+                const response = await axios.get<MultiProjectResponse>(
                     `${process.env.NEXT_PUBLIC_API_URL}/project`
                 );
                 const mappedMangaList = response.data.result.projects.map(
@@ -72,8 +72,9 @@ function NewManga() {
                     {error && <p>{error}</p>}
 
                     {!loading && !error && mangaList.length > 0
-                        ? mangaList.map((manga) => (
+                        ? mangaList.map((manga, index) => (
                               <motion.div
+                                  key={index}
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
                                   className=" w-[150px] h-[220px] overflow-hidden"
