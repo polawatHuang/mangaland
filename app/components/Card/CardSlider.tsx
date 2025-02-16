@@ -126,15 +126,18 @@ const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
                                 )}
                             </button>
                         )}
-                        <motion.div whileTap={{ scale: 0.9 }} className="">
+                        <motion.div
+                            whileTap={{ scale: 0.9 }}
+                            className=" h-full"
+                        >
                             <Link
-                                className="overflow-hidden relative bg-yellow-500 card item z-20"
+                                className="overflow-hidden relative h-full bg-yellow-500 card item z-20"
                                 href={manga.slug}
                             >
                                 <img
                                     src={manga.backgroundImage}
                                     alt={manga.name}
-                                    className="w-full object-cover"
+                                    className="w-full h-full object-cover"
                                     loading="lazy"
                                 />
                                 <div className="py-4 absolute bottom-0 left-[50%] translate-x-[-50%] z-10">

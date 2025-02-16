@@ -8,7 +8,9 @@
     background: linear-gradient(to top, black, transparent);
     z-index: 1;
 }
-
+.swiper-slide {
+    height: auto;
+}
 .swiper-wrapper .item {
     transition: 0.5s !important;
 }
