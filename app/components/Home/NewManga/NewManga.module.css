@@ -1,0 +1,13 @@
+.item {
+    border: 2px solid black;
+    padding: 16px;
+}
+.NewMan {
+    grid-area: NewMan;
+}
+/* .CardGrid {
+    display: grid;
+    grid-template-columns: repeat(autofill, 0px);
+    justify-content: start;
+    gap: 8px;
+} */

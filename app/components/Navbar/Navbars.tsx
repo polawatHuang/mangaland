@@ -30,7 +30,7 @@ function Navbars() {
     }, [fetchNavbar]);
 
     return (
-        <nav className="flex relative justify-between z-40 items-center px-10 lg:px-20 h-16 bg-gray text-white">
+        <nav className="flex relative justify-between z-40 items-center px-10 lg:px-20 h-16 bg-[#111111] text-white">
             <div className="2xl:max-w-6xl w-full mx-auto flex justify-between items-center">
                 {/* Logo */}
                 <Link
@@ -76,8 +76,8 @@ function Navbars() {
                     </button>
 
                     <div
-                        className={`absolute top-16 left-0 w-full bg-[#3b3b3b] transition-all duration-700 overflow-hidden ${
-                            navOpen ? "h-80" : "h-0"
+                        className={`absolute top-16 left-0 w-full transition-all duration-700 overflow-hidden ${
+                            navOpen ? "h-96" : "h-0"
                         }`}
                     >
                         <ul className="w-full divide-y-2 divide-[#4e4e4e] flex flex-col">
@@ -86,7 +86,7 @@ function Navbars() {
                                     <li key={index} className="w-full flex">
                                         <Link
                                             href={item.link}
-                                            className="w-full py-4 flex justify-center items-center text-white"
+                                            className="w-full py-4 flex justify-center bg-[#3b3b3b] items-center text-white"
                                             onClick={() => setNavOpen(false)}
                                         >
                                             {item.title}
