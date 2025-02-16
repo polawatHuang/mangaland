@@ -1,12 +1,14 @@
-export interface ProjectResponse {
-    success: boolean;
-    message: string;
-    result: Result;
-    meta: Meta;
-    status: number;
+import { BaseResponse } from ".";
+
+export interface SingleProjectResponse extends BaseResponse {
+    result: Project;
 }
 
-export interface Result {
+export interface MultiProjectResponse extends BaseResponse {
+    result: ProjectResult;
+}
+
+export interface ProjectResult {
     projects: Project[];
     pagination: Pagination;
 }
@@ -41,8 +43,4 @@ export interface Pagination {
     totalPages: number;
     totalProjects: number;
     perPage: number;
-}
-
-export interface Meta {
-    timestamp: string;
 }
