@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { PencilIcon, TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 // Lazy load react-select to prevent SSR mismatches
