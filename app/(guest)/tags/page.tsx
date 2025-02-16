@@ -1,53 +1,32 @@
-import { useCallback, useMemo, useState } from "react"
+"use client"
+
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { TagLink } from "../../components/Tag/TagLink"
 import { SortButton } from "../../components/Tag/SortButton"
 import axios from "axios"
+import { Tag, TagResonse } from "@/app/models/tag"
 
 enum SortTags {
     ByCharactor = "by_char",
     Poplular = "by_popular"
 }
 
-export interface ITag {
-    name: string,
-    total: number
-}
-
-const TagsMockUp: ITag[] = [
-    {
-        name: "3d",
-        total: 10
-    },
-    {
-        name: "anime",
-        total: 2
-    },
-    {
-        name: "manga",
-        total: 6
-    },
-    {
-        name: "romance",
-        total: 15
-    },
-    {
-        name: "action",
-        total: 5
-    }
-]
-
-export default async function Tags() {
+export default function Tags() {
     const [sortBy, setSortBy] = useState<SortTags>(SortTags.ByCharactor)
-    const [tags, _] = useState<ITag[]>(TagsMockUp)
+    const [tags, setTags] = useState<Tag[]>([])
 
-    const fetchTags = useMemo(async () => {
-        try {
-        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tag`)
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const { data } = await axios.get<TagResonse>(`${process.env.NEXT_PUBLIC_API_URL}/tag`)
 
-            return data
-        } catch (error) {
-            console.log(error)
+                setTags(data.result.tags)
+            } catch (error) {
+                console.log(error)
+            }
         }
+
+        fetchTags()
     }, [])
 
     const onChangeSort = useCallback((sortType: SortTags) => {
@@ -55,12 +34,14 @@ export default async function Tags() {
     }, [sortBy])
 
     const sortedTags = useMemo(() => {
+        if (!tags.length) return []
+
         return [...tags].sort((a, b) =>
             sortBy === SortTags.ByCharactor
                 ? a.name.localeCompare(b.name)
-                : b.total - a.total
+                : b._count.projectTags - a._count.projectTags
         )
-    }, [sortBy])
+    }, [tags.length, sortBy])
 
     return <div className="space-y-6">
         <h1 className="text-xl text-center">Tags</h1>
@@ -80,17 +61,21 @@ export default async function Tags() {
         </div>
 
         <div className="bg-gray py-4 px-4 rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {
-                    sortedTags.map((tag) =>
-                        <TagLink
-                            name={tag.name}
-                            total={tag.total}
-                            key={tag.name}
-                        />
-                    )
-                }
-            </div>
+            {
+                sortedTags.length === 0
+                    ? <p className="text-center">No tags found.</p>
+                    : <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        {
+                            sortedTags.map((tag) =>
+                                <TagLink
+                                    name={tag.name}
+                                    total={tag._count.projectTags}
+                                    key={tag.name}
+                                />
+                            )
+                        }
+                    </div>
+            }
         </div>
     </div>
 }
