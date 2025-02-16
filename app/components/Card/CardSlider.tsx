@@ -6,7 +6,6 @@ import { useRef, useState, useEffect } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import "./Card.css";
 import { motion } from "framer-motion";
 
@@ -127,23 +126,24 @@ const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
                                 )}
                             </button>
                         )}
-
-                        <Link
-                            className="overflow-hidden relative bg-yellow-500 card item z-20"
-                            href={manga.slug}
-                        >
-                            <img
-                                src={manga.backgroundImage}
-                                alt={manga.name}
-                                className="w-full object-cover"
-                                loading="lazy"
-                            />
-                            <div className="py-4 absolute bottom-0 left-[50%] translate-x-[-50%] z-10">
-                                <h2 className="text-lg font-semibold text-white leading-5 text-ellipsis text-center line-clamp-3">
-                                    {manga.name}
-                                </h2>
-                            </div>
-                        </Link>
+                        <motion.div whileTap={{ scale: 0.9 }} className="">
+                            <Link
+                                className="overflow-hidden relative bg-yellow-500 card item z-20"
+                                href={manga.slug}
+                            >
+                                <img
+                                    src={manga.backgroundImage}
+                                    alt={manga.name}
+                                    className="w-full object-cover"
+                                    loading="lazy"
+                                />
+                                <div className="py-4 absolute bottom-0 left-[50%] translate-x-[-50%] z-10">
+                                    <h2 className="text-lg font-semibold text-white leading-5 text-ellipsis text-center line-clamp-3">
+                                        {manga.name}
+                                    </h2>
+                                </div>
+                            </Link>
+                        </motion.div>
                     </SwiperSlide>
                 ))}
             </Swiper>
