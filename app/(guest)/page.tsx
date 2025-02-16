@@ -4,7 +4,7 @@ import axios from "axios";
 import Advertise from "../components/Advertise/Advertise";
 import { ScrollUp } from "../components/Footer/Scrollup";
 import CardSliderComponent from "../components/Card/CardSlider";
-import { ProjectResponse, Project } from "../models/project";
+import { Project, MultiProjectResponse } from "../models/project";
 import NewManga from "../components/NewManga/NewManga";
 
 interface Manga {
@@ -22,7 +22,7 @@ export default function Home() {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await axios.get<ProjectResponse>(
+                const response = await axios.get<MultiProjectResponse>(
                     `${process.env.NEXT_PUBLIC_API_URL}/project`
                 );
                 const mappedMangaList = response.data.result.projects.map(

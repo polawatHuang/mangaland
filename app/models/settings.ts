@@ -1,10 +1,7 @@
+import { BaseResponse } from ".";
 
-export interface Setting {
-    success: boolean;
-    message: string;
+export interface SettingResponse extends BaseResponse {
     result: Result;
-    meta: Meta;
-    status: number;
 }
 
 export interface Result {
@@ -64,8 +61,4 @@ export interface Email {
 export interface Social {
     href: string;
     name: string;
-}
-
-export interface Meta {
-    timestamp: string;
 }

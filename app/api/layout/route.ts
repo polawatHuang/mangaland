@@ -1,5 +1,5 @@
 import { LayoutReturnResponse } from "@/app/models/server";
-import { Setting } from "@/app/models/settings";
+import { SettingResponse } from "@/app/models/settings";
 import axios from "axios";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,7 @@ export async function GET() {
 
     console.log("Fetching new data");
 
-    const { data } = await axios.get<Setting>(`${process.env.NEXT_PUBLIC_API_URL}/setting/1`)
+    const { data } = await axios.get<SettingResponse>(`${process.env.NEXT_PUBLIC_API_URL}/setting/1`)
 
     responseCache = {
         footer: data.result.footer,
