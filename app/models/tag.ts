@@ -11,12 +11,19 @@ export interface Tag {
   name: string
   createdAt: string
   updatedAt: string
-  projectTags: any[]
+  projectTags: ProjectTag[]
   _count: Count
 }
 
 export interface Count {
   projectTags: number
+}
+
+export interface ProjectTag {
+  id: number
+  projectId: number
+  tagId: number
+  createdAt: string
 }
 
 export interface Meta {

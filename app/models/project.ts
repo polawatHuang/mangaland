@@ -2,10 +2,11 @@ import { BaseResponse } from ".";
 
 export interface ProjectResponse extends BaseResponse {
     status: number;
+    result: ProjectResult;
 }
 
-export interface Result {
-    projects: Project[];
+export interface ProjectResult {
+    projects: Project;
     pagination: Pagination;
 }
 
