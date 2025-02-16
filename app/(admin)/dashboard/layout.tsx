@@ -6,39 +6,33 @@ import {
   HomeIcon,
   BookOpenIcon,
   UsersIcon,
-  CogIcon,
+  ArrowUturnLeftIcon,
   Bars2Icon,
   XMarkIcon,
+  HeartIcon,
 } from "@heroicons/react/24/outline";
 import "../../globals.css";
 import Navbars from "@/app/components/Navbar/Navbars";
 import Footer from "@/app/components/Footer/Footer";
+import clsx from "clsx";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon },
+  { name: "Dashboard", href: "/dashboard", icon: HomeIcon },
+  { name: "Account", href: "#", icon: UsersIcon },
   { name: "Project List", href: "/dashboard/project-list", icon: BookOpenIcon },
-  { name: "Users", href: "#", icon: UsersIcon },
-  { name: "Settings", href: "#", icon: CogIcon },
+  { name: "Favorite Project", href: "#", icon: HeartIcon },
+  { name: "User Management", href: "#", icon: UsersIcon },
+  { name: "Logout", href: "#", icon: ArrowUturnLeftIcon },
 ];
-
-// const menuItems = [
-//   { name: "Dashboard", icon: HomeIcon },
-//   { name: "Editor Homepage", icon: DocumentTextIcon },
-//   { name: "My Blog", icon: DocumentTextIcon },
-//   { name: "My Project", icon: DocumentTextIcon },
-//   { name: "My Profile", icon: UserIcon },
-//   { name: "Favourite", icon: StarIcon },
-//   { name: "Message & Ticket", icon: InboxIcon },
-// ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <html>
-      <body>
+      <body className="bg-black text-white">
         <Navbars />
-        <div className="h-screen flex overflow-hidden text-[#333] bg-gradient-to-b from-[#f5f5f5] to-[#ffffff]">
+        <div className="h-screen flex overflow-hidden text-white">
           {/* Mobile sidebar */}
           <Transition.Root show={sidebarOpen} as={Fragment}>
             <Dialog
@@ -66,14 +60,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel className="relative flex-1 flex flex-col max-w-xs w-full bg-gradient-to-b from-[#d4d4d4] to-[#ffffff]">
+                <Dialog.Panel className="relative flex-1 flex flex-col max-w-xs w-full">
                   <div className="absolute top-0 right-0 -mr-12 pt-2">
                     <button
                       className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#555]"
                       onClick={() => setSidebarOpen(false)}
                     >
                       <XMarkIcon
-                        className="h-6 w-6 text-[#333]"
+                        className="h-6 w-6 text-white"
                         aria-hidden="true"
                       />
                     </button>
@@ -83,10 +77,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       <a
                         key={item.name}
                         href={item.href}
-                        className="group flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-[#bfbfbf] text-[#333]"
+                        className="group flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-[#bfbfbf] text-white"
                       >
                         <item.icon
-                          className="mr-4 h-6 w-6 text-[#333]"
+                          className="mr-4 h-6 w-6 text-white"
                           aria-hidden="true"
                         />
                         {item.name}
@@ -100,8 +94,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Sidebar for larger screens */}
           <div className="hidden md:flex md:flex-shrink-0">
-            <div className="flex flex-col w-64 bg-gradient-to-b from-[#ffc2df] to-[#ffffff] border-r border-[#bfbfbf]">
-              <div className="h-16 flex items-center justify-center text-xl font-bold border-b border-[#ffc2df] text-[#333]">
+            <div className="flex flex-col w-64 bg-gradient-to-b from-[#060606] border-r border-[#282524]">
+              <div className={clsx(`bg-[#060606]`,"h-16 flex items-center justify-center text-xl font-bold border-b border-[#282524] text-white")}>
                 Menu
               </div>
               <nav className="flex-1 px-2 space-y-1">
@@ -110,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <a
                     key={item.name}
                     href={item.href}
-                    className="group flex items-center px-2 py-2 text-base text-[#333] hover:bg-[#eb4897] hover:text-white font-medium rounded-md"
+                    className="group flex items-center px-2 py-2 text-base text-[#898fa8] hover:bg-[#eb4897] hover:text-white font-medium rounded-md"
                   >
                     <item.icon className="mr-4 h-6 w-6" aria-hidden="true" />
                     {item.name}
@@ -122,9 +116,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Main content */}
           <div className="flex flex-col flex-1 overflow-hidden">
-            <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-[#f5f5f5] border-b border-[#bfbfbf] shadow">
+            <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-[#060606] border-b border-[#282524] shadow">
               <button
-                className="px-4 border-r border-[#bfbfbf] text-[#333] focus:outline-none md:hidden"
+                className="px-4 border-r border-[#282524] text-white focus:outline-none md:hidden"
                 onClick={() => setSidebarOpen(true)}
               >
                 <Bars2Icon className="h-6 w-6" aria-hidden="true" />
