@@ -14,43 +14,11 @@ interface Manga {
     backgroundImage: string;
     name: string;
 }
-interface Tag {
-    id: string;
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-    projectTags: any[];
-    _count: {
-        projectTags: number;
-    };
-}
-
-interface Result {
-    result: any;
-    tags: Tag[];
-}
 
 function NewManga() {
     const [mangaList, setMangaList] = useState<Manga[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [tagLists, setTagLists] = useState<Tag[]>([]);
-
-    useEffect(() => {
-        const fetchProjectTagByName = async () => {
-            try {
-                const data = await axios.get<Result>(
-                    `${process.env.NEXT_PUBLIC_API_URL}/tag`
-                );
-                setTagLists(data.data.result.tags);
-            } catch (error) {
-                console.log("Error fetching tags:", error);
-                setError("Failed to fetch tags");
-            }
-        };
-
-        fetchProjectTagByName();
-    }, []);
 
     useEffect(() => {
         const fetchProjects = async () => {

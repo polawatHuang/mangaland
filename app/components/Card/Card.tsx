@@ -19,8 +19,6 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
     const [favorites, setFavorites] = useState<Manga[]>([]);
-
-    // Load favorite mangas from localStorage
     useEffect(() => {
         const storedFavorites = JSON.parse(
             localStorage.getItem("favoriteMangas") || "[]"
@@ -28,7 +26,6 @@ const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
         setFavorites(storedFavorites);
     }, []);
 
-    // Toggle favorite manga
     const toggleFavorite = () => {
         let updatedFavorites: Manga[];
         if (favorites.some((fav) => fav.id === manga.id)) {
@@ -46,7 +43,6 @@ const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
 
     return (
         <div className="relative w-full h-auto overflow-hidden">
-            {/* Favorite Button */}
             {hasFevFunction && (
                 <button
                     onClick={toggleFavorite}
@@ -63,8 +59,6 @@ const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
                     )}
                 </button>
             )}
-
-            {/* Manga Card */}
             <Link href={manga.slug} className="relative card">
                 <Image
                     width={187}
@@ -72,7 +66,6 @@ const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
                     src={manga.backgroundImage}
                     alt={manga.name}
                     className="h-[220px] w-full object-cover"
-                    loading="lazy"
                 />
                 <div className="py-4 absolute bottom-0 left-[50%] translate-x-[-50%] z-10">
                     <h2 className="text-lg font-semibold text-white leading-5 text-ellipsis text-center line-clamp-3">
