@@ -59,7 +59,6 @@ const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
     const [isBeginning, setIsBeginning] = useState<boolean>(true);
     const [isEnd, setIsEnd] = useState<boolean>(false);
     const [favorites, setFavorites] = useState<Manga[]>([]);
-
     useEffect(() => {
         const storedFavorites = JSON.parse(
             localStorage.getItem("favoriteMangas") || "[]"

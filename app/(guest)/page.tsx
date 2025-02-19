@@ -2,11 +2,11 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { ScrollUp } from "../components/Footer/Scrollup";
 import axios from "axios";
+import dayjs from "dayjs";
 import { Project, MultiProjectResponse } from "../models/project";
 import style from "./page.module.css";
 
 const Advertise = dynamic(() => import("../components/Advertise/Advertise"));
-
 const CardSlider = dynamic(() => import("../components/Card/CardSlider"), {
     ssr: true,
 });
@@ -18,9 +18,7 @@ const TopManga = dynamic(() => import("../components/Home/TopManga/TopManga"), {
 });
 const ForYouManga = dynamic(
     () => import("../components/Home/ForYouManga/ForYouManga"),
-    {
-        ssr: true,
-    }
+    { ssr: true }
 );
 const TagManga = dynamic(() => import("../components/Home/TagManga/TagManga"), {
     ssr: true,
@@ -34,10 +32,13 @@ interface Manga {
     slug: string;
     backgroundImage: string;
     name: string;
+    viewsCount: number;
+    createdAt: string;
 }
 
 export default async function Home() {
     const mangaList = await fetchProjects();
+
     return (
         <div>
             <Suspense fallback={<div>Loading advertisement...</div>}>
@@ -48,9 +49,10 @@ export default async function Home() {
                 <h2 className="">🔥ฮิตประจำเดือนนี้</h2>
 
                 <Suspense fallback={<p>Loading manga list...</p>}>
-                    <CardSlider mangaList={mangaList.slice(0, 5)} />
+                    <CardSlider mangaList={mangaList} />
                 </Suspense>
             </div>
+
             <div className={`${style.MyGrid} gap-2`}>
                 <Suspense fallback={<p>Loading new manga...</p>}>
                     <NewManga />
@@ -72,11 +74,27 @@ async function fetchProjects(): Promise<Manga[]> {
             `${process.env.NEXT_PUBLIC_API_URL}/project`
         );
 
-        return response.data.result.projects.map((project: Project) => ({
+        const currentMonth = dayjs().month();
+        const currentYear = dayjs().year();
+
+        const filteredProjects = response.data.result.projects
+            .filter((project: Project) => {
+                const projectDate = dayjs(project.createdAt);
+                return (
+                    projectDate.month() === currentMonth &&
+                    projectDate.year() === currentYear
+                );
+            })
+            .sort((a, b) => b.viewsCount - a.viewsCount)
+            .slice(0, 5); // Take top 5
+
+        return filteredProjects.map((project: Project) => ({
             id: project.id,
             slug: `/project/${project.id}`,
             backgroundImage: project.coverImage,
             name: project.title,
+            viewsCount: project.viewsCount,
+            createdAt: project.createdAt,
         }));
     } catch (error) {
         console.error("Failed to fetch projects:", error);

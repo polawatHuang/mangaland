@@ -4,6 +4,7 @@ import style from "./TagManga.module.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface Tag {
     id: string;
@@ -42,18 +43,24 @@ function TopManga() {
         fetchProjectTagByName();
     }, []);
     return (
-        <div className={`${style.item} flex flex-col gap-2 Tag`}>
+        <div className={`${style.item} flex flex-col gap-3 Tag`}>
             <h2>Tag</h2>
-            <div className="flex gap-1 w-full flex-col">
+            <div className="flex gap-2 w-full flex-col">
                 {tagLists.length > 0
-                    ? tagLists.map((tag) => (
-                          <Link
-                              href={`/tags/${tag.name}`}
-                              className="bg-gray w-full p-3 rounded-md flex justify-center items-center"
-                              key={tag.id}
+                    ? tagLists.map((tag, index) => (
+                          <motion.div
+                              key={index}
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
                           >
-                              {tag.name}
-                          </Link>
+                              <Link
+                                  href={`/tags/${tag.name}`}
+                                  className="bg-gray w-full p-3 rounded-md flex justify-center items-center"
+                                  key={tag.id}
+                              >
+                                  {tag.name}
+                              </Link>
+                          </motion.div>
                       ))
                     : "No tags available"}
             </div>
