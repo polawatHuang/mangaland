@@ -14,20 +14,19 @@ function Navbars() {
     const [navbar, setNavbar] = useState<NavbarItem[]>([]);
     const [navOpen, setNavOpen] = useState(false);
 
-    const fetchNavbar = useCallback(async () => {
+    const fetchData = useCallback(async () => {
         try {
             const { data } = await axios.get<LayoutReturnResponse>(
-                `/api/layout`
+                "/api/layout"
             );
-            console.log(data.navbar);
-            setNavbar(data.navbar);
-        } catch (err) {
-            console.error("Failed to fetch navbar data:", err);
+            setNavbar(data.navbar || data.result.navbar.items);
+        } catch (error) {
+            console.error("Failed to fetch navbar data:", error);
         }
     }, []);
 
     useEffect(() => {
-        fetchNavbar();
+        fetchData();
     }, []);
 
     return (
@@ -123,7 +122,6 @@ function Navbars() {
                             </motion.li>
                         ))}
                 </ul>
-
                 {/* Search Bar */}
                 <div className="lg:flex hidden">
                     <input

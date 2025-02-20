@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+    }, []);
 
     return (
         <footer className="relative text-white pb-8 pt-14 h-full overflow-hidden flex flex-col">

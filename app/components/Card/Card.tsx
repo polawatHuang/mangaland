@@ -25,7 +25,6 @@ const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
         ) as Manga[];
         setFavorites(storedFavorites);
     }, []);
-
     const toggleFavorite = () => {
         let updatedFavorites: Manga[];
         if (favorites.some((fav) => fav.id === manga.id)) {

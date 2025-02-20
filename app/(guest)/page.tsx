@@ -90,7 +90,9 @@ async function fetchProjects(): Promise<Manga[]> {
 
         return filteredProjects.map((project: Project) => ({
             id: project.id,
-            slug: `/project/${project.id}`,
+            slug: `/project/${project.title
+                .replace(/\s+/g, "-")
+                .toLowerCase()}`,
             backgroundImage: project.coverImage,
             name: project.title,
             viewsCount: project.viewsCount,
