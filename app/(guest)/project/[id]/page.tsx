@@ -3,6 +3,7 @@ import AdvertiseComponent from "../../../components/Advertise/Advertise";
 import dayjs from "dayjs";
 import Link from "next/link";
 import axios from "axios";
+import { notFound } from "next/navigation";
 
 interface Manga {
     id: number;
@@ -67,20 +68,20 @@ async function fetchManga(id: string): Promise<Manga | null> {
     }
 }
 
-export default async function SlugPage({ params }: { params: { id: string } }) {
-    if (!params?.id) {
+export default async function SlugPage({
+    params,
+}: {
+    params: { id?: string };
+}) {
+    if (!params || !params.id) {
         console.error("Error: ID is missing in params");
-        return (
-            <p className="text-center text-white">ไม่พบข้อมูลมังงะที่ระบุ</p>
-        );
+        return notFound();
     }
 
     const manga = await fetchManga(params.id);
 
     if (!manga) {
-        return (
-            <p className="text-center text-white">ไม่พบข้อมูลมังงะที่ระบุ</p>
-        );
+        return notFound();
     }
 
     return (

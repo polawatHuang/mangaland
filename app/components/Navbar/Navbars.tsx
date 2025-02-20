@@ -21,8 +21,8 @@ function Navbars() {
             );
             console.log(data.navbar);
             setNavbar(data.navbar);
-        } catch (error) {
-            console.error("Failed to fetch navbar data:", error);
+        } catch (err) {
+            console.error("Failed to fetch navbar data:", err);
         }
     }, []);
 
