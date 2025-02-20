@@ -27,12 +27,11 @@ function Navbars() {
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+    }, []);
 
     return (
         <nav className="flex relative justify-between z-40 items-center px-10 lg:px-20 h-16 bg-[#111111] text-white">
             <div className="2xl:max-w-6xl w-full mx-auto flex justify-between items-center">
-                {/* Logo */}
                 <Link
                     href="/"
                     className="cursor-pointer flex gap-2 items-center font-normal text-2xl"
