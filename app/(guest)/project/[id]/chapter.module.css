@@ -1,0 +1,17 @@
+.child:nth-child(1) {
+    border-radius: 10px 10px 0 0;
+}
+.child:nth-last-child(1) {
+    border-radius: 0 0 10px 10px;
+}
+.parent {
+    transform-style: preserve-3d;
+    transform: perspective(2000px);
+    overflow-y: auto;
+}
+.child {
+    transition: all 500ms;
+}
+.child:hover {
+    background-color: rgb(58, 58, 58);
+}

@@ -14,20 +14,20 @@ function Navbars() {
     const [navbar, setNavbar] = useState<NavbarItem[]>([]);
     const [navOpen, setNavOpen] = useState(false);
 
-    const fetchNavbar = useCallback(async () => {
+    const fetchData = useCallback(async () => {
         try {
             const { data } = await axios.get<LayoutReturnResponse>(
-                `/api/layout`
+                "/api/layout"
             );
-            setNavbar(data.navbar);
+            setNavbar(data.navbar || data.result.navbar.items);
         } catch (error) {
             console.error("Failed to fetch navbar data:", error);
         }
     }, []);
 
     useEffect(() => {
-        fetchNavbar();
-    }, [fetchNavbar]);
+        fetchData();
+    }, [fetchData]);
 
     return (
         <nav className="flex relative justify-between z-40 items-center px-10 lg:px-20 h-16 bg-[#111111] text-white">
@@ -123,7 +123,6 @@ function Navbars() {
                             </motion.li>
                         ))}
                 </ul>
-
                 {/* Search Bar */}
                 <div className="lg:flex hidden">
                     <input
