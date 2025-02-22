@@ -310,7 +310,9 @@ router.get("/", async (req: Request, res: Response) => {
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           oneOf:
+ *             - type: integer
+ *             - type: string
  *     responses:
  *       200:
  *         description: Successfully retrieved project.
@@ -324,9 +326,9 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
-    if (!id || isNaN(Number(id))) {
+    if (!id) {
       res.status(400).json(
-        Resp.error("Invalid project ID", {
+        Resp.error("Invalid project ID or project Name", {
           status: 400,
           meta: { timestamp: new Date().toISOString() }
         })
@@ -334,8 +336,12 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const project = await prisma.project.findUnique({
-      where: { id: parseInt(id) },
+    const project = await prisma.project.findFirst({
+      where: {
+        ...isNaN(parseInt(id))
+          ? { title: id }
+          : { id: parseInt(id) }
+      },
       include: {
         user: true,
         episodes: true,
