@@ -14,13 +14,13 @@ const prisma = new PrismaClient();
 const router: Router = Router();
 
 interface CustomResponseOptions extends ResponseOptions {
-    timestamp?: string;
-    error?: string;
-    meta?: {
-        status: number;
-        stack?: string;
-        [key: string]: any;
-    };
+  timestamp?: string;
+  error?: string;
+  meta?: {
+    status: number;
+    stack?: string;
+    [key: string]: any;
+  };
 }
 
 // Get all projects
@@ -29,33 +29,233 @@ interface CustomResponseOptions extends ResponseOptions {
  * @swagger
  * /api/project:
  *   get:
- *     summary: Get all projects
+ *     summary: Get all projects with pagination
  *     tags: [Projects]
- *     description: Fetch all projects associated with the authenticated user.
+ *     description: Fetch a paginated list of projects with related user, episodes, and tags.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page.
  *     responses:
  *       200:
  *         description: Successfully retrieved projects.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Get Project data Successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     projects:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 1
+ *                           title:
+ *                             type: string
+ *                             example: "Awesome Manga Project"
+ *                           description:
+ *                             type: string
+ *                             example: "A cool manga project with great content."
+ *                           projectType:
+ *                             type: string
+ *                             example: "Manga"
+ *                           status:
+ *                             type: string
+ *                             example: "Ongoing"
+ *                           coverImage:
+ *                             type: string
+ *                             format: uri
+ *                             example: "https://example.com/cover.jpg"
+ *                           viewsCount:
+ *                             type: integer
+ *                             example: 1500
+ *                           episodeTotal:
+ *                             type: integer
+ *                             example: 25
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           user:
+ *                             type: object
+ *                             properties:
+ *                               username:
+ *                                 type: string
+ *                                 example: "variz"
+ *                           episodes:
+ *                             type: array
+ *                             items:
+ *                               type: object
+ *                               properties:
+ *                                 id:
+ *                                   type: integer
+ *                                   example: 101
+ *                                 episodeNumber:
+ *                                   type: integer
+ *                                   example: 1
+ *                                 title:
+ *                                   type: string
+ *                                   example: "Episode 1"
+ *                                 description:
+ *                                   type: string
+ *                                   example: "The beginning of an epic journey."
+ *                                 viewsCount:
+ *                                   type: integer
+ *                                   example: 500
+ *                                 createdAt:
+ *                                   type: string
+ *                                   format: date-time
+ *                           projectTags:
+ *                             type: array
+ *                             items:
+ *                               type: object
+ *                               properties:
+ *                                 tagId:
+ *                                   type: integer
+ *                                   example: 5
+ *                                 projectId:
+ *                                   type: integer
+ *                                   example: 1
+ *                           _count:
+ *                             type: object
+ *                             properties:
+ *                               views:
+ *                                 type: integer
+ *                                 example: 1500
+ *                               favourites:
+ *                                 type: integer
+ *                                 example: 200
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         currentPage:
+ *                           type: integer
+ *                           example: 1
+ *                         totalPages:
+ *                           type: integer
+ *                           example: 5
+ *                         totalProjects:
+ *                           type: integer
+ *                           example: 50
+ *                         perPage:
+ *                           type: integer
+ *                           example: 10
+ *       404:
+ *         description: No projects found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "No projects found"
  *       500:
  *         description: Failed to retrieve projects.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to get project data"
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     status:
+ *                       type: integer
+ *                       example: 500
+ *                     error:
+ *                       type: string
+ *                       example: "Internal Server Error"
+ *                     timestamp:
+ *                       type: string
+ *                       format: date-time
  */
 
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const { page = "1", limit = "10" } = req.query;
+    const pageNum = parseInt(page as string, 10) || 1;
+    const limitNum = parseInt(limit as string, 10) || 10;
+    const skip = (pageNum - 1) * limitNum;
+
+    // ดึงข้อมูลโปรเจคแบบแบ่งหน้า
     const projects = await prisma.project.findMany({
-      include: {
-        user: true,
-        episodes: true,
-        projectTags: true,
-        views: true,
-        favourites: true,
+      take: limitNum,
+      skip: skip,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        projectType: true,
+        status: true,
+        coverImage: true,
+        viewsCount: true,
+        episodeTotal: true,
+        createdAt: true,
+        user: {
+          select: {
+            username: true,
+          },
+        },
+        episodes: {
+          select: {
+            id: true,
+            episodeNumber: true,
+            title: true,
+            description: true,
+            viewsCount: true,
+            createdAt: true,
+          },
+        },
+        projectTags: {
+          select: {
+            tagId: true,
+            projectId: true,
+          },
+        },
+        _count: {
+          select: {
+            views: true,
+            favourites: true,
+          },
+        },
       },
     });
+
+    // ดึงจำนวนโปรเจคทั้งหมด
+    const totalProjects = await prisma.project.count();
+    const totalPages = Math.ceil(totalProjects / limitNum);
 
     if (projects.length === 0) {
       res.status(404).json(
@@ -68,23 +268,30 @@ router.get("/", async (req: Request, res: Response) => {
     }
 
     res.status(200).json(
-      Resp.success(projects, "Get Project data Successfully", {
-        status: 200,
-        meta: { timestamp: new Date().toISOString() },
-      })
+      Resp.success(
+        {
+          projects,
+          pagination: {
+            currentPage: pageNum,
+            totalPages,
+            totalProjects,
+            perPage: limitNum,
+          },
+        },
+        "Get Project data Successfully",
+        { status: 200, meta: { timestamp: new Date().toISOString() } }
+      )
     );
   } catch (error: any) {
-    const errorOptions: CustomResponseOptions = {
-      status: 500,
-      meta: {
-        status: 500,
-        error: error.message,
-        stack: error.stack,
-        timestamp: new Date().toISOString(),
-      },
-    };
     res.status(500).json(
-      Resp.error("Failed to get project data", errorOptions)
+      Resp.error("Failed to get project data", {
+        status: 500,
+        meta: {
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString(),
+        },
+      })
     );
   }
 });
@@ -103,7 +310,9 @@ router.get("/", async (req: Request, res: Response) => {
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           oneOf:
+ *             - type: integer
+ *             - type: string
  *     responses:
  *       200:
  *         description: Successfully retrieved project.
@@ -117,18 +326,22 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
-    if (!id || isNaN(Number(id))) {
+    if (!id) {
       res.status(400).json(
-        Resp.error("Invalid project ID", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Invalid project ID or project Name", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
     }
 
-    const project = await prisma.project.findUnique({
-      where: { id: parseInt(id) },
+    const project = await prisma.project.findFirst({
+      where: {
+        ...isNaN(parseInt(id))
+          ? { title: id }
+          : { id: parseInt(id) }
+      },
       include: {
         user: true,
         episodes: true,
@@ -140,33 +353,33 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
 
     if (!project) {
       res.status(404).json(
-        Resp.error("Project not found", { 
-          status: 404, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Project not found", {
+          status: 404,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
     }
 
     res.status(200).json(
-      Resp.success(project, "Get Project data Successfully", { 
-        status: 200, 
-        meta: { timestamp: new Date().toISOString() } 
+      Resp.success(project, "Get Project data Successfully", {
+        status: 200,
+        meta: { timestamp: new Date().toISOString() }
       })
     );
   } catch (error: any) {
     const errorOptions: CustomResponseOptions = {
+      status: 500,
+      meta: {
         status: 500,
-        meta: {
-            status: 500,
-            error: error.message,
-            stack: error.stack,
-            timestamp: new Date().toISOString()
-        }
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      }
     };
     res.status(500).json(
       Resp.error("Failed to get project data", errorOptions)
-    ); 
+    );
   }
 });
 
@@ -208,7 +421,7 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
  */
 
 router.post("/", authenticateToken, async (req: Request, res: Response) => {
-  const { title, description, type, status, coverImage, userId } = req.body;
+  const { title, description, type, status, coverImage, userId, tagIds } = req.body;
 
   try {
     if (!title || !description || !type || !status || !coverImage || !userId) {
@@ -274,6 +487,26 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
       return;
     }
 
+    if (!Array.isArray(tagIds)) {
+      res.status(400).json(
+        Resp.error("Invalid tagIds, must be an array", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() },
+        })
+      );
+      return;
+    }
+
+    if (tagIds.some((tagId) => isNaN(Number(tagId)))) {
+      res.status(400).json(
+        Resp.error("Invalid tagIds, must be an array of numbers", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() },
+        })
+      );
+      return;
+    }
+
     if (isNaN(Number(userId))) {
       res.status(400).json(
         Resp.error("Invalid user ID, must be a number", {
@@ -285,7 +518,7 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
     }
 
     const userIdNumber = parseInt(userId);
-    
+
     const userExists = await prisma.user.findUnique({
       where: { id: userIdNumber },
     });
@@ -300,6 +533,28 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
       return;
     }
 
+    if (tagIds) {
+      const existingTags = await prisma.tag.findMany({
+        where: {
+          id: {
+            in: tagIds.map((tagId) => parseInt(tagId)),
+          }
+        }
+      })
+
+      const invalidTagIds = tagIds.filter(tagId => !existingTags.some(tag => tag.id === parseInt(tagId)));
+
+      if (invalidTagIds.length > 0) {
+        res.status(400).json(
+          Resp.error(`Invalid tag IDs: ${invalidTagIds.join(', ')}`, {
+            status: 400,
+            meta: { timestamp: new Date().toISOString() },
+          })
+        );
+        return;
+      }
+    }
+
     const newProject = await prisma.project.create({
       data: {
         title,
@@ -310,6 +565,18 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
         userId: userIdNumber,
       },
     });
+
+    // create project tags
+    if (tagIds) {
+      await prisma.projectTag.createMany({
+        data: tagIds.map((tagId) => (
+          {
+            tagId: parseInt(tagId),
+            projectId: newProject.id
+          }
+        )),
+      });
+    }
 
     res.status(201).json(
       Resp.success(newProject, "Project created successfully", {
@@ -376,14 +643,14 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
 
 router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, description, type, status, coverImage } = req.body;
+  const { title, description, type, status, coverImage, tagIds } = req.body;
 
   try {
     if (!id || isNaN(Number(id))) {
       res.status(400).json(
-        Resp.error("Invalid project ID", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Invalid project ID", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -391,9 +658,9 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!title || typeof title !== "string" || title.trim() === "") {
       res.status(400).json(
-        Resp.error("Title is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Title is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -401,9 +668,9 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!description || typeof description !== "string" || description.trim() === "") {
       res.status(400).json(
-        Resp.error("Description is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Description is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
 
@@ -412,9 +679,9 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!type || typeof type !== "string" || type.trim() === "") {
       res.status(400).json(
-        Resp.error("Type is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Type is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -422,9 +689,9 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!status || typeof status !== "string" || status.trim() === "") {
       res.status(400).json(
-        Resp.error("Status is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Status is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -432,9 +699,29 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!coverImage || typeof coverImage !== "string" || coverImage.trim() === "") {
       res.status(400).json(
-        Resp.error("Cover image URL is required and must be a non-empty string", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Cover image URL is required and must be a non-empty string", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
+        })
+      );
+      return;
+    }
+
+    if (!Array.isArray(tagIds)) {
+      res.status(400).json(
+        Resp.error("Invalid tagIds, must be an array", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() },
+        })
+      );
+      return;
+    }
+
+    if (tagIds.some((tagId) => isNaN(Number(tagId)))) {
+      res.status(400).json(
+        Resp.error("Invalid tagIds, must be an array of numbers", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() },
         })
       );
       return;
@@ -446,12 +733,34 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
     if (!existingProject) {
       res.status(404).json(
-        Resp.error("Project not found", { 
-          status: 404, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Project not found", {
+          status: 404,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
+    }
+
+    if (tagIds) {
+      const existingTags = await prisma.tag.findMany({
+        where: {
+          id: {
+            in: tagIds.map((tagId) => parseInt(tagId)),
+          }
+        }
+      })
+
+      const invalidTagIds = tagIds.filter(tagId => !existingTags.some(tag => tag.id === parseInt(tagId)));
+
+      if (invalidTagIds.length > 0) {
+        res.status(400).json(
+          Resp.error(`Invalid tag IDs: ${invalidTagIds.join(', ')}`, {
+            status: 400,
+            meta: { timestamp: new Date().toISOString() },
+          })
+        );
+        return;
+      }
     }
 
     await prisma.project.update({
@@ -465,27 +774,42 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
       },
     });
 
+    if (tagIds) {
+      await prisma.projectTag.deleteMany({
+        where: { projectId: parseInt(id) },
+      })
+
+      await prisma.projectTag.createMany({
+        data: tagIds.map((tagId) => (
+          {
+            tagId: parseInt(tagId),
+            projectId: parseInt(id)
+          }
+        )),
+      });
+    }
+
     res.status(200).json(
-      Resp.success(null, "Project updated successfully", { 
-        status: 200, 
-        meta: { timestamp: new Date().toISOString() } 
+      Resp.success(null, "Project updated successfully", {
+        status: 200,
+        meta: { timestamp: new Date().toISOString() }
       })
     );
-    
+
   } catch (error: any) {
     const errorOptions: CustomResponseOptions = {
+      status: 500,
+      meta: {
         status: 500,
-        meta: {
-            status: 500,
-            error: error.message,
-            stack: error.stack,
-            timestamp: new Date().toISOString()
-        }
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      }
     };
-    
+
     res.status(500).json(
       Resp.error("Failed to update project", errorOptions)
-    ); 
+    );
   }
 });
 
@@ -517,20 +841,20 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
 
 router.delete("/:id", authenticateToken, async (req: Request, res: Response) => {
   const { id } = req.params;
-  
+
   try {
     if (!id || isNaN(Number(id))) {
       res.status(400).json(
-        Resp.error("Invalid project ID", { 
-          status: 400, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Invalid project ID", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
     }
-    
+
     const parsedId = parseInt(id);
-    
+
     const project = await prisma.project.findUnique({
       where: { id: parsedId },
       select: { id: true },
@@ -540,9 +864,9 @@ router.delete("/:id", authenticateToken, async (req: Request, res: Response) => 
 
     if (!project) {
       res.status(404).json(
-        Resp.error("Project not found", { 
-          status: 404, 
-          meta: { timestamp: new Date().toISOString() } 
+        Resp.error("Project not found", {
+          status: 404,
+          meta: { timestamp: new Date().toISOString() }
         })
       );
       return;
@@ -553,25 +877,25 @@ router.delete("/:id", authenticateToken, async (req: Request, res: Response) => 
     });
 
     res.status(200).json(
-      Resp.success(null, "Project deleted successfully", { 
-        status: 200, 
-        meta: { timestamp: new Date().toISOString() } 
+      Resp.success(null, "Project deleted successfully", {
+        status: 200,
+        meta: { timestamp: new Date().toISOString() }
       })
     );
   } catch (error: any) {
     const errorOptions: CustomResponseOptions = {
+      status: 500,
+      meta: {
         status: 500,
-        meta: {
-            status: 500,
-            error: error.message,
-            stack: error.stack,
-            timestamp: new Date().toISOString()
-        }
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      }
     };
-    
+
     res.status(500).json(
       Resp.error("Failed to delete project", errorOptions)
-    ); 
+    );
   }
 });
 

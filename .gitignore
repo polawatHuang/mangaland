@@ -3,4 +3,6 @@ dist
 logs
 # Keep environment variables out of version control
 .env
+.next
+next-env.d.ts
 package-lock.json
