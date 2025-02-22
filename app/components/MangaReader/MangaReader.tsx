@@ -24,12 +24,11 @@ interface MangaReaderProps {
 }
 
 export default function MangaReader({ images }: MangaReaderProps) {
-    console.log(images);
-    const [viewMode, setViewMode] = useState<"full" | "single">("full");
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const params = useParams<{ slug: string; ep: string }>();
-    const router = useRouter();
-    const swiperRef = useRef<any>(null);
+  const [viewMode, setViewMode] = useState<"full" | "single">("full");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const params = useParams<{ slug: string; ep: string }>();
+  const router = useRouter();
+  const swiperRef = useRef<any>(null);
 
     const totalPages = images.length;
 
