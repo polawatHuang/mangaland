@@ -70,7 +70,7 @@ async function fetchManga(name: string): Promise<Manga | null> {
         if (!project) {
             return null;
         }
-
+        console.log("Project:", project);
         return {
             id: project.id,
             slug: `/project/${project.id}`,
@@ -91,20 +91,21 @@ async function fetchManga(name: string): Promise<Manga | null> {
     }
 }
 
-export default async function SlugPage({ params }: { params: { id: string } }) {
-    if (!params?.id) {
+export default async function SlugPage({
+    params,
+}: {
+    params: { name: string };
+}) {
+    if (!params?.name) {
+        console.log(params?.name);
         console.error("Error: ID is missing in params");
         return (
             <p className="text-center text-white">ไม่พบข้อมูลมังงะที่ระบุ</p>
         );
     }
-
-    const manga = await fetchManga(params.id);
-
+    const manga = await fetchManga(params.name);
     if (!manga) {
-        return (
-            <p className="text-center text-white">ไม่พบข้อมูลมังงะที่ระบุ</p>
-        );
+        return <p className="text-center text-white">ไม่พบข้อมูลมังงะที่ระบ</p>;
     }
 
     return (
@@ -116,7 +117,7 @@ export default async function SlugPage({ params }: { params: { id: string } }) {
             <section className="">
                 <div className="w-full bg-[#1f2936] px-4 py-2">
                     <Link href="/">Homepage</Link> /{" "}
-                    <Link href={`/project/${params.id}`}>{manga.name}</Link>
+                    <Link href={`/project/${params.name}`}>{manga.name}</Link>
                 </div>
             </section>
 
@@ -146,7 +147,7 @@ export default async function SlugPage({ params }: { params: { id: string } }) {
                                 ({ episodeNumber, title, createdAt }) => (
                                     <Link
                                         key={episodeNumber}
-                                        href={`/project/${params.id}/ep${episodeNumber}`}
+                                        href={`/project/${params.name}/ep${episodeNumber}`}
                                         className={`bg-blue-500 relative min-h-16 hover:bg-blue-600 ${style.child} bg-gray px-4 py-2 flex justify-between`}
                                     >
                                         <span className="text-white text-md font-[600]">
