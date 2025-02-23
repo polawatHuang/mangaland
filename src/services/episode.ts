@@ -71,6 +71,54 @@ export class EpisodeService {
     }
   }
 
+  static async getEpisodeByEp(req: Request, res: Response) {
+    const { slug ,episodeNumber } = req.params;
+
+    if (!slug) return res.status(400).json(Resp.error("Slug number is required", { status: 400, meta: { timestamp: new Date().toISOString() } }));
+    if (slug.length < 1) return res.status(400).json(Resp.error("Slug Number must be at least 1 character", { status: 400, meta: { timestamp: new Date().toISOString() } }));
+    if (!episodeNumber) return res.status(400).json(Resp.error("Episode number is required", { status: 400, meta: { timestamp: new Date().toISOString() } }));
+    if (episodeNumber.length < 1) return res.status(400).json(Resp.error("Episode Number must be at least 1 character", { status: 400, meta: { timestamp: new Date().toISOString() } }));
+
+    const parsedEpisodeNumber = parseInt(episodeNumber);
+
+    if (isNaN(parsedEpisodeNumber)) {
+      return res.status(400).json(
+        Resp.error("Episode Number must be a valid integer", {
+          status: 400,
+          meta: { timestamp: new Date().toISOString() }
+        })
+      );
+    }
+
+    try {
+      const episode = await prisma.episode.findFirst({
+        where: {
+          project: { slug: slug }, // ค้นหาจาก slug ของเรื่อง
+          episodeNumber: parsedEpisodeNumber, // ค้นหาด้วย episodeNumber
+        },
+        include: {
+          images: true,
+          views: true,
+        },
+      });
+
+      if (!episode) return res.status(404).json(Resp.error(`No episode found by episode number ${episodeNumber}`, { status: 404, meta: { timestamp: new Date().toISOString() } }));
+
+      res.status(200).json({ success: true, data: episode });
+    } catch (error: any) {
+      const errorOptions = {
+        status: 500,
+        meta: {
+          status: 500,
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString()
+        }
+      };
+      res.status(500).json(Resp.error("An error occurred", errorOptions));
+    }
+  }
+
   static async createEpisode(req: Request, res: Response) {
     const { projectId, episodeNumber, title, description } = req.body;
 

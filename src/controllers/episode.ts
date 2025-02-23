@@ -33,18 +33,29 @@ router.get("/", async (req: Request, res: Response) => {
  * @swagger
  * /api/episode/{id}:
  *   get:
- *     summary: Get an episode by ID
+ *     summary: Get an episode by ID or Episode Number
  *     tags: [Episode]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the episode
+ *         description: ID of the episode or Episode Number
  *         schema:
  *           type: integer
  *     responses:
  *       200:
  *         description: Episode retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Episode'
+ *       400:
+ *         description: Invalid ID format or missing parameter
  *       404:
  *         description: Episode not found
  *       500:
@@ -52,6 +63,49 @@ router.get("/", async (req: Request, res: Response) => {
  */
 router.get("/:id", async (req: Request, res: Response) => {
   await EpisodeService.getEpisodeById(req, res);
+});
+
+// Get episode by Slug and Episode Number
+/**
+ * @swagger
+ * /api/episode/{slug}/{episodeNumber}:
+ *   get:
+ *     summary: Get an episode by Slug and Episode Number
+ *     tags: [Episode]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         description: Slug of the episode
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: episodeNumber
+ *         required: true
+ *         description: Episode number of the series
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Episode retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Episode'
+ *       400:
+ *         description: Invalid parameters
+ *       404:
+ *         description: Episode not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get("/:slug/:episodeNumber", async (req: Request, res: Response) => {
+  await EpisodeService.getEpisodeByEp(req, res);
 });
 
 // Create a new episode
