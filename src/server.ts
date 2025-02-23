@@ -1,7 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import bodyParser from "body-parser";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
@@ -36,12 +35,12 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// กำหนด middleware สำหรับการอัปโหลดไฟล์
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));  // แก้ไขตรงนี้เพื่อให้สามารถรับ form-data ได้
 app.use(cors(config.corsOptions));
 app.use(passport.initialize());
 
-// Error handling
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   const errorOptions = {
     status: 500,
@@ -56,12 +55,7 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-// Test route
-app.get("/", (req: Request, res: Response) => {
-  res.status(200).json(Resp.success(null, "Hello World!", { status: 200, meta: { timestamp: new Date().toISOString() } }));
-});
 
-// Register routes
 app.use('/api', statusControllers);
 app.use('/api/auth', authenController);
 app.use('/api/project', projectController);

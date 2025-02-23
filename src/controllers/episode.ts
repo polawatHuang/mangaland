@@ -24,7 +24,7 @@ const router: Router = Router();
  *       500:
  *         description: Internal Server Error
  */
-router.get("/", async (req: Request, res: Response): Promise<void> => {
+router.get("/", async (req: Request, res: Response) => {
   await EpisodeService.getAllEpisodes(req, res);
 });
 
@@ -50,7 +50,7 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
  *       500:
  *         description: Internal Server Error
  */
-router.get("/:id", async (req: Request, res: Response): Promise<void> => {
+router.get("/:id", async (req: Request, res: Response) => {
   await EpisodeService.getEpisodeById(req, res);
 });
 
@@ -92,7 +92,8 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
  *       500:
  *         description: Internal Server Error
  */
-router.post("/", authenticateToken, async (req: Request, res: Response): Promise<void> => {
+
+router.post("/", authenticateToken, async (req: Request, res: Response) => {
   await EpisodeService.createEpisode(req, res);
 });
 
@@ -161,7 +162,7 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error
  */
-router.delete("/:id", authenticateToken, async (req: Request, res: Response): Promise<void> => {
+router.delete("/:id", authenticateToken, async (req: Request, res: Response) => {
   await EpisodeService.deleteEpisode(req, res);
 });
 

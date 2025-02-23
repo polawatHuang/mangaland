@@ -343,6 +343,31 @@ export class ServerMonitor {
         }
     }
 
+    async killProcess(pid: number): Promise<boolean> {
+        try {
+            if (process.platform === 'win32') {
+                await execAsync(`taskkill /PID ${pid} /F`);
+            } else {
+                await execAsync(`kill -9 ${pid}`);
+            }
+            console.log(`Successfully killed process ${pid}`);
+            return true;
+        } catch (error) {
+            console.error(`Failed to kill process ${pid}:`, error);
+            return false;
+        }
+    }
+
+    async autoKillHeavyProcesses(cpuThreshold: number = 90, memoryThreshold: number = 90): Promise<void> {
+        const heavyServices = await this.getHeavyServices();
+        for (const service of heavyServices) {
+            if (service.cpu > cpuThreshold || service.memory > memoryThreshold) {
+                console.log(`Killing process: ${service.name} (PID: ${service.pid}) - CPU: ${service.cpu}%, Memory: ${service.memory}%`);
+                await this.killProcess(service.pid);
+            }
+        }
+    }
+
     cleanup(): void {
         if (this.networkStatsInterval) {
             clearInterval(this.networkStatsInterval);
