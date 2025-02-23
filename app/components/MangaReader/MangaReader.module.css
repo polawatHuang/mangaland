@@ -21,10 +21,35 @@
         #2aa8f2,
         #9c4f96
     );
+    background-position: left;
+    background-size: 100%;
     animation: 3s spin linear infinite;
+    transition: all 0.3s;
+}
+.circle:hover::before {
+    background-size: 250%;
+}
+.circle:hover::after {
+    filter: blur(5px);
+    background-image: conic-gradient(
+        from var(--angle),
+        #9c4f96,
+        #ff6355,
+        #fba949,
+        #fae442,
+        #8bd448,
+        #2aa8f2,
+        #9c4f96
+    );
 }
 .circle::after {
     filter: blur(10px);
+}
+.circle {
+    transition: all 0.3s;
+}
+.circle:hover {
+    transform: scale(1.1, 1.1);
 }
 @keyframes spin {
     from {

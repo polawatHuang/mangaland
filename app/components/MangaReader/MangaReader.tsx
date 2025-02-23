@@ -24,11 +24,11 @@ interface MangaReaderProps {
 }
 
 export default function MangaReader({ images }: MangaReaderProps) {
-  const [viewMode, setViewMode] = useState<"full" | "single">("full");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const params = useParams<{ slug: string; ep: string }>();
-  const router = useRouter();
-  const swiperRef = useRef<any>(null);
+    const [viewMode, setViewMode] = useState<"full" | "single">("full");
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const params = useParams<{ slug: string; ep: string }>();
+    const router = useRouter();
+    const swiperRef = useRef<any>(null);
 
     const totalPages = images.length;
 
@@ -60,11 +60,11 @@ export default function MangaReader({ images }: MangaReaderProps) {
     }, []);
 
     return (
-        <div className="w-full p-4 bg-black text-white min-h-screen">
-            <div className="flex justify-between items-center mb-4">
+        <div className="w-full md:p-4 bg-black text-white min-h-screen">
+            <div className="flex p-4 justify-between items-center mb-4">
                 <Link
                     href={`/${params.slug}`}
-                    className={`${style.circle} relative p-[2px] `}
+                    className={`${style.circle} relative p-[2px]`}
                 >
                     <ArrowUturnLeftIcon
                         className={`size-8 p-1 bg-black rounded-full z-20 relative`}
