@@ -34,27 +34,20 @@ interface EpisodePageProps {
 }
 
 export default function EpisodePage() {
-    const { name, episode } = useParams<{name: string, episode: string}>();
+    const params = useParams();
     const [episodeData, setEpisodeData] = useState<EpisodeData | null>(null);
     const [mangaImages, setMangaImages] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showScroll, setShowScroll] = useState<boolean>(false);
-    const [currentEpisode, setCurrentEpisode] = useState<string>(episode);
-
-    const getEpisodeNumber = (episodeStr: string): number => {
-        const num = parseInt(episodeStr.replace("ep", ""), 10);
-        return isNaN(num) ? 1 : num;
-    };
 
     async function fetchEpisodeData(episode: string): Promise<string[] | null> {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/episode/${currentEpisode}`
+                `${process.env.NEXT_PUBLIC_API_URL}/episode/${params.name}/${episode}`
             );
             if (!response.ok) throw new Error("Failed to fetch episode data");
 
             const data = await response.json();
-
             setEpisodeData(data.data);
             return data.data.images;
         } catch (error) {
@@ -65,20 +58,15 @@ export default function EpisodePage() {
 
     useEffect(() => {
         async function loadEpisode() {
-            let data = await fetchEpisodeData(episode);
-            let episodeToLoad = episode;
+            if (!params.episode) return;
 
-            if (!data) {
-                const currentEpNumber = getEpisodeNumber(episode);
-                if (currentEpNumber > 1) {
-                    episodeToLoad = `ep${currentEpNumber - 1}`;
-                    data = await fetchEpisodeData(episodeToLoad);
-                }
-            }
+            const episodeToLoad = Array.isArray(params.episode)
+                ? params.episode[0]
+                : params.episode;
 
+            const data = await fetchEpisodeData(episodeToLoad);
             if (data) {
                 setMangaImages(data);
-                setCurrentEpisode(episodeToLoad);
             } else {
                 setMangaImages([]);
             }
@@ -86,7 +74,8 @@ export default function EpisodePage() {
             setLoading(false);
         }
         loadEpisode();
-    }, [episode]);
+    }, [params.episode]);
+
     useEffect(() => {
         const handleScroll = () => setShowScroll(window.scrollY > 300);
         window.addEventListener("scroll", handleScroll);
@@ -111,6 +100,7 @@ export default function EpisodePage() {
             <p className="text-center text-white">ไม่พบข้อมูลมังงะที่ระบุ</p>
         );
     }
+
     return (
         <div className="relative w-full min-h-screen max-w-6xl mx-auto md:p-8 pb-20 gap-16 sm:p-2">
             <section>
@@ -119,12 +109,12 @@ export default function EpisodePage() {
 
             <section className="">
                 <div className="w-full bg-[#1f2936] px-4 py-2">
-                    <Link href="/">Homepage</Link> /
-                    <Link href={`/manga/${name}`}>
-                        {episodeData?.title ?? episode}
+                    <Link href="/">Homepage</Link> /{" "}
+                    <Link href={`/manga/${params.name}`}>
+                        {episodeData?.title ?? params.episode}
                     </Link>{" "}
-                    /
-                    <Link href={`/manga/${name}/${currentEpisode}`}>
+                    /{" "}
+                    <Link href={`/manga/${params.name}/${params.episode}`}>
                         ตอนที่ {episodeData?.episodeNumber}
                     </Link>
                 </div>
