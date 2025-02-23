@@ -9,6 +9,7 @@ import "swiper/css/navigation";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import style from "./MangaReader.module.css";
+import Image from "next/image";
 
 interface EpisodeImage {
     id: number;
@@ -25,6 +26,7 @@ interface MangaReaderProps {
 
 export default function MangaReader({ images }: MangaReaderProps) {
     const [viewMode, setViewMode] = useState<"full" | "single">("full");
+    const [showNumpage, setShowNumpage] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const { name, episode } = useParams<{ name: string; episode: string }>();
     const router = useRouter();
@@ -85,15 +87,45 @@ export default function MangaReader({ images }: MangaReaderProps) {
             </div>
 
             {viewMode === "full" ? (
-                <div className="flex flex-col">
-                    {sortedImages.map((img) => (
-                        <img
-                            key={img.id}
-                            src={img.image}
-                            alt={`Manga Page ${img.imageNumber}`}
-                            className="w-full"
-                            loading="lazy"
-                        />
+                <div className="flex flex-col relative">
+                    {sortedImages.map((img, index) => (
+                        <div
+                            className={`flex flex-col select-none cursor-pointer ${style.card} relative`}
+                            key={index}
+                            onClick={() => {
+                                setShowNumpage((prev) =>
+                                    prev === img.imageNumber
+                                        ? 0
+                                        : img.imageNumber
+                                );
+                            }}
+                        >
+                            <Image
+                                key={img.id}
+                                src={img.image}
+                                alt={`Manga Page ${img.imageNumber}`}
+                                className="w-full"
+                                loading="lazy"
+                                width={1000}
+                                height={1000}
+                            />
+                            <p
+                                className={` absolute text-white z-[200] bottom-0 text-xl font-bold translate-x-6 transition-all ${
+                                    showNumpage == img.imageNumber
+                                        ? `opacity-1 translate-y-0`
+                                        : `opacity-0 translate-y-10`
+                                }`}
+                            >
+                                หน้าที่: {img.imageNumber}/{totalPages}
+                            </p>
+                            <div
+                                className={`${style.blackBox} h-0 ${
+                                    showNumpage == img.imageNumber
+                                        ? `h-[10%]`
+                                        : `h-0`
+                                }`}
+                            ></div>
+                        </div>
                     ))}
                 </div>
             ) : (
@@ -106,13 +138,15 @@ export default function MangaReader({ images }: MangaReaderProps) {
                     }
                     className="w-full relative"
                 >
-                    {sortedImages.map((img) => (
+                    {sortedImages.map((img, index) => (
                         <SwiperSlide key={img.id}>
-                            <img
+                            <Image
                                 src={img.image}
                                 alt={`Manga Page ${img.imageNumber}`}
-                                className="w-full cursor-pointer"
+                                className="w-full overflow-hidden cursor-pointer"
                                 onClick={handleImageClick}
+                                width={1000}
+                                height={1000}
                             />
                         </SwiperSlide>
                     ))}

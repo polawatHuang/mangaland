@@ -59,3 +59,17 @@
         --angle: 360deg;
     }
 }
+
+.blackBox {
+    position: absolute;
+    content: "";
+    width: 100%;
+    bottom: 0;
+    background-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.849) 1%,
+        transparent
+    );
+    z-index: 100;
+    transition: all 0.3s;
+}

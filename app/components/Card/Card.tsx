@@ -10,6 +10,7 @@ interface Manga {
     slug: string;
     backgroundImage: string;
     name: string;
+    status: string;
 }
 
 interface CardProps {
@@ -39,7 +40,6 @@ const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
             JSON.stringify(updatedFavorites)
         );
     };
-
     return (
         <div className="relative w-full h-auto overflow-hidden">
             {hasFevFunction && (

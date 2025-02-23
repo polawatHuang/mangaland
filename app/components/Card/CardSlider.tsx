@@ -14,6 +14,7 @@ interface Manga {
     slug: string;
     backgroundImage: string;
     name: string;
+    status: string;
 }
 
 interface CardSliderComponentProps {
@@ -65,7 +66,6 @@ const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
         ) as Manga[];
         setFavorites(storedFavorites);
     }, []);
-
     const toggleFavorite = (manga: Manga) => {
         let updatedFavorites: Manga[];
         if (favorites.some((fav) => fav.id === manga.id)) {
@@ -80,7 +80,6 @@ const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
             JSON.stringify(updatedFavorites)
         );
     };
-
     return (
         <motion.div
             initial={{ y: 40, opacity: 0 }}
@@ -105,49 +104,54 @@ const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
                 }}
                 className="w-full"
             >
-                {mangaList.map((manga) => (
-                    <SwiperSlide key={manga.id} className="relative item flex">
-                        {hasFevFunction && (
-                            <button
-                                onClick={() => toggleFavorite(manga)}
-                                className="absolute top-1 right-1 p-2 bg-black h-9 bg-opacity-50 rounded-full flex items-center"
-                            >
-                                {favorites.some(
-                                    (fav) => fav.id === manga.id
-                                ) ? (
-                                    <span className="text-pink-500 text-xl">
-                                        ❤️
-                                    </span>
-                                ) : (
-                                    <span className="text-white text-xl mt-[2px]">
-                                        🤍
-                                    </span>
-                                )}
-                            </button>
-                        )}
-                        <motion.div
-                            whileTap={{ scale: 0.9 }}
-                            className=" h-full"
+                {mangaList
+                    .filter((item) => item.status == "active")
+                    .map((manga) => (
+                        <SwiperSlide
+                            key={manga.id}
+                            className="relative item flex"
                         >
-                            <Link
-                                className="overflow-hidden relative h-full bg-yellow-500 card item z-20"
-                                href={manga.slug}
+                            {hasFevFunction && (
+                                <button
+                                    onClick={() => toggleFavorite(manga)}
+                                    className="absolute top-1 right-1 p-2 bg-black h-9 bg-opacity-50 rounded-full flex items-center"
+                                >
+                                    {favorites.some(
+                                        (fav) => fav.id === manga.id
+                                    ) ? (
+                                        <span className="text-pink-500 text-xl">
+                                            ❤️
+                                        </span>
+                                    ) : (
+                                        <span className="text-white text-xl mt-[2px]">
+                                            🤍
+                                        </span>
+                                    )}
+                                </button>
+                            )}
+                            <motion.div
+                                whileTap={{ scale: 0.9 }}
+                                className=" h-full"
                             >
-                                <img
-                                    src={manga.backgroundImage}
-                                    alt={manga.name}
-                                    className="w-full h-full object-cover"
-                                    loading="lazy"
-                                />
-                                <div className="py-4 absolute bottom-0 left-[50%] translate-x-[-50%] z-10">
-                                    <h2 className="text-lg font-semibold text-white leading-5 text-ellipsis text-center line-clamp-3">
-                                        {manga.name}
-                                    </h2>
-                                </div>
-                            </Link>
-                        </motion.div>
-                    </SwiperSlide>
-                ))}
+                                <Link
+                                    className="overflow-hidden relative h-full bg-yellow-500 card item z-20"
+                                    href={manga.slug}
+                                >
+                                    <img
+                                        src={manga.backgroundImage}
+                                        alt={manga.name}
+                                        className="w-full h-full object-cover"
+                                        loading="lazy"
+                                    />
+                                    <div className="py-4 absolute bottom-0 left-[50%] translate-x-[-50%] z-10">
+                                        <h2 className="text-lg font-semibold text-white leading-5 text-ellipsis text-center line-clamp-3">
+                                            {manga.name}
+                                        </h2>
+                                    </div>
+                                </Link>
+                            </motion.div>
+                        </SwiperSlide>
+                    ))}
             </Swiper>
         </motion.div>
     );

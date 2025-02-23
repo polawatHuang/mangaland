@@ -32,6 +32,7 @@ interface Manga {
     slug: string;
     backgroundImage: string;
     name: string;
+    status: string;
     viewsCount: number;
     createdAt: string;
 }
@@ -93,6 +94,7 @@ async function fetchProjects(): Promise<Manga[]> {
             slug: `/project/${project.slug}`,
             backgroundImage: project.coverImage,
             name: project.title,
+            status: project.status,
             viewsCount: project.viewsCount,
             createdAt: project.createdAt,
         }));

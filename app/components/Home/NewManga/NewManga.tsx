@@ -13,6 +13,7 @@ interface Manga {
     slug: string;
     backgroundImage: string;
     name: string;
+    status: string;
 }
 
 function NewManga() {
@@ -29,9 +30,10 @@ function NewManga() {
                 const mappedMangaList = response.data.result.projects.map(
                     (project: Project) => ({
                         id: project.id,
-                        slug: `/project/${project.id}`,
+                        slug: `/project/${project.slug}`,
                         backgroundImage: project.coverImage,
                         name: project.title,
+                        status: project.status,
                     })
                 );
 
@@ -70,16 +72,18 @@ function NewManga() {
                 {loading && <p>Loading...</p>}
                 {error && <p>{error}</p>}
                 {!loading && !error && mangaList.length > 0
-                    ? mangaList.map((manga, index) => (
-                          <motion.div
-                              key={index}
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.95 }}
-                              className="w-[150px] h-[220px] overflow-hidden"
-                          >
-                              <Card key={manga.id} manga={manga} />
-                          </motion.div>
-                      ))
+                    ? mangaList
+                          .filter((item) => item.status == "active")
+                          .map((manga, index) => (
+                              <motion.div
+                                  key={index}
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="w-[150px] h-[220px] overflow-hidden"
+                              >
+                                  <Card key={manga.id} manga={manga} />
+                              </motion.div>
+                          ))
                     : !loading && !error && <p>No manga found</p>}
             </motion.div>
         </div>
