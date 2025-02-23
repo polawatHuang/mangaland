@@ -17,6 +17,7 @@ export interface Project {
     backgroundImage: any;
     id: number;
     title: string;
+    slug: string;
     description: string;
     projectType: string;
     status: string;
