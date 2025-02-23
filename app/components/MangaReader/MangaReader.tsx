@@ -60,7 +60,7 @@ export default function MangaReader({ images }: MangaReaderProps) {
     }, []);
 
     return (
-        <div className="w-full md:p-4 bg-black text-white min-h-screen">
+        <div className="w-full md:p-4 bg-black text-white ">
             <div className="flex p-4 justify-between items-center mb-4">
                 <Link
                     href={`/${params.slug}`}

@@ -24,7 +24,7 @@
     background-position: left;
     background-size: 100%;
     animation: 3s spin linear infinite;
-    transition: all 0.3s;
+    transition: all 1s;
 }
 .circle:hover::before {
     background-size: 250%;

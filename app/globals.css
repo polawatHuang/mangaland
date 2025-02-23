@@ -69,6 +69,11 @@ a {
     font-size: 20px;
 }
 
+::selection {
+    background: #ff55e8;
+    color: white;
+}
+
 .font-kanit {
     font-family: "Kanit", sans-serif;
 }
