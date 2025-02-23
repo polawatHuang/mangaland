@@ -147,7 +147,7 @@ export default async function SlugPage({
                                 ({ episodeNumber, title, createdAt }) => (
                                     <Link
                                         key={episodeNumber}
-                                        href={`/project/${params.name}/ep${episodeNumber}`}
+                                        href={`/project/${params.name}/${episodeNumber}`}
                                         className={`bg-blue-500 relative min-h-16 hover:bg-blue-600 ${style.child} bg-gray px-4 py-2 flex justify-between`}
                                     >
                                         <span className="text-white text-md font-[600]">
