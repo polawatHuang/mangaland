@@ -51,6 +51,7 @@ model Project {
   projectType  ProjectType  @default(other)
   status       Status       @default(inactive)
   coverImage   String?
+  slug         String
   viewsCount   Int          @default(0)
   episodeTotal Int          @default(0)
   createdAt    DateTime     @default(now())

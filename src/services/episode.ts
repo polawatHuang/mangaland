@@ -87,10 +87,10 @@ export class EpisodeService {
     try {
       const newEpisode = await prisma.episode.create({
         data: {
-          projectId,
+          project: { connect: { id: projectId } },
           episodeNumber,
           title,
-          description,
+          description
         },
       });
 
