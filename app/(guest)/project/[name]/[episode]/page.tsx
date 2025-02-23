@@ -5,10 +5,7 @@ import { useParams } from "next/navigation";
 import AdvertiseComponent from "../../../../components/Advertise/Advertise";
 import MangaReader from "../../../../components/MangaReader/MangaReader";
 import Link from "next/link";
-import { ShareIcon } from "@heroicons/react/24/solid";
-import Card from "../../../../components/Card/Card";
 import { ScrollUp } from "@/app/components/Footer/Scrollup";
-import { useRouter } from "next/navigation";
 
 interface EpisodeImage {
     id: number;
@@ -36,21 +33,23 @@ interface EpisodePageProps {
     episode: string;
 }
 
-export default function EpisodePage({ name, episode }: EpisodePageProps) {
+export default function EpisodePage() {
+    const { name, episode } = useParams<{name: string, episode: string}>();
     const [episodeData, setEpisodeData] = useState<EpisodeData | null>(null);
     const [mangaImages, setMangaImages] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showScroll, setShowScroll] = useState<boolean>(false);
     const [currentEpisode, setCurrentEpisode] = useState<string>(episode);
-    console.log(name, episode);
+
     const getEpisodeNumber = (episodeStr: string): number => {
         const num = parseInt(episodeStr.replace("ep", ""), 10);
         return isNaN(num) ? 1 : num;
     };
+
     async function fetchEpisodeData(episode: string): Promise<string[] | null> {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/episode/1`
+                `${process.env.NEXT_PUBLIC_API_URL}/episode/${currentEpisode}`
             );
             if (!response.ok) throw new Error("Failed to fetch episode data");
 
