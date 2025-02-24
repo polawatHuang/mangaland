@@ -75,7 +75,9 @@ export default function MangaReader({ images }: MangaReaderProps) {
 
                 <select
                     className="px-3 py-2 bg-pink text-white text-sm hover:bg-[#c03b7b] outline-none rounded-md cursor-pointer"
-                    onChange={(e) => setViewMode(e.target.value as "full" | "single")}
+                    onChange={(e) =>
+                        setViewMode(e.target.value as "full" | "single")
+                    }
                     value={viewMode}
                 >
                     <option value="full">📜 อ่านแบบหน้ายาว</option>
@@ -86,7 +88,7 @@ export default function MangaReader({ images }: MangaReaderProps) {
             {viewMode === "full" ? (
                 <div className="flex flex-col relative">
                     {sortedImages.map((img, index) => (
-                        <div key={img.id} className={`relative ${style.card}`}>
+                        <div key={index} className={`relative ${style.card}`}>
                             <Image
                                 src={img.image}
                                 alt={`${img.imageNumber}`}
@@ -96,7 +98,9 @@ export default function MangaReader({ images }: MangaReaderProps) {
                                 height={350}
                                 unoptimized={true}
                             />
-                            <p className={`absolute text-white z-[200] bottom-2 text-lg font-bold transition-all px-4 py-1 ml-4 bg-black bg-opacity-50 rounded-lg opacity-70`}>
+                            <p
+                                className={`absolute text-white z-[200] bottom-0 md:bottom-1 text-xs md:text-lg font-bold transition-all px-4 py-1 ml-2 md:ml-3 bg-black bg-opacity-50 rounded-lg opacity-50`}
+                            >
                                 หน้า {img.imageNumber} / {totalPages}
                             </p>
                         </div>
@@ -107,11 +111,13 @@ export default function MangaReader({ images }: MangaReaderProps) {
                     modules={[Navigation]}
                     navigation
                     onSwiper={(swiper) => (swiperRef.current = swiper)}
-                    onSlideChange={(swiper) => setCurrentPage(swiper.realIndex + 1)}
+                    onSlideChange={(swiper) =>
+                        setCurrentPage(swiper.realIndex + 1)
+                    }
                     className="w-full relative"
                 >
-                    {sortedImages.map((img) => (
-                        <SwiperSlide key={img.id}>
+                    {sortedImages.map((img, index) => (
+                        <SwiperSlide key={index}>
                             <Image
                                 src={img.image}
                                 alt={`Manga Page ${img.imageNumber}`}
