@@ -1,35 +1,13 @@
-import { notFound } from "next/navigation";
 import Link from "next/link";
-import AdvertiseComponent from "@/app/components/Advertise/Advertise";
-import MangaReader from "@/app/components/MangaReader/MangaReader";
-import { ScrollUp } from "@/app/components/Footer/Scrollup";
-import Loading from "@/app/components/Loading/Loading";
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
-interface EpisodeImage {
-    id: number;
-    episodeId: number;
-    imageNumber: number;
-    image: string;
-    createdAt: string;
-    updatedAt: string;
-}
+import Loading from "@/app/components/Loading/Loading";
+import { ScrollUp } from "@/app/components/Footer/Scrollup";
+import MangaReader from "@/app/components/MangaReader/MangaReader";
+import AdvertiseComponent from "@/app/components/Advertise/Advertise";
 
-interface EpisodeData {
-    id: number;
-    projectId: number;
-    episodeNumber: number;
-    title: string;
-    description: string;
-    viewsCount: number;
-    createdAt: string;
-    updatedAt: string;
-    images: EpisodeImage[];
-}
-
-interface EpisodePageProps {
-    params: { name: string; episode: string };
-}
+import { EpisodePageProps, EpisodeData } from "@/app/models/Episode";
 
 async function getEpisodeData(name: string, episode: string): Promise<EpisodeData | null> {
     try {
