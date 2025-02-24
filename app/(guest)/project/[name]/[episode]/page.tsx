@@ -6,6 +6,7 @@ import AdvertiseComponent from "../../../../components/Advertise/Advertise";
 import MangaReader from "../../../../components/MangaReader/MangaReader";
 import Link from "next/link";
 import { ScrollUp } from "@/app/components/Footer/Scrollup";
+import { NextEp } from "@/app/components/Footer/NextEp";
 
 interface EpisodeImage {
     id: number;
@@ -20,14 +21,18 @@ interface EpisodeData {
     id: number;
     projectId: number;
     episodeNumber: number;
-    title: string;
     description: string;
     viewsCount: number;
+    title: string;
     createdAt: string;
     updatedAt: string;
     images: EpisodeImage[];
+    project: ProjectProps;
 }
-
+interface ProjectProps {
+    title: string | null;
+    slug: string;
+}
 interface EpisodePageProps {
     name: string;
     episode: string;
@@ -38,7 +43,6 @@ export default function EpisodePage() {
     const [episodeData, setEpisodeData] = useState<EpisodeData | null>(null);
     const [mangaImages, setMangaImages] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [showScroll, setShowScroll] = useState<boolean>(false);
 
     async function fetchEpisodeData(episode: string): Promise<string[] | null> {
         try {
@@ -75,17 +79,6 @@ export default function EpisodePage() {
         }
         loadEpisode();
     }, [params.episode]);
-
-    useEffect(() => {
-        const handleScroll = () => setShowScroll(window.scrollY > 300);
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-black gap-4">
@@ -110,19 +103,33 @@ export default function EpisodePage() {
             <section className="">
                 <div className="w-full bg-[#1f2936] px-4 py-2">
                     <Link href="/">Homepage</Link> /{" "}
-                    <Link href={`/manga/${params.name}`}>
-                        {episodeData?.title ?? params.episode}
+                    <Link href={`/project/${params.name}`}>
+                        {episodeData?.project?.title}
                     </Link>{" "}
                     /{" "}
-                    <Link href={`/manga/${params.name}/${params.episode}`}>
+                    <Link href={`/project/${params.name}/${params.episode}`}>
                         ตอนที่ {episodeData?.episodeNumber}
-                    </Link>
+                    </Link>{" "}
+                    -{" "}
+                    <Link href={`/project/${params.name}`}>
+                        {episodeData?.title ?? params.episode}
+                    </Link>{" "}
                 </div>
             </section>
             <div id="long-content">
                 <MangaReader images={mangaImages} />
             </div>
-            {showScroll && <ScrollUp />}
+            <ScrollUp />
+            <NextEp
+                params={{
+                    episodeNumber: Array.isArray(params.episode)
+                        ? params.episode[0]
+                        : params.episode ?? "",
+                    mangaName: Array.isArray(params.name)
+                        ? params.name[0]
+                        : params.name ?? "",
+                }}
+            />
         </div>
     );
 }

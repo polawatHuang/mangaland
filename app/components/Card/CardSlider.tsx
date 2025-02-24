@@ -6,7 +6,7 @@ import { useRef, useState, useEffect } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
-import "./Card.css";
+import style from "./Card.module.css";
 import { motion } from "framer-motion";
 
 interface Manga {
@@ -109,7 +109,7 @@ const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
                     .map((manga) => (
                         <SwiperSlide
                             key={manga.id}
-                            className="relative item flex"
+                            className={`relative item flex`}
                         >
                             {hasFevFunction && (
                                 <button
@@ -134,7 +134,7 @@ const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
                                 className=" h-full"
                             >
                                 <Link
-                                    className="overflow-hidden relative h-full bg-yellow-500 card item z-20"
+                                    className={`overflow-hidden relative h-full bg-yellow-500 ${style.card} item z-20`}
                                     href={manga.slug}
                                 >
                                     <img

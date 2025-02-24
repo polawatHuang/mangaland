@@ -138,7 +138,7 @@ export default function MangaReader({ images }: MangaReaderProps) {
                     }
                     className="w-full relative"
                 >
-                    {sortedImages.map((img, index) => (
+                    {sortedImages.map((img) => (
                         <SwiperSlide key={img.id}>
                             <Image
                                 src={img.image}

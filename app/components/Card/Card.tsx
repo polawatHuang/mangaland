@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { HeartIcon } from "@heroicons/react/24/solid";
+import style from "./Card.module.css";
 
 interface Manga {
     id: number;
@@ -58,7 +59,7 @@ const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
                     )}
                 </button>
             )}
-            <Link href={manga.slug} className="relative card">
+            <Link href={manga.slug} className={`relative ${style.card}`}>
                 <Image
                     width={187}
                     height={268}

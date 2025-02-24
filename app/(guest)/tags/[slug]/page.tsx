@@ -11,6 +11,7 @@ interface Manga {
     id: number;
     slug: string;
     backgroundImage: string;
+    status: string;
     name: string;
 }
 
@@ -28,6 +29,7 @@ export default function Tag({ params }: { params: Promise<{ slug: string }> }) {
                     id: project.id,
                     slug: `/project/${project.id}`,
                     backgroundImage: project.coverImage,
+                    status: project.status,
                     name: project.title,
                 }));
                 setProjects(mappedMangaList);
