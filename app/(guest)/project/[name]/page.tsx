@@ -68,7 +68,9 @@ async function MangaContent({ params }: { params: { name: string } }) {
                     height={350}
                 />
                 <div className="mt-4 w-full">
-                    <h1 className="text-2xl font-bold text-white">📖 {manga.name}</h1>
+                    <h1 className="text-2xl font-bold text-white">
+                        📖 {manga.name}
+                    </h1>
                     <hr className="my-2 border-gray-600" />
                     <p className="text-white text-sm leading-relaxed">
                         {manga.description || "ไม่มีข้อมูลเรื่องย่อ"}
@@ -77,25 +79,32 @@ async function MangaContent({ params }: { params: { name: string } }) {
             </section>
 
             <section className="px-4 mt-6">
-                <div className="w-full bg-gray-700 py-2 px-4 rounded-lg shadow-md">
-                    <h2 className="text-lg font-semibold text-white">📚 รายชื่อตอนทั้งหมด</h2>
-                    <hr className="my-2 border-gray-500" />
-                    <div className={`flex flex-col gap-1 overflow-auto max-h-[500px] ${style.parent}`}>
+                <div className="w-full bg-gray py-2 px-4 rounded-lg shadow-md">
+                    <h2 className="text-lg font-semibold text-white">
+                        📚 รายชื่อตอนทั้งหมด
+                    </h2>
+                    <hr className="my-2 border-white" />
+                    <div
+                        className={`flex flex-col gap-1 overflow-auto max-h-[500px]`}
+                    >
                         {manga.episodes.length > 0 ? (
-                            manga.episodes.map(({ episodeNumber, title, createdAt }) => (
-                                <Link
-                                    key={episodeNumber}
-                                    href={`/project/${params.name}/${episodeNumber}`}
-                                    className={`bg-blue-500 relative min-h-16 hover:bg-blue-600 ${style.child} px-4 py-2 flex justify-between items-center rounded-md shadow-md`}
-                                >
-                                    <span className="text-white text-md font-semibold">
-                                        ตอนที่ {episodeNumber} - {title || "ไม่มีชื่อ"}
-                                    </span>
-                                    <span className="text-white opacity-50 text-sm">
-                                        ⏳ {dayjs(createdAt).fromNow()}
-                                    </span>
-                                </Link>
-                            ))
+                            manga.episodes.map(
+                                ({ episodeNumber, title, createdAt }) => (
+                                    <Link
+                                        key={episodeNumber}
+                                        href={`/project/${params.name}/${episodeNumber}`}
+                                        className={` relative min-h-16 ${style.child} px-4 py-2 flex justify-between items-center rounded-md shadow-md`}
+                                    >
+                                        <span className="text-white text-md font-semibold">
+                                            ตอนที่ {episodeNumber} -{" "}
+                                            {title || "ไม่มีชื่อ"}
+                                        </span>
+                                        <span className="text-white opacity-50 text-sm">
+                                            ⏳ {dayjs(createdAt).fromNow()}
+                                        </span>
+                                    </Link>
+                                )
+                            )
                         ) : (
                             <p className="text-gray-400 text-sm text-center py-4">
                                 ❌ ไม่มีตอนที่ระบุ

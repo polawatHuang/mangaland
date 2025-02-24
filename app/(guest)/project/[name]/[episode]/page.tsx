@@ -55,13 +55,17 @@ async function EpisodeContent({ params }: EpisodePageProps) {
             <section>
                 <div className="w-full bg-[#1f2936] px-4 py-2">
                     <Link href="/">Homepage</Link> /{" "}
-                    <Link href={`/manga/${name}`}>
-                        {episodeData?.title ?? episode}
+                    <Link href={`/project/${params.name}`}>
+                        {episodeData?.project?.title}
                     </Link>{" "}
                     /{" "}
-                    <Link href={`/manga/${name}/${episode}`}>
+                    <Link href={`/project/${params.name}/${params.episode}`}>
                         ตอนที่ {episodeData?.episodeNumber}
-                    </Link>
+                    </Link>{" "}
+                    -{" "}
+                    <Link href={`/project/${params.name}`}>
+                        {episodeData?.title ?? params.episode}
+                    </Link>{" "}
                 </div>
             </section>
 
