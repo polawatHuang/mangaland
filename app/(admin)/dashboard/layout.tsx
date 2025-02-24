@@ -32,7 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html>
       <body className="bg-black text-white">
         <Navbars />
-        <div className="h-screen flex overflow-hidden text-white">
+        <div className="min-h-screen flex text-white">
           {/* Mobile sidebar */}
           <Transition.Root show={sidebarOpen} as={Fragment}>
             <Dialog
@@ -115,7 +115,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Main content */}
-          <div className="flex flex-col flex-1 overflow-hidden">
+          <div className="flex flex-col flex-1">
             <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-[#060606] border-b border-[#282524] shadow">
               <button
                 className="px-4 border-r border-[#282524] text-white focus:outline-none md:hidden"
