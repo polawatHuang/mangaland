@@ -24,7 +24,7 @@ const router: Router = Router();
  *       500:
  *         description: Internal Server Error
  */
-router.get("/", async (req: Request, res: Response): Promise<void> => {
+router.get("/", async (req: Request, res: Response) => {
   await EpisodeService.getAllEpisodes(req, res);
 });
 
@@ -33,25 +33,107 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
  * @swagger
  * /api/episode/{id}:
  *   get:
- *     summary: Get an episode by ID
+ *     summary: Get an episode by ID or Episode Number
  *     tags: [Episode]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the episode
+ *         description: ID of the episode or Episode Number
  *         schema:
  *           type: integer
  *     responses:
  *       200:
  *         description: Episode retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Episode'
+ *       400:
+ *         description: Invalid ID format or missing parameter
  *       404:
  *         description: Episode not found
  *       500:
  *         description: Internal Server Error
  */
-router.get("/:id", async (req: Request, res: Response): Promise<void> => {
+router.get("/:id", async (req: Request, res: Response) => {
   await EpisodeService.getEpisodeById(req, res);
+});
+
+// Get episodes by project slug
+/**
+ * @swagger
+ * /api/episode/project/{slug}:
+ *   get:
+ *     summary: Get episodes by project slug
+ *     tags: [Episode]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         description: Slug of the project
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Episodes retrieved successfully
+ *       400:
+ *         description: Invalid slug format or missing parameter
+ *       404:
+ *         description: Episodes not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get("/project/:slug", async (req: Request, res: Response) => {
+  await EpisodeService.getEpisodesByProject(req, res);
+});
+
+// Get episode by Slug and Episode Number
+/**
+ * @swagger
+ * /api/episode/{slug}/{episodeNumber}:
+ *   get:
+ *     summary: Get an episode by Slug and Episode Number
+ *     tags: [Episode]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         description: Slug of the episode
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: episodeNumber
+ *         required: true
+ *         description: Episode number of the series
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Episode retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Episode'
+ *       400:
+ *         description: Invalid parameters
+ *       404:
+ *         description: Episode not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get("/:slug/:episodeNumber", async (req: Request, res: Response) => {
+  await EpisodeService.getEpisodeByEp(req, res);
 });
 
 // Create a new episode
@@ -92,7 +174,8 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
  *       500:
  *         description: Internal Server Error
  */
-router.post("/", authenticateToken, async (req: Request, res: Response): Promise<void> => {
+
+router.post("/", authenticateToken, async (req: Request, res: Response) => {
   await EpisodeService.createEpisode(req, res);
 });
 
@@ -161,7 +244,7 @@ router.put("/:id", authenticateToken, async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error
  */
-router.delete("/:id", authenticateToken, async (req: Request, res: Response): Promise<void> => {
+router.delete("/:id", authenticateToken, async (req: Request, res: Response) => {
   await EpisodeService.deleteEpisode(req, res);
 });
 

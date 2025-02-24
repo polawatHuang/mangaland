@@ -220,6 +220,7 @@ router.get("/", async (req: Request, res: Response) => {
         projectType: true,
         status: true,
         coverImage: true,
+        slug: true,
         viewsCount: true,
         episodeTotal: true,
         createdAt: true,
@@ -328,22 +329,26 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
 
     if (!id) {
       res.status(400).json(
-        Resp.error("Invalid project ID or project Name", {
+        Resp.error("Invalid project ID, slug, or title", {
           status: 400,
-          meta: { timestamp: new Date().toISOString() }
+          meta: { timestamp: new Date().toISOString() },
         })
       );
       return;
     }
 
+    const whereCondition = isNaN(parseInt(id))
+      ? { OR: [{ slug: id }] }
+      : { id: parseInt(id) };
+
     const project = await prisma.project.findFirst({
-      where: {
-        ...isNaN(parseInt(id))
-          ? { title: id }
-          : { id: parseInt(id) }
-      },
+      where: whereCondition,
       include: {
-        user: true,
+        user: {
+          select: {
+            username: true,
+          },
+        },
         episodes: true,
         projectTags: true,
         views: true,
@@ -355,16 +360,16 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
       res.status(404).json(
         Resp.error("Project not found", {
           status: 404,
-          meta: { timestamp: new Date().toISOString() }
+          meta: { timestamp: new Date().toISOString() },
         })
       );
       return;
     }
 
     res.status(200).json(
-      Resp.success(project, "Get Project data Successfully", {
+      Resp.success(project, "Get Project data successfully", {
         status: 200,
-        meta: { timestamp: new Date().toISOString() }
+        meta: { timestamp: new Date().toISOString() },
       })
     );
   } catch (error: any) {
@@ -374,12 +379,10 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
         status: 500,
         error: error.message,
         stack: error.stack,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     };
-    res.status(500).json(
-      Resp.error("Failed to get project data", errorOptions)
-    );
+    res.status(500).json(Resp.error("Failed to get project data", errorOptions));
   }
 });
 
@@ -407,21 +410,57 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
  *                 type: string
  *               type:
  *                 type: string
+ *                 enum: [manga, manhwa, manhua, webtoon, other]
  *               status:
  *                 type: string
+ *                 enum: [active, inactive, pending]
  *               coverImage:
  *                 type: string
+ *                 format: uri
  *               userId:
  *                 type: integer
+ *               tagIds:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *               slug:
+ *                 type: string
+ *                 description: "Automatically generated if not provided (based on title)."
  *     responses:
  *       201:
  *         description: Project created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     title:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                     coverImage:
+ *                       type: string
+ *                     slug:
+ *                       type: string
+ *                     userId:
+ *                       type: integer
+ *       400:
+ *         description: Missing or invalid required fields.
  *       500:
  *         description: Failed to create project.
  */
 
 router.post("/", authenticateToken, async (req: Request, res: Response) => {
-  const { title, description, type, status, coverImage, userId, tagIds } = req.body;
+  const { title, description, type, status, coverImage, userId, tagIds, slug } = req.body;
 
   try {
     if (!title || !description || !type || !status || !coverImage || !userId) {
@@ -434,6 +473,7 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
       return;
     }
 
+    // Validations for title, description, type, and other fields remain unchanged
     if (typeof title !== 'string' || title.trim() === '') {
       res.status(400).json(
         Resp.error("Invalid title, must be a non-empty string", {
@@ -563,6 +603,7 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
         status,
         coverImage,
         userId: userIdNumber,
+        slug: slug.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
       },
     });
 
