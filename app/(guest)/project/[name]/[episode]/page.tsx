@@ -6,14 +6,21 @@ import Loading from "@/app/components/Loading/Loading";
 import { ScrollUp } from "@/app/components/Footer/Scrollup";
 import MangaReader from "@/app/components/MangaReader/MangaReader";
 import AdvertiseComponent from "@/app/components/Advertise/Advertise";
+import { NextEp } from "@/app/components/Footer/NextEp";
 
 import { EpisodePageProps, EpisodeData } from "@/app/models/Episode";
 
-async function getEpisodeData(name: string, episode: string): Promise<EpisodeData | null> {
+async function getEpisodeData(
+    name: string,
+    episode: string
+): Promise<EpisodeData | null> {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/episode/${name}/${episode}`, {
-            cache: "no-store",
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/episode/${name}/${episode}`,
+            {
+                cache: "no-store",
+            }
+        );
 
         if (!response.ok) return null;
 
@@ -48,14 +55,26 @@ async function EpisodeContent({ params }: EpisodePageProps) {
             <section>
                 <div className="w-full bg-[#1f2936] px-4 py-2">
                     <Link href="/">Homepage</Link> /{" "}
-                    <Link href={`/manga/${name}`}>{episodeData?.title ?? episode}</Link> /{" "}
-                    <Link href={`/manga/${name}/${episode}`}>ตอนที่ {episodeData?.episodeNumber}</Link>
+                    <Link href={`/manga/${name}`}>
+                        {episodeData?.title ?? episode}
+                    </Link>{" "}
+                    /{" "}
+                    <Link href={`/manga/${name}/${episode}`}>
+                        ตอนที่ {episodeData?.episodeNumber}
+                    </Link>
                 </div>
             </section>
 
             <div id="long-content">
                 <MangaReader images={episodeData.images} />
             </div>
+            <ScrollUp />
+            <NextEp
+                params={{
+                    episodeNumber: episode,
+                    mangaName: name,
+                }}
+            />
 
             <ScrollUp />
         </div>

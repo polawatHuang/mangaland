@@ -75,7 +75,9 @@ export default function MangaReader({ images }: MangaReaderProps) {
 
                 <select
                     className="px-3 py-2 bg-pink text-white text-sm hover:bg-[#c03b7b] outline-none rounded-md cursor-pointer"
-                    onChange={(e) => setViewMode(e.target.value as "full" | "single")}
+                    onChange={(e) =>
+                        setViewMode(e.target.value as "full" | "single")
+                    }
                     value={viewMode}
                 >
                     <option value="full">📜 อ่านแบบหน้ายาว</option>
@@ -96,7 +98,9 @@ export default function MangaReader({ images }: MangaReaderProps) {
                                 height={350}
                                 unoptimized={true}
                             />
-                            <p className={`absolute text-white z-[200] bottom-0 md:bottom-1 text-xs md:text-lg font-bold transition-all px-4 py-1 ml-2 md:ml-3 bg-black bg-opacity-50 rounded-lg opacity-50`}>
+                            <p
+                                className={`absolute text-white z-[200] bottom-0 md:bottom-1 text-xs md:text-lg font-bold transition-all px-4 py-1 ml-2 md:ml-3 bg-black bg-opacity-50 rounded-lg opacity-50`}
+                            >
                                 หน้า {img.imageNumber} / {totalPages}
                             </p>
                         </div>
@@ -107,7 +111,9 @@ export default function MangaReader({ images }: MangaReaderProps) {
                     modules={[Navigation]}
                     navigation
                     onSwiper={(swiper) => (swiperRef.current = swiper)}
-                    onSlideChange={(swiper) => setCurrentPage(swiper.realIndex + 1)}
+                    onSlideChange={(swiper) =>
+                        setCurrentPage(swiper.realIndex + 1)
+                    }
                     className="w-full relative"
                 >
                     {sortedImages.map((img, index) => (
