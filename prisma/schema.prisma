@@ -131,7 +131,7 @@ model Menu {
   id        Int      @id @default(autoincrement())
   title     String
   link      String
-  settingId Int // การเชื่อมโยงกับ Setting
+  settingId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt()
 
