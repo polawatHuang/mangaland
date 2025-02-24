@@ -5,10 +5,19 @@ import { Project } from "@/app/models/project";
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState, use } from "react";
+import Card from "../../../components/Card/Card";
+
+interface Manga {
+    id: number;
+    slug: string;
+    backgroundImage: string;
+    status: string;
+    name: string;
+}
 
 export default function Tag({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
-    const [projects, setProjects] = useState<Project[]>([]);
+    const [projects, setProjects] = useState<Manga[]>([]);
 
     useEffect(() => {
         if (!slug) return;
@@ -16,8 +25,15 @@ export default function Tag({ params }: { params: Promise<{ slug: string }> }) {
         const fetchProjectTagByName = async (name: string) => {
             try {
                 const { data } = await axios.get<Project[]>(`/api/tag/${name}`);
-
-                setProjects(data);
+                const mappedMangaList = data.map((project: Project) => ({
+                    id: project.id,
+                    slug: `/project/${project.id}`,
+                    backgroundImage: project.coverImage,
+                    status: project.status,
+                    name: project.title,
+                }));
+                setProjects(mappedMangaList);
+                console.log(mappedMangaList);
             } catch (error) {
                 console.log("Error fetching projects:", error);
             }
@@ -27,8 +43,8 @@ export default function Tag({ params }: { params: Promise<{ slug: string }> }) {
     }, [slug]);
 
     return (
-        <div>
-            <h1 className="text-lg font-semibold">Tag: {slug}</h1>
+        <div className="px-4 flex flex-col gap-4">
+            <h1 className="text-lg font-semibold ">Tag: {slug}</h1>
 
             <div className="group">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -36,26 +52,11 @@ export default function Tag({ params }: { params: Promise<{ slug: string }> }) {
                         projects.map((project) => (
                             <motion.div
                                 key={project.id}
-                                className="flex flex-col items-center justify-center my-2 "
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.9 }}
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 400,
-                                    damping: 10,
-                                    duration: 3,
-                                }}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="w-[150px] h-[220px] overflow-hidden"
                             >
-                                <Image
-                                    src={project.coverImage}
-                                    alt={project.title}
-                                    width={187}
-                                    height={268}
-                                    className="w-3/4 max-w-52 h-auto object-cover"
-                                />
-                                <span className="text-lg font-semibold text-white text-ellipsis line-clamp-3">
-                                    {project.title}
-                                </span>
+                                <Card key={project.id} manga={project} />
                             </motion.div>
                         ))
                     ) : (

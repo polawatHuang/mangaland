@@ -6,7 +6,7 @@ import { Tag } from "@/app/models/tag";
 
 interface TagLinkProps {
     name: string;
-    total: number
+    total: number;
 }
 
 export function TagLink({ name, total }: TagLinkProps) {

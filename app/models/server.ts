@@ -1,6 +1,7 @@
-import { Footer, NavbarItem } from "./settings"
+import { Footer, NavbarItem } from "./settings";
 
 export interface LayoutReturnResponse {
-    navbar: NavbarItem[]
-    footer: Footer
+    result: any;
+    navbar: NavbarItem[];
+    footer: Footer;
 }

@@ -21,7 +21,7 @@ const Advertise: React.FC<AdsCardProps> = () => {
     ];
 
     return (
-        <div className="w-full max-w-6xl container mx-auto">
+        <div className="w-full max-w-6xl px-4 container mx-auto">
             <AdsCard adItems={adItems} />
         </div>
     );

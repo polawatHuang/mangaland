@@ -1,0 +1,7 @@
+.item {
+    border: 2px solid black;
+    padding: 16px;
+}
+.UpMan {
+    grid-area: UpMan;
+}

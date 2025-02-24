@@ -1,0 +1,7 @@
+.YouMan {
+    grid-area: YouMan;
+}
+.item {
+    border: 2px solid black;
+    padding: 16px;
+}

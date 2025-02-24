@@ -32,28 +32,14 @@ interface Project {
   createdAt: string;
   user: User;
   episodes: Episode[];
-  _count: {
-    views: number;
-    favourites: number;
-  };
 }
 
 interface APIResponse {
   success: boolean;
   message: string;
-  data: {
+  result: {
     projects: Project[];
   };
-}
-
-interface NewProject {
-  title: string;
-  description: string;
-  type: string;
-  tagIds: number[];
-  status: string;
-  coverImage: string;
-  userId: number;
 }
 
 interface Tag {
@@ -66,7 +52,7 @@ export default function MangaCRUD() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [hydrated, setHydrated] = useState(false);
-  const [newProject, setNewProject] = useState<NewProject>({
+  const [newProject, setNewProject] = useState({
     title: "",
     description: "",
     type: "manga",
@@ -75,9 +61,7 @@ export default function MangaCRUD() {
     coverImage: "",
     userId: 1,
   });
-
-  const mangaTypeList = ["manga", "manhwa", "manhua", "webtoon", "other"];
-  const statusList = ["active", "inactive", "pending"];
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   useEffect(() => {
     setHydrated(true);
@@ -92,19 +76,16 @@ export default function MangaCRUD() {
       setTags(data.result.tags);
     } catch (error) {
       console.error("Error fetching tags:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/projects`
-      );
+      setLoading(true);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project`);
       const data: APIResponse = await response.json();
       if (data.success) {
-        setProjects(data.data.projects);
+        setProjects(data.result.projects);
       }
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -121,100 +102,141 @@ export default function MangaCRUD() {
     }));
   };
 
+  const handleCreateProject = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newProject),
+      });
+
+      if (!response.ok) throw new Error("Failed to create project");
+
+      setNewProject({
+        title: "",
+        description: "",
+        type: "manga",
+        tagIds: [],
+        status: "active",
+        coverImage: "",
+        userId: 1,
+      });
+      fetchProjects();
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
+  };
+
+  const handleUpdateProject = async () => {
+    if (!editingProject) return;
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/${editingProject.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingProject),
+      });
+
+      if (!response.ok) throw new Error("Failed to update project");
+
+      setEditingProject(null);
+      fetchProjects();
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
+  };
+
+  const handleDeleteProject = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this project?")) return;
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete project");
+
+      fetchProjects();
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
+
   if (!hydrated) return null;
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-gray-900 rounded-lg">
       <h1 className="text-3xl font-bold mb-6 text-white">Project Management</h1>
 
-      {/* Create Form */}
+      {/* Create / Edit Form */}
       <form
-        onSubmit={(e) => e.preventDefault()} // Prevent default submission for now
+        onSubmit={(e) => {
+          e.preventDefault();
+          editingProject ? handleUpdateProject() : handleCreateProject();
+        }}
         className="bg-[#2d313d] shadow p-4 rounded-lg mb-6"
       >
-        <h2 className="text-lg font-bold mb-4 text-white">Add New Project</h2>
+        <h2 className="text-lg font-bold mb-4 text-white">{editingProject ? "Edit Project" : "Add New Project"}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="col-span-2 md:col-span-1">
-            <label className="text-white block mb-2">ชื่อเรื่อง:</label>
-            <input
-              type="text"
-              placeholder="Title"
-              value={newProject.title}
-              onChange={(e) =>
-                setNewProject({ ...newProject, title: e.target.value })
-              }
-              className="p-2 bg-gray-700 text-black w-full rounded"
-              required
-            />
-          </div>
-          <div className="col-span-2 md:col-span-1">
-            <label className="text-white block mb-2">URL รูปปกเรื่อง:</label>
-            <input
-              type="text"
-              placeholder="Cover Image URL"
-              value={newProject.coverImage}
-              onChange={(e) =>
-                setNewProject({ ...newProject, coverImage: e.target.value })
-              }
-              className="p-2 bg-gray-700 text-black w-full rounded"
-              required
-            />
-          </div>
-
-          {/* Manga Type Selection */}
-          <div className="col-span-2 md:col-span-1">
-            <label className="text-white block mb-2">ประเภทของโปรเจ็ค:</label>
-            <select
-              className="p-2 bg-gray-700 rounded text-black w-full"
-              value={newProject.type}
-              onChange={(e) =>
-                setNewProject({ ...newProject, type: e.target.value })
-              }
-            >
-              <option value={""} disabled>
-                กรุณาเลือก Type ของ Project
-              </option>
-              {mangaTypeList.map((manga) => (
-                <option key={manga} value={manga} className="text-black">
-                  {manga}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="col-span-2 md:col-span-1">
-            <label className="text-white block mb-2">Tags:</label>
-            <Select
-              key={hydrated ? "loaded" : "loading"} // Fixes hydration error
-              isMulti
-              options={tags?.map((tag) => ({
-                value: tag.id,
-                label: tag.name,
-              }))}
-              onChange={handleTagChange}
-              className="text-black"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="text-white block mb-2">เนื้อเรื่องย่อ:</label>
-            <textarea
-              placeholder="Description"
-              value={newProject.description}
-              onChange={(e) =>
-                setNewProject({ ...newProject, description: e.target.value })
-              }
-              className="p-2 bg-gray-700 rounded text-black w-full"
-              required
-            ></textarea>
-          </div>
+          <input
+            type="text"
+            placeholder="Title"
+            value={editingProject ? editingProject.title : newProject.title}
+            onChange={(e) =>
+              editingProject
+                ? setEditingProject({ ...editingProject, title: e.target.value })
+                : setNewProject({ ...newProject, title: e.target.value })
+            }
+            className="p-2 bg-gray-700 text-black w-full rounded"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Cover Image URL"
+            value={editingProject ? editingProject.coverImage : newProject.coverImage}
+            onChange={(e) =>
+              editingProject
+                ? setEditingProject({ ...editingProject, coverImage: e.target.value })
+                : setNewProject({ ...newProject, coverImage: e.target.value })
+            }
+            className="p-2 bg-gray-700 text-black w-full rounded"
+            required
+          />
         </div>
-        <button
-          type="submit"
-          className="mt-4 px-4 py-2 bg-[#3a82f6] hover:bg-[#2b66c4] text-white rounded flex items-center gap-2"
-        >
-          <PlusIcon className="w-5 h-5" /> Add Project
+        <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+          {editingProject ? "Update Project" : "Add Project"}
         </button>
       </form>
+
+      {/* Project List */}
+      <h2 className="text-xl font-bold mb-4 text-white">Project List</h2>
+      {loading ? (
+        <p className="text-center text-white">Loading projects...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <div key={project.id} className="bg-[#2d313d] p-4 rounded-lg shadow-lg">
+              <img src={project.coverImage} alt={project.title} className="w-full h-48 object-cover rounded-lg mb-2" />
+              <h3 className="text-lg font-bold text-white line-clamp-1">{project.title}</h3>
+              <p className="text-sm text-gray-400 line-clamp-3 mt-2">{project.description}</p>
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={() => setEditingProject(project)}
+                  className="text-[#3a82f6] hover:text-[#609cfc]"
+                >
+                  <PencilIcon className="w-6 h-6" />
+                </button>
+                <button
+                  onClick={() => handleDeleteProject(project.id)}
+                  className="text-[#ff0505] hover:text-[#f54040]"
+                >
+                  <TrashIcon className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

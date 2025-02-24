@@ -14,8 +14,10 @@ export interface ProjectResult {
 }
 
 export interface Project {
+    backgroundImage: any;
     id: number;
     title: string;
+    slug: string;
     description: string;
     projectType: string;
     status: string;
@@ -43,4 +45,37 @@ export interface Pagination {
     totalPages: number;
     totalProjects: number;
     perPage: number;
+}
+
+export interface Manga {
+    id: number;
+    slug: string;
+    name: string;
+    description: string;
+    backgroundImage: string;
+    episodes: Episode[];
+}
+
+export interface Episode {
+    id: number;
+    episodeNumber: number;
+    title: string;
+    description: string;
+    createdAt: string;
+}
+
+export interface ProjectResponse {
+    success: boolean;
+    message: string;
+    result: {
+        id: number;
+        title: string;
+        slug: string;
+        description: string;
+        coverImage: string;
+        episodes: Episode[];
+    };
+    meta: {
+        timestamp: string;
+    };
 }
