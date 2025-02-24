@@ -9,17 +9,63 @@ export class EpisodeService {
     try {
       const episodes = await prisma.episode.findMany({
         include: {
-          images: true,
+          views: {
+            select: {
+              userId: true,
+              projectId: true,
+              episodeId: true,
+            },
+          },
+          project: {
+            select: {
+              title: true,
+              slug: true,
+            },
+          },
+        },
+        take: 100,
+      });
+
+      if (!episodes || episodes.length === 0) return res.status(404).json(Resp.error("No episodes found", { status: 404, meta: { timestamp: new Date().toISOString() } }));
+
+      res.status(200).json(Resp.success(episodes, "Episodes retrieved successfully", { status: 200, meta: { timestamp: new Date().toISOString() } }));
+    } catch (error: any) {
+      const errorOptions = {
+        status: 500,
+        meta: {
+          status: 500,
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString()
+        }
+      };
+      res.status(500).json(Resp.error("An error occurred", errorOptions));
+    }
+  }
+
+  static async getEpisodesByProject(req: Request, res: Response) {
+    try {
+      const { slug } = req.params;
+
+      if (!slug) return res.status(400).json(Resp.error("Slug is required", { status: 400, meta: { timestamp: new Date().toISOString() } }));
+      if (slug.length < 1) return res.status(400).json(Resp.error("Slug must be at least 1 character", { status: 400, meta: { timestamp: new Date().toISOString() } }));
+
+      const episodes = await prisma.episode.findMany({
+        where: {
+          project: { slug: slug },
+        },
+        include: {
           views: true,
           project: {
             select: {
               title: true,
+              slug: true,
             },
           },
         },
       });
 
-      if (!episodes || episodes.length === 0) return res.status(404).json(Resp.error("No episodes found", { status: 404, meta: { timestamp: new Date().toISOString() } }));
+      if (!episodes || episodes.length === 0) return res.status(404).json(Resp.error(`No episodes found for project with slug ${slug}`, { status: 404, meta: { timestamp: new Date().toISOString() } }));
 
       res.status(200).json(Resp.success(episodes, "Episodes retrieved successfully", { status: 200, meta: { timestamp: new Date().toISOString() } }));
     } catch (error: any) {
@@ -72,7 +118,7 @@ export class EpisodeService {
   }
 
   static async getEpisodeByEp(req: Request, res: Response) {
-    const { slug ,episodeNumber } = req.params;
+    const { slug, episodeNumber } = req.params;
 
     if (!slug) return res.status(400).json(Resp.error("Slug number is required", { status: 400, meta: { timestamp: new Date().toISOString() } }));
     if (slug.length < 1) return res.status(400).json(Resp.error("Slug Number must be at least 1 character", { status: 400, meta: { timestamp: new Date().toISOString() } }));
@@ -93,10 +139,16 @@ export class EpisodeService {
     try {
       const episode = await prisma.episode.findFirst({
         where: {
-          project: { slug: slug }, // ค้นหาจาก slug ของเรื่อง
-          episodeNumber: parsedEpisodeNumber, // ค้นหาด้วย episodeNumber
+          project: { slug: slug },
+          episodeNumber: parsedEpisodeNumber,
         },
         include: {
+          project: {
+            select: {
+              title: true,
+              slug: true,
+            },
+          },
           images: true,
           views: true,
         },

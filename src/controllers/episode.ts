@@ -65,6 +65,34 @@ router.get("/:id", async (req: Request, res: Response) => {
   await EpisodeService.getEpisodeById(req, res);
 });
 
+// Get episodes by project slug
+/**
+ * @swagger
+ * /api/episode/project/{slug}:
+ *   get:
+ *     summary: Get episodes by project slug
+ *     tags: [Episode]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         description: Slug of the project
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Episodes retrieved successfully
+ *       400:
+ *         description: Invalid slug format or missing parameter
+ *       404:
+ *         description: Episodes not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get("/project/:slug", async (req: Request, res: Response) => {
+  await EpisodeService.getEpisodesByProject(req, res);
+});
+
 // Get episode by Slug and Episode Number
 /**
  * @swagger
