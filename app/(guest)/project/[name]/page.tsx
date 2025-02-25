@@ -32,10 +32,14 @@ dayjs.updateLocale("en", {
     },
 });
 
-export default function SlugPage({ params }: { params: { name: string } }) {
+export default async function SlugPage({
+    params,
+}: {
+    params: Promise<{ name: string }>;
+}) {
     return (
         <Suspense fallback={<Loading />}>
-            <MangaContent params={params} />
+            <MangaContent params={await params} />
         </Suspense>
     );
 }
@@ -44,7 +48,6 @@ async function MangaContent({ params }: { params: { name: string } }) {
     const manga = await fetchManga(params.name);
 
     if (!manga) return notFound();
-
     return (
         <div className="relative w-full min-h-screen max-w-6xl mx-auto md:p-8 pb-20 gap-16 sm:p-2">
             <section>

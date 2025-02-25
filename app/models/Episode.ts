@@ -26,5 +26,8 @@ interface ProjectProps {
     slug: string;
 }
 export interface EpisodePageProps {
-    params: { name: string; episode: string };
+    params: Promise<{
+        name: string;
+        episode: string;
+    }>;
 }
