@@ -12,77 +12,83 @@
 //     episodes: { title: string; link: string; videoUrl: string }[];
 // }
 
-// export async function GET(request: Request, { params }: { params: { animeId: string } }) {
-//     try {
-//         const { data } = await axios.get(`https://www.animehdzeroo.com/catagory/${params.animeId}/`);
-//         const $ = cheerio.load(data);
+interface Params {
+    params: Promise<{ animeId: string }>;
+}
 
-//         const animeList: Anime[] = await Promise.all(
-//             $('div.card-body').map(async (index:number, element:HTMLElement) => {
-//                 const title = $(element).find('h1.text-center').text().trim();
-//                 const imageUrl = $(element).find('img').attr('src') || '';
-//                 const desc = $(element).find('p.text-center').contents().filter((_:any, el:any) => el.type === 'text').text().trim();
-//                 const tag = $(element).find('span.badge.bg-info').text().trim();
+export async function GET(request: Request, { params }: Params) {
+    return new Response("Anime API");
 
-//                 const episodePromises = $(element).find('p.text-center a').map(async (i:any, episodeElement:HTMLElement) => {
-//                     const episodeTitle = $(episodeElement).text().trim();
-//                     const episodeLink = $(episodeElement).attr('href') || '';
+    // try {
+    //     const { data } = await axios.get(`https://www.animehdzeroo.com/catagory/${params.animeId}/`);
+    //     const $ = cheerio.load(data);
 
-//                     const videoUrl = await getVideoUrl(episodeLink);
+    //     const animeList: Anime[] = await Promise.all(
+    //         $('div.card-body').map(async (index:number, element:HTMLElement) => {
+    //             const title = $(element).find('h1.text-center').text().trim();
+    //             const imageUrl = $(element).find('img').attr('src') || '';
+    //             const desc = $(element).find('p.text-center').contents().filter((_:any, el:any) => el.type === 'text').text().trim();
+    //             const tag = $(element).find('span.badge.bg-info').text().trim();
 
-//                     return { title: episodeTitle, link: episodeLink, videoUrl };
-//                 }).get();
+    //             const episodePromises = $(element).find('p.text-center a').map(async (i:any, episodeElement:HTMLElement) => {
+    //                 const episodeTitle = $(episodeElement).text().trim();
+    //                 const episodeLink = $(episodeElement).attr('href') || '';
 
-//                 const episodes = await Promise.all(episodePromises);
+    //                 const videoUrl = await getVideoUrl(episodeLink);
 
-//                 return {
-//                     title,
-//                     imageUrl,
-//                     desc,
-//                     tag,
-//                     episodes
-//                 };
-//             }).get()
-//         );
+    //                 return { title: episodeTitle, link: episodeLink, videoUrl };
+    //             }).get();
 
-//         // Get the first anime in the list
-//         const animeData = animeList[0];
+    //             const episodes = await Promise.all(episodePromises);
 
-//         // Save to the database
-//         const savedAnime = await prisma.anime.upsert({
-//             where: { animeId: params.animeId },
-//             update: {
-//                 title: animeData.title,
-//                 description: animeData.desc,
-//                 thumbnail: animeData.imageUrl,
-//                 tag: animeData.tag
-//             },
-//             create: {
-//                 animeId: params.animeId,
-//                 title: animeData.title,
-//                 description: animeData.desc,
-//                 thumbnail: animeData.imageUrl,
-//                 tag: animeData.tag,
-//                 episodes: {
-//                     create: animeData.episodes.map((episode, index) => ({
-//                         episodeNumber: index + 1,
-//                         title: episode.title,
-//                         video: episode.videoUrl,
-//                         releaseDate: new Date() // You can modify this to fetch actual release date
-//                     }))
-//                 }
-//             },
-//             include: {
-//                 episodes: true
-//             }
-//         });
+    //             return {
+    //                 title,
+    //                 imageUrl,
+    //                 desc,
+    //                 tag,
+    //                 episodes
+    //             };
+    //         }).get()
+    //     );
 
-//         return Response.json({ isError: false, data: savedAnime }, { status: 200 });
-//     } catch (error: unknown) {
-//         console.error(error);
-//         return Response.json({ isError: true, message: 'Error fetching data' }, { status: 500 });
-//     }
-// }
+    //     // Get the first anime in the list
+    //     const animeData = animeList[0];
+
+    //     // Save to the database
+    //     const savedAnime = await prisma.anime.upsert({
+    //         where: { animeId: params.animeId },
+    //         update: {
+    //             title: animeData.title,
+    //             description: animeData.desc,
+    //             thumbnail: animeData.imageUrl,
+    //             tag: animeData.tag
+    //         },
+    //         create: {
+    //             animeId: params.animeId,
+    //             title: animeData.title,
+    //             description: animeData.desc,
+    //             thumbnail: animeData.imageUrl,
+    //             tag: animeData.tag,
+    //             episodes: {
+    //                 create: animeData.episodes.map((episode, index) => ({
+    //                     episodeNumber: index + 1,
+    //                     title: episode.title,
+    //                     video: episode.videoUrl,
+    //                     releaseDate: new Date() // You can modify this to fetch actual release date
+    //                 }))
+    //             }
+    //         },
+    //         include: {
+    //             episodes: true
+    //         }
+    //     });
+
+    //     return Response.json({ isError: false, data: savedAnime }, { status: 200 });
+    // } catch (error: unknown) {
+    //     console.error(error);
+    //     return Response.json({ isError: true, message: 'Error fetching data' }, { status: 500 });
+    // }
+}
 
 // // Function to fetch the video URL from the iframe inside the episode page
 // async function getVideoUrl(episodeLink: string): Promise<string> {
