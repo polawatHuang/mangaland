@@ -23,9 +23,12 @@ interface Episode {
 interface Project {
   id: number;
   title: string;
+  type: string;
   description: string;
   projectType: string;
   status: string;
+  tagIds: number[];
+  slug: string;
   coverImage: string;
   viewsCount: number;
   episodeTotal: number;
@@ -52,10 +55,20 @@ export default function MangaCRUD() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [hydrated, setHydrated] = useState(false);
-  const [newProject, setNewProject] = useState({
+  const [newProject, setNewProject] = useState<{
+    title: string;
+    description: string;
+    type: string;
+    slug: string;
+    tagIds: number[];
+    status: string;
+    coverImage: string;
+    userId: number;
+  }>({
     title: "",
     description: "",
     type: "manga",
+    slug: "",
     tagIds: [],
     status: "active",
     coverImage: "",
@@ -117,6 +130,7 @@ export default function MangaCRUD() {
         description: "",
         type: "manga",
         tagIds: [],
+        slug: "",
         status: "active",
         coverImage: "",
         userId: 1,
@@ -198,6 +212,54 @@ export default function MangaCRUD() {
               editingProject
                 ? setEditingProject({ ...editingProject, coverImage: e.target.value })
                 : setNewProject({ ...newProject, coverImage: e.target.value })
+            }
+            className="p-2 bg-gray-700 text-black w-full rounded"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            value={editingProject ? editingProject.description : newProject.description}
+            onChange={(e) =>
+              editingProject
+                ? setEditingProject({ ...editingProject, description: e.target.value })
+                : setNewProject({ ...newProject, description: e.target.value })
+            }
+            className="p-2 bg-gray-700 text-black w-full rounded"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Type"
+            value={editingProject ? editingProject.type : newProject.type}
+            onChange={(e) =>
+              editingProject
+                ? setEditingProject({ ...editingProject, type: e.target.value })
+                : setNewProject({ ...newProject, type: e.target.value })
+            }
+            className="p-2 bg-gray-700 text-black w-full rounded"
+            required
+          />
+          <input
+            type="number"
+            placeholder="Tags"
+            value={editingProject ? editingProject.tagIds.join(", ") : newProject.tagIds.join(", ")}
+            onChange={(e) =>
+              editingProject
+                ? setEditingProject({ ...editingProject, tagIds: [parseInt(e.target.value)] })
+                : setNewProject({ ...newProject, tagIds: [parseInt(e.target.value)] })
+            }
+            className="p-2 bg-gray-700 text-black w-full rounded"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Slug"
+            value={editingProject ? editingProject.slug : newProject.slug}
+            onChange={(e) =>
+              editingProject
+                ? setEditingProject({ ...editingProject, slug: e.target.value })
+                : setNewProject({ ...newProject, slug: e.target.value })
             }
             className="p-2 bg-gray-700 text-black w-full rounded"
             required

@@ -68,14 +68,16 @@ export interface ProjectResponse {
     success: boolean;
     message: string;
     result: {
-        id: number;
-        title: string;
-        slug: string;
-        description: string;
-        coverImage: string;
-        episodes: Episode[];
+        project: ProjectProps[];
     };
     meta: {
         timestamp: string;
     };
+}
+export interface ProjectProps {
+    id: number;
+    title: string;
+    slug: string;
+    description: string;
+    coverImage: string;
 }

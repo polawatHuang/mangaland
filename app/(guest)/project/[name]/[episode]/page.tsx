@@ -32,20 +32,29 @@ async function getEpisodeData(
     }
 }
 
-export default function EpisodePage({ params }: EpisodePageProps) {
-    return (
-        <Suspense fallback={<Loading />}>
-            <EpisodeContent params={params} />
-        </Suspense>
-    );
-}
-
-async function EpisodeContent({ params }: EpisodePageProps) {
-    const { name, episode } = params;
+export default async function EpisodePage({ params }: EpisodePageProps) {
+    const { name, episode } = await params;
     const episodeData = await getEpisodeData(name, episode);
 
     if (!episodeData) return notFound();
 
+    return (
+        <Suspense fallback={<Loading />}>
+            <EpisodeContent
+                params={{ name, episode }}
+                episodeData={episodeData}
+            />
+        </Suspense>
+    );
+}
+
+function EpisodeContent({
+    params,
+    episodeData,
+}: {
+    params: { name: string; episode: string };
+    episodeData: EpisodeData;
+}) {
     return (
         <div className="relative w-full min-h-screen max-w-6xl mx-auto md:p-8 pb-20 gap-16 sm:p-2">
             <section>
@@ -55,13 +64,17 @@ async function EpisodeContent({ params }: EpisodePageProps) {
             <section>
                 <div className="w-full bg-[#1f2936] px-4 py-2">
                     <Link href="/">Homepage</Link> /{" "}
-                    <Link href={`/manga/${name}`}>
-                        {episodeData?.title ?? episode}
+                    <Link href={`/project/${params.name}`}>
+                        {episodeData?.project?.title}
                     </Link>{" "}
                     /{" "}
-                    <Link href={`/manga/${name}/${episode}`}>
+                    <Link href={`/project/${params.name}/${params.episode}`}>
                         ตอนที่ {episodeData?.episodeNumber}
-                    </Link>
+                    </Link>{" "}
+                    -{" "}
+                    <Link href={`/project/${params.name}`}>
+                        {episodeData?.title ?? params.episode}
+                    </Link>{" "}
                 </div>
             </section>
 
@@ -71,11 +84,10 @@ async function EpisodeContent({ params }: EpisodePageProps) {
             <ScrollUp />
             <NextEp
                 params={{
-                    episodeNumber: episode,
-                    mangaName: name,
+                    episodeNumber: params.episode,
+                    mangaName: params.name,
                 }}
             />
-
             <ScrollUp />
         </div>
     );

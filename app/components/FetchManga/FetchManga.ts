@@ -9,14 +9,21 @@ export async function fetchManga(name: string): Promise<Manga | null> {
                 cache: "force-cache", // ใช้ cache เพื่อลด API calls
             }
         );
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/episode/project/${name}`
+        );
 
-        if (!res.ok) {
+        if (!res.ok && !response.ok) {
             console.error(`Failed to fetch manga: ${res.statusText}`);
             return null;
         }
 
         const data: ProjectResponse = await res.json();
-        const project = data.result;
+        const dataEp: ProjectResponse = await response.json();
+        const project = Array.isArray(data.result.project)
+            ? data.result.project[0]
+            : data.result.project;
+        const episodes = Array.isArray(dataEp.result) ? dataEp.result : [];
 
         if (!project) return null;
 
@@ -26,7 +33,7 @@ export async function fetchManga(name: string): Promise<Manga | null> {
             name: project.title,
             description: project.description,
             backgroundImage: project.coverImage,
-            episodes: project.episodes.map((ep) => ({
+            episodes: episodes.map((ep) => ({
                 id: ep.id,
                 episodeNumber: ep.episodeNumber,
                 title: ep.title,

@@ -36,7 +36,7 @@ const fetchProjects = async (): Promise<Manga[]> => {
         const currentYear = new Date().getFullYear();
 
         const filterProjectsByMonthYear = (projects: Project[]) => {
-            return projects.filter(project => {
+            return projects.filter((project) => {
                 const projectDate = new Date(project.createdAt);
                 return (
                     projectDate.getMonth() === currentMonth &&
@@ -49,7 +49,9 @@ const fetchProjects = async (): Promise<Manga[]> => {
             return projects.sort((a, b) => b.viewsCount - a.viewsCount);
         };
 
-        const filteredProjects = filterProjectsByMonthYear(data.result.projects);
+        const filteredProjects = filterProjectsByMonthYear(
+            data.result.projects
+        );
         const sortedProjects = sortProjectsByViews(filteredProjects);
 
         const topProjects = sortedProjects.slice(0, 5);
