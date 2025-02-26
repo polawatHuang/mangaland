@@ -119,11 +119,18 @@ export default function MangaCRUD() {
 
   const handleCreateProject = async () => {
     try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        console.error("No authentication token found!");
+        return;
+      }
+  
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/project`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify(newProject),
         }
       );
@@ -304,7 +311,7 @@ export default function MangaCRUD() {
         </div>
         <button
           type="submit"
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          className="mt-4 px-4 py-2  bg-[#3a82f6] hover:bg-[#2c68c9] text-white rounded"
         >
           {editingProject ? "Update Project" : "Add Project"}
         </button>
