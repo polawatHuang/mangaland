@@ -248,6 +248,90 @@ router.delete("/:id", authenticateToken, async (req: Request, res: Response) => 
   await EpisodeService.deleteEpisode(req, res);
 });
 
+/**
+ * @swagger
+ * /api/episode/upload:
+ *   post:
+ *     summary: Upload an episode image URL
+ *     description: Add an image URL to a specific episode. The image number will be automatically assigned.
+ *     tags: [Episode]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - episodeId
+ *               - image
+ *             properties:
+ *               episodeId:
+ *                 type: integer
+ *                 description: The ID of the episode
+ *                 example: 2
+ *               image:
+ *                 type: string
+ *                 format: uri
+ *                 description: The URL of the image to upload
+ *                 example: "https://example.com/image.jpg"
+ *     responses:
+ *       201:
+ *         description: Image URL saved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Image URL saved successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 10
+ *                     episodeId:
+ *                       type: integer
+ *                       example: 2
+ *                     image:
+ *                       type: string
+ *                       example: "https://example.com/image.jpg"
+ *                     imageNumber:
+ *                       type: integer
+ *                       example: 3
+ *       400:
+ *         description: Bad request (invalid or missing parameters)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Episode ID must be a number"
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred"
+ */
 router.post("/upload", authenticateToken, async (req: Request, res: Response) => {
   await EpisodeService.uploadEpisodeImage(req, res);
 });
