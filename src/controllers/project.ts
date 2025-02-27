@@ -184,7 +184,6 @@ const router: Router = Router();
  *                       type: string
  *                       format: date-time
  */
-
 router.get("/", async (req: Request, res: Response) => {
   await ProjectService.getAllProjects(req, res);
 });

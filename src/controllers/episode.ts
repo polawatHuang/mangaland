@@ -248,4 +248,8 @@ router.delete("/:id", authenticateToken, async (req: Request, res: Response) => 
   await EpisodeService.deleteEpisode(req, res);
 });
 
+router.post("/upload", authenticateToken, async (req: Request, res: Response) => {
+  await EpisodeService.uploadEpisodeImage(req, res);
+});
+
 export default router;

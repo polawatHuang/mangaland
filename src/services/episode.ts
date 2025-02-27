@@ -272,4 +272,47 @@ export class EpisodeService {
       res.status(500).json(Resp.error("An error occurred", errorOptions));
     }
   }
+
+  static async uploadEpisodeImage(req: Request, res: Response) {
+    const { episodeId, image } = req.body;
+    try {
+      const parsedEpisodeId = Number(episodeId);
+      if (isNaN(parsedEpisodeId)) {
+        return res.status(400).json(Resp.error("Episode ID must be a number"));
+      }
+
+      if (!image || typeof image !== "string" || image.trim().length === 0) {
+        return res.status(400).json(Resp.error("Image URL is required"));
+      }
+
+      const lastImage = await prisma.episodeImage.findFirst({
+        where: { episodeId: parsedEpisodeId },
+        orderBy: { imageNumber: 'desc' },
+        select: { imageNumber: true }
+      });
+
+      const newImageNumber = (lastImage?.imageNumber || 0) + 1;
+
+      const newImage = await prisma.episodeImage.create({
+        data: {
+          episodeId: parsedEpisodeId,
+          image: image.trim(),
+          imageNumber: newImageNumber
+        },
+      });
+
+      res.status(201).json(Resp.success(newImage, "Image URL saved successfully"));
+    } catch (error: any) {
+      const errorOptions = {
+        status: 500,
+        meta: {
+          status: 500,
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString()
+        }
+      };
+      res.status(500).json(Resp.error("An error occurred", errorOptions));
+    }
+  };
 }
