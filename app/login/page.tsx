@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
@@ -12,46 +12,34 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const getAccessToken = () => getLocalStorageWithExpiry("accessToken");
-    const getRefreshToken = () => getLocalStorageWithExpiry("refreshToken");
-
-    if (getAccessToken() && getRefreshToken()) {
-      router.push("/");
-    }
-  }, []);
-
-  const saveTokens = (accessToken: string, refreshToken: string) => {
-    setLocalStorageWithExpiry("accessToken", accessToken, 7);
-    setLocalStorageWithExpiry("refreshToken", refreshToken, 7);
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
         // Save tokens to localStorage
-        saveTokens(data.result.accessToken, data.result.refreshToken);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/@me`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${data.result.accessToken}`,
-          },
-        });
+        localStorage.setItem("accessToken", data.result.accessToken);
+        localStorage.setItem("refreshToken", data.result.refreshToken);
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/@me`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${data.result.accessToken}`,
+            },
+          }
+        );
 
         const resData = await res.json();
 

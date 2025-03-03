@@ -95,7 +95,9 @@ export default function MangaCRUD() {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/project`
+      );
       const data: APIResponse = await response.json();
       if (data.success) {
         setProjects(data.result.projects);
@@ -117,11 +119,21 @@ export default function MangaCRUD() {
 
   const handleCreateProject = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newProject),
-      });
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        console.error("No authentication token found!");
+        return;
+      }
+  
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/project`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify(newProject),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to create project");
 
@@ -145,11 +157,14 @@ export default function MangaCRUD() {
     if (!editingProject) return;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/${editingProject.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingProject),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/project/${editingProject.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(editingProject),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to update project");
 
@@ -164,9 +179,12 @@ export default function MangaCRUD() {
     if (!confirm("Are you sure you want to delete this project?")) return;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/project/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to delete project");
 
@@ -190,7 +208,9 @@ export default function MangaCRUD() {
         }}
         className="bg-[#2d313d] shadow p-4 rounded-lg mb-6"
       >
-        <h2 className="text-lg font-bold mb-4 text-white">{editingProject ? "Edit Project" : "Add New Project"}</h2>
+        <h2 className="text-lg font-bold mb-4 text-white">
+          {editingProject ? "Edit Project" : "Add New Project"}
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
@@ -198,7 +218,10 @@ export default function MangaCRUD() {
             value={editingProject ? editingProject.title : newProject.title}
             onChange={(e) =>
               editingProject
-                ? setEditingProject({ ...editingProject, title: e.target.value })
+                ? setEditingProject({
+                    ...editingProject,
+                    title: e.target.value,
+                  })
                 : setNewProject({ ...newProject, title: e.target.value })
             }
             className="p-2 bg-gray-700 text-black w-full rounded"
@@ -207,10 +230,15 @@ export default function MangaCRUD() {
           <input
             type="text"
             placeholder="Cover Image URL"
-            value={editingProject ? editingProject.coverImage : newProject.coverImage}
+            value={
+              editingProject ? editingProject.coverImage : newProject.coverImage
+            }
             onChange={(e) =>
               editingProject
-                ? setEditingProject({ ...editingProject, coverImage: e.target.value })
+                ? setEditingProject({
+                    ...editingProject,
+                    coverImage: e.target.value,
+                  })
                 : setNewProject({ ...newProject, coverImage: e.target.value })
             }
             className="p-2 bg-gray-700 text-black w-full rounded"
@@ -219,10 +247,17 @@ export default function MangaCRUD() {
           <input
             type="text"
             placeholder="Description"
-            value={editingProject ? editingProject.description : newProject.description}
+            value={
+              editingProject
+                ? editingProject.description
+                : newProject.description
+            }
             onChange={(e) =>
               editingProject
-                ? setEditingProject({ ...editingProject, description: e.target.value })
+                ? setEditingProject({
+                    ...editingProject,
+                    description: e.target.value,
+                  })
                 : setNewProject({ ...newProject, description: e.target.value })
             }
             className="p-2 bg-gray-700 text-black w-full rounded"
@@ -241,17 +276,26 @@ export default function MangaCRUD() {
             required
           />
           <input
-            type="number"
+            type="text"
             placeholder="Tags"
-            value={editingProject ? editingProject.tagIds.join(", ") : newProject.tagIds.join(", ")}
-            onChange={(e) =>
-              editingProject
-                ? setEditingProject({ ...editingProject, tagIds: [parseInt(e.target.value)] })
-                : setNewProject({ ...newProject, tagIds: [parseInt(e.target.value)] })
+            value={
+              editingProject && Array.isArray(editingProject.tagIds)
+                ? editingProject.tagIds.join(", ")
+                : newProject.tagIds.join(", ")
             }
+            onChange={(e) => {
+              const tagValues = e.target.value
+                .split(",")
+                .map((id) => parseInt(id.trim(), 10))
+                .filter((id) => !isNaN(id));
+              editingProject
+                ? setEditingProject({ ...editingProject, tagIds: tagValues })
+                : setNewProject({ ...newProject, tagIds: tagValues });
+            }}
             className="p-2 bg-gray-700 text-black w-full rounded"
             required
           />
+
           <input
             type="text"
             placeholder="Slug"
@@ -265,7 +309,10 @@ export default function MangaCRUD() {
             required
           />
         </div>
-        <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+        <button
+          type="submit"
+          className="mt-4 px-4 py-2  bg-[#3a82f6] hover:bg-[#2c68c9] text-white rounded"
+        >
           {editingProject ? "Update Project" : "Add Project"}
         </button>
       </form>
@@ -277,10 +324,21 @@ export default function MangaCRUD() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-            <div key={project.id} className="bg-[#2d313d] p-4 rounded-lg shadow-lg">
-              <img src={project.coverImage} alt={project.title} className="w-full h-48 object-cover rounded-lg mb-2" />
-              <h3 className="text-lg font-bold text-white line-clamp-1">{project.title}</h3>
-              <p className="text-sm text-gray-400 line-clamp-3 mt-2">{project.description}</p>
+            <div
+              key={project.id}
+              className="bg-[#2d313d] p-4 rounded-lg shadow-lg"
+            >
+              <img
+                src={project.coverImage}
+                alt={project.title}
+                className="w-full h-48 object-cover rounded-lg mb-2"
+              />
+              <h3 className="text-lg font-bold text-white line-clamp-1">
+                {project.title}
+              </h3>
+              <p className="text-sm text-gray-400 line-clamp-3 mt-2">
+                {project.description}
+              </p>
               <div className="flex justify-between mt-4">
                 <button
                   onClick={() => setEditingProject(project)}
