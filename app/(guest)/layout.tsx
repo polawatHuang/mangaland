@@ -32,7 +32,7 @@ export default function RootLayout({
                 </div>
                 <Footer />
                 <div className="scroll-contai overflow-hidden">
-                    <div className="scroll-bar"></div>
+                    <div className="scroll-bar h-screen"></div>
                 </div>
             </body>
         </html>
