@@ -93,10 +93,10 @@ const Footer: React.FC = () => {
                     <ul>
                         {menuItems
                             ?.filter(
-                                (item) => item.title !== "สุ่มเลือกอ่านมังงะ"
+                                (item) => item.title !== "สุ่มมังงะ"
                             )
-                            .map((item) => (
-                                <li key={item.title} className="mb-2">
+                            .map((item,index) => (
+                                <li key={index} className="mb-2">
                                     <Link
                                         href={item.link}
                                         className="hover:underline"
@@ -107,10 +107,10 @@ const Footer: React.FC = () => {
                             ))}
                         {menuItems
                             ?.filter(
-                                (item) => item.title === "สุ่มเลือกอ่านมังงะ"
+                                (item) => item.title === "สุ่มมังงะ"
                             )
-                            .map((item) => (
-                                <li key={item.title} className="mb-2">
+                            .map((item,index) => (
+                                <li key={index} className="mb-2">
                                     <button className="hover:underline cursor-pointer">
                                         {item.title}
                                     </button>
@@ -125,9 +125,9 @@ const Footer: React.FC = () => {
                         ติดตามเราได้ที่
                     </h4>
                     <div className="flex space-x-4">
-                        {footer?.socials.map((social) => (
+                        {footer?.socials.map((social,index) => (
                             <Link
-                                key={social.href}
+                                key={index}
                                 href={social.href}
                                 target="_blank"
                                 rel="noopener noreferrer"

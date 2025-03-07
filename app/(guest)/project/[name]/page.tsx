@@ -5,8 +5,10 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import updateLocale from "dayjs/plugin/updateLocale";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 
 import style from "./chapter.module.css";
+import styles from "../../../components/MangaReader/MangaReader.module.css"
 import Loading from "@/app/components/Loading/Loading";
 import AdvertiseComponent from "@/app/components/Advertise/Advertise";
 import { fetchManga } from "@/app/components/FetchManga/FetchManga";
@@ -61,7 +63,13 @@ async function MangaContent({ params }: { params: { name: string } }) {
                 </div>
             </section>
 
-            <section className="flex md:flex-row flex-col md:items-start items-center gap-4 mt-4 px-4">
+            <section className="flex md:flex-row flex-col md:items-start items-center gap-4 relative mt-4 px-4">
+                <Link
+                    href={`/`}
+                    className={`${styles.circle} absolute top-0 left-3 md:relative p-[2px]`}
+                >
+                    <ArrowUturnLeftIcon className="size-8 p-1 bg-black rounded-full z-20 relative" />
+                </Link>
                 <Image
                     src={manga.backgroundImage}
                     alt={`${manga.name}`}
