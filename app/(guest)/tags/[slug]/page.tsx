@@ -6,6 +6,9 @@ import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState, use } from "react";
 import Card from "../../../components/Card/Card";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import styles from "../../../components/MangaReader/MangaReader.module.css";
 
 interface Manga {
     id: number;
@@ -44,7 +47,15 @@ export default function Tag({ params }: { params: Promise<{ slug: string }> }) {
 
     return (
         <div className="px-4 flex flex-col gap-4">
-            <h1 className="text-lg font-semibold ">Tag: {slug}</h1>
+            <div className="flex w-full justify-between">
+                <h1 className="text-lg font-semibold ">Tag: {slug}</h1>
+                <Link
+                    href={`/`}
+                    className={`${styles.circle} absolute top-0 left-3 [z-index:9999] md:left-0 md:relative p-[2px]`}
+                >
+                    <ArrowUturnLeftIcon className="size-8 p-1 bg-black rounded-full z-20 relative" />
+                </Link>
+            </div>
 
             <div className="group">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

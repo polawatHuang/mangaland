@@ -1,18 +1,18 @@
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
-import {Suspense} from "react";
-import {notFound} from "next/navigation";
+import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import updateLocale from "dayjs/plugin/updateLocale";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {ArrowUturnLeftIcon} from "@heroicons/react/24/solid";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 
 import style from "./chapter.module.css";
-import styles from "../../../components/MangaReader/MangaReader.module.css"
+import styles from "../../../components/MangaReader/MangaReader.module.css";
 import Loading from "@/app/components/Loading/Loading";
 import AdvertiseComponent from "@/app/components/Advertise/Advertise";
-import {unstable_ViewTransition as ViewTransition} from 'react'
-import {fetchManga} from "@/app/components/FetchManga/FetchManga";
+import { fetchManga } from "@/app/components/FetchManga/FetchManga";
+import { unstable_ViewTransition as ViewTransition } from "react";
 
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
@@ -36,43 +36,46 @@ dayjs.updateLocale("en", {
 });
 
 export default async function SlugPage({
-                                           params,
-                                       }: {
+    params,
+}: {
     params: Promise<{ name: string }>;
 }) {
     return (
-//        <Suspense fallback={<Loading/>}>
+        //        <Suspense fallback={<Loading/>}>
         <ViewTransition>
-            <MangaContent params={await params}/>
+            <MangaContent params={await params} />
         </ViewTransition>
-//        </Suspense>
+        //        </Suspense>
     );
 }
 
-async function MangaContent({params}: { params: { name: string } }) {
+async function MangaContent({ params }: { params: { name: string } }) {
     const manga = await fetchManga(params.name);
-
     if (!manga) return notFound();
+    // console.log(manga.id);
     return (
         <div className="relative w-full min-h-screen max-w-6xl mx-auto md:p-8 pb-20 gap-16 sm:p-2">
             <section>
-                <AdvertiseComponent/>
+                <AdvertiseComponent />
             </section>
-
-            <section>
-                <div className="w-full bg-[#1f2936] px-4 py-2 text-white">
-                    <Link href="/">Homepage</Link> /{" "}
-                    <Link href={`/project/${params.name}`}>{manga.name}</Link>
-                </div>
-            </section>
+            <ViewTransition name="title">
+                <section>
+                    <div className="w-full bg-[#1f2936] px-4 py-2 text-white">
+                        <Link href="/">Homepage</Link> /{" "}
+                        <Link href={`/project/${params.name}`}>
+                            {manga.name}
+                        </Link>
+                    </div>
+                </section>
+            </ViewTransition>
 
             <section className="flex md:flex-row flex-col md:items-start items-center gap-4 relative mt-4 px-4">
                 <ViewTransition name="return-btn">
                     <Link
                         href={`/`}
-                        className={`${styles.circle} absolute top-0 left-3 md:left-0 md:relative p-[2px]`}
+                        className={`${styles.circle} absolute top-0 left-3 [z-index:9999] md:left-0 md:relative p-[2px]`}
                     >
-                        <ArrowUturnLeftIcon className="size-8 p-1 bg-black rounded-full z-20 relative"/>
+                        <ArrowUturnLeftIcon className="size-8 p-1 bg-black rounded-full z-20 relative" />
                     </Link>
                 </ViewTransition>
                 <Image
@@ -87,7 +90,7 @@ async function MangaContent({params}: { params: { name: string } }) {
                     <h1 className="text-2xl font-bold text-white">
                         📖 {manga.name}
                     </h1>
-                    <hr className="my-2 border-gray-600"/>
+                    <hr className="my-2 border-gray-600" />
                     <p className="text-white text-sm leading-relaxed">
                         {manga.description || "ไม่มีข้อมูลเรื่องย่อ"}
                     </p>
@@ -99,13 +102,13 @@ async function MangaContent({params}: { params: { name: string } }) {
                     <h2 className="text-lg font-semibold text-white">
                         📚 รายชื่อตอนทั้งหมด
                     </h2>
-                    <hr className="my-2 border-white"/>
+                    <hr className="my-2 border-white" />
                     <div
                         className={`flex flex-col gap-1 overflow-auto max-h-[500px]`}
                     >
                         {manga.episodes.length > 0 ? (
                             manga.episodes.map(
-                                ({episodeNumber, title, createdAt}) => (
+                                ({ episodeNumber, title, createdAt }) => (
                                     <Link
                                         key={episodeNumber}
                                         href={`/project/${params.name}/${episodeNumber}`}

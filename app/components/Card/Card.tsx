@@ -1,11 +1,11 @@
 "use client";
 
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {HeartIcon} from "@heroicons/react/24/solid";
+import { HeartIcon } from "@heroicons/react/24/solid";
 import style from "./Card.module.css";
-import {motion} from "framer-motion"
+import { motion } from "framer-motion";
 
 interface Manga {
     id: number;
@@ -20,7 +20,7 @@ interface CardProps {
     hasFevFunction?: boolean;
 }
 
-const Card: React.FC<CardProps> = ({manga, hasFevFunction = true}) => {
+const Card: React.FC<CardProps> = ({ manga, hasFevFunction = true }) => {
     const [favorites, setFavorites] = useState<Manga[]>([]);
     useEffect(() => {
         const storedFavorites = JSON.parse(
@@ -51,11 +51,11 @@ const Card: React.FC<CardProps> = ({manga, hasFevFunction = true}) => {
                 >
                     {favorites.some((fav) => fav.id === manga.id) ? (
                         <span className="text-red-500 text-xl">
-                            <HeartIcon className="size-6 text-[#f60002]"/>
+                            <HeartIcon className="size-6 text-[#f60002]" />
                         </span>
                     ) : (
                         <span className="text-red-500 text-xl">
-                            <HeartIcon className="size-6"/>
+                            <HeartIcon className="size-6" />
                         </span>
                     )}
                 </button>
@@ -67,6 +67,9 @@ const Card: React.FC<CardProps> = ({manga, hasFevFunction = true}) => {
                     src={manga.backgroundImage}
                     alt={manga.name}
                     className="h-[220px] w-full object-cover"
+                    onClick={() => {
+                        console.log(manga.id || null);
+                    }}
                 />
                 <div className="py-4 absolute bottom-0 left-[50%] translate-x-[-50%] z-10">
                     <h2 className="text-lg font-semibold text-white leading-5 text-ellipsis text-center line-clamp-3">

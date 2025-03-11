@@ -5,6 +5,7 @@ import { TagLink } from "../../components/Tag/TagLink";
 import { SortButton } from "../../components/Tag/SortButton";
 import axios from "axios";
 import { Tag, TagResonse } from "@/app/models/tag";
+import { unstable_ViewTransition as ViewTransition } from "react";
 
 enum SortTags {
     ByCharactor = "by_char",

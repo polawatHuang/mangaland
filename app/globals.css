@@ -13,6 +13,10 @@
     }
 }
 
+::view-transition-group(*) {
+    animation-duration: 1s;
+}
+
 body {
     color: var(--foreground);
     background: var(--background);
