@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import {useState, useRef, useEffect, useCallback, useMemo} from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import { useParams } from "next/navigation";
+import {Swiper, SwiperSlide} from "swiper/react";
+import {Navigation} from "swiper/modules";
+import {useParams} from "next/navigation";
 import "swiper/css";
 import "swiper/css/navigation";
-import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import {ArrowUturnLeftIcon} from "@heroicons/react/24/solid";
+import {unstable_ViewTransition as ViewTransition} from 'react'
 
 import style from "./MangaReader.module.css";
 
@@ -25,10 +26,10 @@ interface MangaReaderProps {
     images: EpisodeImage[];
 }
 
-export default function MangaReader({ images }: MangaReaderProps) {
+export default function MangaReader({images}: MangaReaderProps) {
     const [viewMode, setViewMode] = useState<"full" | "single">("full");
     const [currentPage, setCurrentPage] = useState(1);
-    const { name } = useParams<{ name: string }>();
+    const {name} = useParams<{ name: string }>();
     const swiperRef = useRef<any>(null);
 
     const totalPages = images.length;
@@ -41,8 +42,8 @@ export default function MangaReader({ images }: MangaReaderProps) {
     const handleImageClick = useCallback(
         (e: React.MouseEvent<HTMLImageElement>) => {
             if (!swiperRef.current) return;
-            const { clientX, target } = e;
-            const { left, width } = (
+            const {clientX, target} = e;
+            const {left, width} = (
                 target as HTMLImageElement
             ).getBoundingClientRect();
             const clickPosition = clientX - left;
@@ -66,12 +67,14 @@ export default function MangaReader({ images }: MangaReaderProps) {
     return (
         <div className="w-full md:p-4 bg-black text-white min-h-screen">
             <div className="flex p-4 justify-between items-center mb-4">
-                <Link
-                    href={`/project/${name}`}
-                    className={`${style.circle} relative p-[2px]`}
-                >
-                    <ArrowUturnLeftIcon className="size-8 p-1 bg-black rounded-full z-20 relative" />
-                </Link>
+                <ViewTransition name="return-btn">
+                    <Link
+                        href={`/project/${name}`}
+                        className={`${style.circle} relative p-[2px]`}
+                    >
+                        <ArrowUturnLeftIcon className="size-8 p-1 bg-black rounded-full z-20 relative"/>
+                    </Link>
+                </ViewTransition>
 
                 <select
                     className="px-3 py-2 bg-pink text-white text-sm hover:bg-[#c03b7b] outline-none rounded-md cursor-pointer"
@@ -129,7 +132,8 @@ export default function MangaReader({ images }: MangaReaderProps) {
                             />
                         </SwiperSlide>
                     ))}
-                    <div className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-lg z-20">
+                    <div
+                        className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-lg z-20">
                         หน้า {currentPage} / {totalPages}
                     </div>
                 </Swiper>

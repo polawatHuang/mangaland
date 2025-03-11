@@ -1,14 +1,15 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import {Suspense} from "react";
+import {notFound} from "next/navigation";
 
 import Loading from "@/app/components/Loading/Loading";
-import { ScrollUp } from "@/app/components/Footer/Scrollup";
+import {ScrollUp} from "@/app/components/Footer/Scrollup";
 import MangaReader from "@/app/components/MangaReader/MangaReader";
 import AdvertiseComponent from "@/app/components/Advertise/Advertise";
-import { NextEp } from "@/app/components/Footer/NextEp";
+import {NextEp} from "@/app/components/Footer/NextEp";
+import {unstable_ViewTransition as ViewTransition} from 'react'
 
-import { EpisodePageProps, EpisodeData } from "@/app/models/Episode";
+import {EpisodePageProps, EpisodeData} from "@/app/models/Episode";
 
 async function getEpisodeData(
     name: string,
@@ -32,33 +33,35 @@ async function getEpisodeData(
     }
 }
 
-export default async function EpisodePage({ params }: EpisodePageProps) {
-    const { name, episode } = await params;
+export default async function EpisodePage({params}: EpisodePageProps) {
+    const {name, episode} = await params;
     const episodeData = await getEpisodeData(name, episode);
 
     if (!episodeData) return notFound();
 
     return (
-        <Suspense fallback={<Loading />}>
+//        <Suspense fallback={<Loading />}>
+        <ViewTransition>
             <EpisodeContent
-                params={{ name, episode }}
+                params={{name, episode}}
                 episodeData={episodeData}
             />
-        </Suspense>
+        </ViewTransition>
+//        </Suspense>
     );
 }
 
 function EpisodeContent({
-    params,
-    episodeData,
-}: {
+                            params,
+                            episodeData,
+                        }: {
     params: { name: string; episode: string };
     episodeData: EpisodeData;
 }) {
     return (
         <div className="relative w-full min-h-screen max-w-6xl mx-auto md:p-8 pb-20 gap-16 sm:p-2">
             <section>
-                <AdvertiseComponent />
+                <AdvertiseComponent/>
             </section>
 
             <section>
@@ -79,16 +82,16 @@ function EpisodeContent({
             </section>
 
             <div id="long-content">
-                <MangaReader images={episodeData.images} />
+                <MangaReader images={episodeData.images}/>
             </div>
-            <ScrollUp />
+            <ScrollUp/>
             <NextEp
                 params={{
                     episodeNumber: params.episode,
                     mangaName: params.name,
                 }}
             />
-            <ScrollUp />
+            <ScrollUp/>
         </div>
     );
 }
