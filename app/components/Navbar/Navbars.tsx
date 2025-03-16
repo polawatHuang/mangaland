@@ -10,7 +10,7 @@ import { LayoutReturnResponse } from "@/app/models/server";
 import Image from "next/image";
 import logo from "../../../public/images/MoodengMangaWhite.png";
 
-function Navbars() {
+const Navbars = () => {
     const [navbar, setNavbar] = useState<NavbarItem[]>([]);
     const [navOpen, setNavOpen] = useState(false);
 
@@ -136,6 +136,6 @@ function Navbars() {
             </div>
         </nav>
     );
-}
+};
 
 export default Navbars;

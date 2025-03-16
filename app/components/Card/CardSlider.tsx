@@ -22,36 +22,6 @@ interface CardSliderComponentProps {
     hasFevFunction?: boolean;
 }
 
-const ChevronLeftIcon = () => (
-    <svg
-        className="w-10 h-10 text-gray-700 hover:text-gray-900"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 19l-7-7 7-7"
-        />
-    </svg>
-);
-
-const ChevronRightIcon = () => (
-    <svg
-        className="w-10 h-10 text-gray-700 hover:text-gray-900"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
-);
-
 const CardSliderComponent: React.FC<CardSliderComponentProps> = ({
     mangaList,
     hasFevFunction = false,

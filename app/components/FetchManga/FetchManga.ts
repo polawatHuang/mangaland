@@ -1,6 +1,6 @@
 import { Manga, ProjectResponse } from "@/app/models/project";
 
-export async function fetchManga(name: string): Promise<Manga | null> {
+async function fetchManga(name: string): Promise<Manga | null> {
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/project/${name}`,
@@ -46,3 +46,4 @@ export async function fetchManga(name: string): Promise<Manga | null> {
         return null;
     }
 }
+export { fetchManga };
